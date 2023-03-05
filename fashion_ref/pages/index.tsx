@@ -2,9 +2,10 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
-import Navbar from "./Navbar";
-import AlignItemsList from "./AlignItemsList";
-import ResponsiveGrid from "./ResponsiveGrid";
+import Navbar from "../Components/Navbar";
+import AlignItemsList from "../Components/AlignItemsList";
+import ResponsiveGrid from "../Components/ResponsiveGrid";
+import LoginForm from "@/Components/LoginForm";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function Home() {
         <h1 id="title">CRUMP REFERENCE</h1>
         <div style={{marginBottom: "40px"}}>
           <Navbar />
+          <LoginForm />
         </div>
         <ResponsiveGrid />
       </div>
