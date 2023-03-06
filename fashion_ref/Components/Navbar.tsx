@@ -10,6 +10,7 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,6 +18,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import Signup from '@/pages/signup';
+import Upload from '@/pages/upload';
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -69,11 +72,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar: React.FC = () => {
 
   
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [value, setValue] = React.useState("")
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
+  const showModal = () => {
+    setModalOpen(true);
+  };
+
+  const showUploadModal = () => {
+    setuploadModalOpen(true);
+  };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -169,6 +181,8 @@ const Navbar: React.FC = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {modalOpen && <Signup setModalOpen={setModalOpen} />}
+      {uploadModalOpen && <Upload setuploadModalOpen={setuploadModalOpen} />}
       <AppBar position="static" style={{backgroundColor : "#D9D9D9", color:"#000"}}>
         <Toolbar>
           {/* <IconButton
@@ -203,11 +217,32 @@ const Navbar: React.FC = () => {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={() => {setuploadModalOpen(true)}}>
               <Badge badgeContent={0} color="error">
                 <AddIcon />
               </Badge>
             </IconButton>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ height: "50%" }}
+          size="small"
+        >
+          로그인
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="outlined"
+          sx={{ height: "50%" }}
+          size="small"
+        >
+          가입
+        </Button>
+
+
+
             {/* <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -223,7 +258,7 @@ const Navbar: React.FC = () => {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={showModal}
               color="inherit"
             >
               <AccountCircle />

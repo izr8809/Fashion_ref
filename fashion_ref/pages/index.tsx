@@ -6,10 +6,14 @@ import Navbar from "../Components/Navbar";
 import AlignItemsList from "../Components/AlignItemsList";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
 import LoginForm from "@/Components/LoginForm";
+import SignupForm from "@/pages/signup";
+import React, { useCallback, useState, useEffect } from 'react';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  
   return (
     <>
       <Head>
@@ -22,6 +26,7 @@ export default function Home() {
         <div style={{marginBottom: "40px"}}>
           <Navbar />
           <LoginForm />
+          {/* <SignupForm /> */}
         </div>
         <ResponsiveGrid />
       </div>

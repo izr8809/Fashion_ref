@@ -10,6 +10,8 @@ const app = next({ prod});
 const handle =app.getRequestHandler();
 const {sequelize} = require('./models');
 const passport = require('passport');
+const { User } = require('./models');
+const bcrypt = require('bcrypt');
 
 
 sequelize.sync({ force: false})
@@ -20,18 +22,6 @@ sequelize.sync({ force: false})
   });
 
 dotenv.config();
-
-// const mysql = require('mysql');  // mysql 모듈 로드
-// const conn = {  // mysql 접속 설정
-//     host: 'localhost',
-//     port: '3306',
-//     user: 'root',
-//     password: 'qwe123!@',
-//     database: 'REF'
-// };
- 
-// var connection = mysql.createConnection(conn); // DB 커넥션 생성
-// connection.connect();   // DB 접속
 
 app.prepare().then( () => {
 
@@ -51,15 +41,18 @@ app.prepare().then( () => {
     cookie: {
       httpOnly: true,
       secure: false,
+      expires: 60000,
     },
     name: 'session-cookie',
   }));
   
+  server.use(passport.initialize());
+  server.use(passport.session());
   
   server.get('/', function(req, res){
     handle(req,res);
     req.session.user = 1;
-    console.log(req.session);
+    console.log(req.session.userId);
     console.log(req.sessionID);
     console.log(req.url, req.headers.cookie);
     // res.writeHead(200, { 'Set-Cookie': 'mycookie=test' });
@@ -73,52 +66,66 @@ app.prepare().then( () => {
     // res.sendFile(path.join(__dirname, '/server/pages/index.js'));
   });
 
-
-
-  server.post('/signups', function(req, res){
-    console.log(req.body);
-    console.log("!");
-    res.json({
-      'ok' : true
-    })
-  })
-
-  server.post('/login',  (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-      if (err) {
-        console.error(err);
-        return next(err);
-      }
-      if (info) {
-        return res.status(401).send(info.reason);
-      }
-      return req.login(user, async (loginErr) => {
-        if (loginErr) {
-          console.error(loginErr);
-          return next(loginErr);
-        }
-        const fullUserWithoutPassword = await User.findOne({
-          where: { id: user.id },
-          attributes: {
-            exclude: ['password']
-          },
-          include: [{
-            model: Post,
-            attributes: ['id'],
-          }, {
-            model: User,
-            as: 'Followings',
-            attributes: ['id'],
-          }, {
-            model: User,
-            as: 'Followers',
-            attributes: ['id'],
-          }]
-        })
-        return res.status(200).json(fullUserWithoutPassword);
+  server.post('/login', async (req, res) => {
+      // user 정보를 DB에서 조회
+    const userInfo = await User.findOne({
+      where: { email: req.body.email },
+      // attributes: {
+      //   exclude: ['password']
+      // },
+    });
+    console.log(userInfo.password)
+    let passwordmatch = bcrypt.compareSync(req.body.password, userInfo.password, 12);
+    // userInfo 결과 존재 여부에 따른 응답
+    if (!userInfo) {
+      res.status(400).send({ data: null, message: 'not authorized' });
+    } else if(passwordmatch){
+      req.session.save(function () {  // req.session.save(callback)은 사용하지 않아도 됨
+        req.session.userId = userInfo.id;
+        res.json({ data: userInfo, message: 'ok' });
+        // post 요청에 대한 응답이기에 {data:null}이 되므로, {data: userInfo} 무의미하여 생략 가능
       });
-    })(req, res, next);
+    }
   });
+
+  server.post('/logout', (req, res) => {
+
+    if (!req.session.userId) {
+      res.status(400).send({ data: null, message: 'not authorized' });
+    } else {
+      req.session.destroy();      // 세션 삭제
+      res.json({ data: null, message: 'ok' });
+    }
+  });
+
+  server.post('/signups', async function(req, res){
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    console.log(req.body.password)
+    console.log(hashedPassword)
+    try{
+    const userInfo = await User.findOne({
+      where: { email: req.body.email, password: hashedPassword},
+    });
+    if (!userInfo) {
+      //회원가입 성공
+      const user = await User.create({
+        email : req.body.email,
+        name : req.body.name,
+        password : hashedPassword,
+      });
+      const {password, ...userWithoutPassword} = user;
+      console.log(userWithoutPassword)
+      res.status(201).json({data : "success"})
+
+    } else {
+      //이미 존재하는 ID
+      res.status(400).send({ data: null, message: 'already exist' });
+    }
+      
+  } catch (err){
+    console.error(err);
+  }
+})
   
   
   server.listen(3065, () => {

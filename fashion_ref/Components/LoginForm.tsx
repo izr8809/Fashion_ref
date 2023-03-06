@@ -1,15 +1,24 @@
 import React, { HtmlHTMLAttributes, ReactElement } from "react";
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect,useState } from 'react';
 import useInput from '../hooks/useInput';
 import axios from 'axios';
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 
 export default function LoginForm(): ReactElement {
     
-  const API = "http://localhost:3065/signups";
+  const API = "http://localhost:3065/login";
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const [isLoggedin, setisLoggedin] = useState(false);
   const onFinish = (values: FormData) => {};
+  const [User, setUser] = useState({
+    id : 0,
+    name : null,
+  });
 
   const onSubmitForm = useCallback((event : any) => {
     event.preventDefault();
@@ -37,39 +46,65 @@ export default function LoginForm(): ReactElement {
       .then((result) => {
         console.log(result);
         console.log("singupDB!");
-        console.log(result.data.ok)
+        console.log(result.data.data)
+        setUser(result.data.data);
+        setisLoggedin(true);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
       })
       .catch((error) => {
         alert('회원가입이 정상적으로 되지 않았습니다.');
-        console.log(error);
+        console.log(error); 
       })
   }, [email, password]);
+
+  console.log(User)
+  if(isLoggedin){
+    return( <div>{User.name && User.name}님</div>)
+  }
   return (
-    <div>
-      <form onSubmit={onSubmitForm}>
-        <label> email</label>
-        <input 
-        type="text" 
-        id="email"
-        onChange = { (e) => {
-          onChangeEmail(e.target.value)}
-        }
+    <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        onSubmit={onSubmitForm}
+        // sx={style}
+      >
+        {/* <form onSubmit={onSubmit}> */}
+        <Typography component="h1" variant="h5">
+          로그인
+        </Typography>
+        <TextField
+          label="이메일"
+          name="user-email"
+          type="email"
+          value={email}
+          required
+          variant="standard"
+          onChange={(e) => {
+            onChangeEmail(e.target.value);
+          }}
         />
-        <label> password</label>
-        <input 
-        type="text" 
-        id="password"
-        onChange = { (e) => {
-          onChangePassword(e.target.value)}
-        }
+        <TextField
+          label="비밀번호"
+          name="user-nick"
+          value={password}
+          required
+          variant="standard"
+          onChange={(e) => {
+            onChangePassword(e.target.value);
+          }}
         />
-        <button>
-          Login
-        </button>
-      </form>
-    </div>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          size="large"
+        >
+          로그인
+        </Button>
+        {/* </form> */}
+      </Box>
   )
 
 
