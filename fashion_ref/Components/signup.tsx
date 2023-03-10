@@ -157,7 +157,7 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
               type="email"
               value={email}
               required
-              error={checkEmail(email)}
+              // error={checkEmail(email)}
               onChange={onChangeEmail}
             />
             <TextField
