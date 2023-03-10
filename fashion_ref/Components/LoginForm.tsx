@@ -26,7 +26,7 @@ const style = {
 };
 export default function LoginForm({ setIsLoggedIn, setloginModalOpen }: LoginFormProps): ReactElement {
     
-  const API = "http://localhost:3065/login";
+  const API = "http://15.164.224.172:8080/login";
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const onFinish = (values: FormData) => {};
