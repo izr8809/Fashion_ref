@@ -198,8 +198,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
       }
       else{
-        // e.preventDefault();
-        // e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
         console.log(imageFile);
         const formData = new FormData();
@@ -253,7 +253,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
       //       console.log(error);
       //     });
     },
-    [brand, link, nickname, imageFile, category, text, season]
+    []
   );
   return (
     <Modal
