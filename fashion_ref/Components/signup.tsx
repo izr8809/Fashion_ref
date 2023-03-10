@@ -30,7 +30,7 @@ const style = {
   p: 4,
 };
 export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): ReactElement {
-  const API = "http://localhost:3065/signups";
+  const API = "http://15.164.224.172:8080/signups";
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNickname] = useInput("");
   const [password, onChangePassword] = useInput("");

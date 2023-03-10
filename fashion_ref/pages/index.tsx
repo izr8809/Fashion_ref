@@ -14,7 +14,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [posts, setPost] = useState<any[]>([])
 
-  const LOADAPI = "http://localhost:3065/loadpost";
+  const LOADAPI = "http://15.164.224.172:8080/loadpost";
 
   const loadPost = useCallback(() => {
     axios.get(LOADAPI)
@@ -35,7 +35,7 @@ export default function Home() {
     loadPost()
   },[loadPost])
   
-  const LOGINCHECKAPI = "http://localhost:3065/logincheck";
+  const LOGINCHECKAPI = "http://15.164.224.172:8080/logincheck";
   useEffect( ()=>{
     axios.get(LOGINCHECKAPI)
       .then((result) => {
