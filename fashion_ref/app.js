@@ -148,6 +148,8 @@ app.prepare().then(() => {
   });
 
   server.get("/logout", (req, res) => {
+    console.log("logout")
+    console.log(req.session.userId)
     if (!req.session.userId) {
       res.status(400).send({ data: null, message: "not authorized" });
     } else {
