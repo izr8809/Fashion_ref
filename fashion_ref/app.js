@@ -343,7 +343,7 @@ app.prepare().then(() => {
     // });
   });
 
-  server.listen(3065, () => {
+  server.listen(8080, () => {
     console.log("서버 실행 중!");
   });
 });
