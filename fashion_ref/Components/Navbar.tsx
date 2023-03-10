@@ -94,8 +94,8 @@ export default function Navbar({
   setPost,
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
-  const HASHAPI = "http://localhost:3065/hashtagsearch";
-  const API = "http://localhost:3065/loadpost";
+  const HASHAPI = "http://15.164.224.172:8080/hashtagsearch";
+  const API = "http://15.164.224.172:8080/loadpost";
   const [modalOpen, setModalOpen] = React.useState(false);
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
@@ -142,7 +142,7 @@ export default function Navbar({
     handleMobileMenuClose();
   };
   const Logout = useCallback(() => {
-    const LOGOUTAPI = "http://localhost:3065/logout";
+    const LOGOUTAPI = "http://15.164.224.172:8080/logout";
     axios
       .get(LOGOUTAPI)
       .then((result) => {
@@ -206,7 +206,7 @@ export default function Navbar({
             // history.replace('/login');
           })
           .catch((error) => {
-            alert("로그인이 정상적으로 되지 않았습니다.");
+            alert("해시태그 포함된 포스팅이 없습니다.");
             console.log(error);
           });
       }
