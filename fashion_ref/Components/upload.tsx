@@ -198,8 +198,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
       }
       else{
-        e.preventDefault();
-        e.stopPropagation();
+        // e.preventDefault();
+        // e.stopPropagation();
 
         console.log(imageFile);
         const formData = new FormData();
@@ -210,7 +210,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         formData.append("category", category);
         formData.append("season", season);
         formData.append("hashtag", text);
-        alert(formData)
+        // alert(formData)
         axios.post(API, formData)
         .then((result)=>{
           console.log("result")
