@@ -43,7 +43,8 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   const [season, setSeason] = useState("")
 
 
-  const DELAPI = `http://localhost:3065/deletpost/${props.id}`
+  const DELAPI = `http://15.164.224.172:8080/deletpost/${props.id}`
+  console.log(DELAPI)
   const delClick = useCallback(()=>{
     axios.post(DELAPI,{
     }).then((result)=>{
