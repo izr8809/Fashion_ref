@@ -52,7 +52,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
   //   setFile(file);
   //   console.log(file);
   // };
-  const API = "http://localhost:3065/uploads";
+  const API = "http://15.164.224.172:8080/uploads";
   const [imageFile, setImageFile] = useState<File>();
   const [value, setValue] = React.useState("");
   const [isImage, setIsImage] = useState(false);
@@ -164,7 +164,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
     e.preventDefault();
   }, []);
 
-  const USERINFOAPI = `http://localhost:3065/USERINFO`
+  const USERINFOAPI = `http://15.164.224.172:8080/USERINFO`
   const [userInfo, setUserInfo]= useState({name : ""});
 
   useEffect(()=>{
@@ -198,8 +198,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
       }
       else{
-        // e.preventDefault();
-        // e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
         console.log(imageFile);
         const formData = new FormData();
