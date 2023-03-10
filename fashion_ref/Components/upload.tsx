@@ -213,6 +213,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         alert(formData)
         axios.post(API, formData)
         .then((result)=>{
+          console.log("result")
           console.log(result) 
         })
         .catch((err)=>{
