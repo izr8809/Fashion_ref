@@ -40,7 +40,7 @@ export default function ResponsiveGrid({ setPost, posts }: ResponsiveGridProps) 
                 // marginTop: "1%",
               }}
             >
-            <AlignItemsList name={post.name} index={index} setPost={setPost} posts={posts} id={post.id} category={post.category} brand={post.brand} link={post.Images[0].src} season={post.season} hashtags ={post.Hashtags} reason ={post.reason}/> </li>
+            <AlignItemsList name={post.name} index={index} setPost={setPost} posts={posts} id={post.id} category={post.category} brand={post.brand} src={post.Images[0].src}link={post.link} season={post.season} hashtags ={post.Hashtags} reason ={post.reason}/> </li>
             </Item>
           </Grid>
         ))}

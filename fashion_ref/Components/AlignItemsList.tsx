@@ -6,14 +6,15 @@ import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button, CardActionArea, CardActions } from "@mui/material";
-import {useCallback, useEffect} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 
 type AlignItemsListProps = {
   category: number;
   brand: string;
   link: string;
-  season: string;
+  src: string;
+  season: number;
   reason: string;
   hashtags: any[];
   id : number,
@@ -37,10 +38,12 @@ const season = {
   "23FW": 8,
 };
 export default function AlignItemsList(props: AlignItemsListProps) {
+
+  const [category, setCategory] = useState("")
+  const [season, setSeason] = useState("")
+
+
   const DELAPI = `http://localhost:3065/deletpost/${props.id}`
-  const editClick = useCallback(()=>{
-    alert("만드는 중입니다..");
-  },[])
   const delClick = useCallback(()=>{
     axios.post(DELAPI,{
     }).then((result)=>{
@@ -53,7 +56,39 @@ export default function AlignItemsList(props: AlignItemsListProps) {
 
       console.log(err)
     })
+  },[DELAPI,props])
+  const editClick = useCallback(()=>{
+    alert("만드는 중입니다..");
   },[])
+  
+  console.log("rendered");
+  useEffect(()=>{
+    if(props.category == 10){      
+      setCategory("상의")
+    }
+    else if(props.category == 20){
+      setCategory("하의")
+    }
+    else if(props.category == 30){
+      setCategory("아우터")
+    }
+    else if(props.category == 40){
+      setCategory("디테일")
+    }
+    else if(props.category == 50){
+      setCategory("이미지")
+    }
+    else if(props.category == 60){
+      setCategory("악세사리")
+    }
+    
+    if(props.season == 10){   
+      setSeason("23SS")
+    }
+    else if(props.category == 20){
+      setSeason("23FW")
+    }
+  },[props.category, props.category])
 
   return (
     <Card
@@ -61,19 +96,19 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         maxWidth: "15",
         marginTop: "20px",
         // borderRadius: "24px",
-        // boxShadow: "none",
+        boxShadow: "none",
       }}
     >
-      <CardActionArea>
+      <CardActionArea href={`${props.link}`} target='_blank'>
         <CardMedia
           component="img"
-          // height="300"
-          image={`../${props.link}`}
+          height="100%"
+          image={`../${props.src}`}
           alt="green iguana"
         />
         <CardContent>
           <span style={{fontWeight :900, fontSize: "130%"}}>
-            {props.name}_{`${props.brand}`}
+            {props.name}_{`${props.brand}`}_ {props.id}
           </span>
 
           <Typography variant="body2" color="text.secondary">
@@ -94,7 +129,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
             className={`Tag${props.category / 10} Tag`}
             style={{ display: "inline-block", margin: "2px" }}
           >
-            <a href="">#{props.season}</a>
+            <a href="">#{season}</a>
           </div>{" "}
           &nbsp;
         </div>
@@ -103,7 +138,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
             className="Tag1 Tag"
             style={{ display: "inline-block", margin: "2px" }}
           >
-            <a href="">#{props.category}</a>
+            <a href="">#{category}</a>
           </div>{" "}
           &nbsp;
         </div>

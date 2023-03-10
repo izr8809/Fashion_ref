@@ -31,6 +31,7 @@ import Upload from "@/Components/upload";
 import { useCallback, useEffect, useState } from "react";
 import Login from "@/Components/LoginForm";
 import LoginForm from "@/Components/LoginForm";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -351,6 +352,7 @@ export default function Navbar({
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
               sx={{ display: "inline-block" }}
+              required
               value={category}
               label="category"
               onChange={onChangeCategory}
@@ -380,6 +382,7 @@ export default function Navbar({
               sx={{ display: "inline-block" }}
               value={season}
               label="season"
+              required
               onChange={onChangeSeason}
             >
               <MenuItem value={"23SS"}>23SS</MenuItem>
@@ -412,22 +415,21 @@ export default function Navbar({
             >
               <Badge badgeContent={0} color="error"></Badge>
             </IconButton> */}
-            <Button
-              variant="outlined"
-              sx={{
-                height: "60%",
-                width: "55%",
-                marginRight: "5px",
-                backgroundColor: "#F0F0F0",
-                fontWeight: "bold",
-              }}
-              size="small"
-              onClick={uploadClick}
-            >
-              업로드 <AddIcon />
-            </Button>
+            <>
+              <IconButton
+                size="large"
+                edge="end"
+                sx={{marginRight:"10px"}}
+                aria-label="account of current user"
+                aria-haspopup="false"
+                color="primary"
+                onClick={uploadClick}
+              >
+                <AddIcon />
+              </IconButton>
+            </>
             {!isLoggedIn ? (
-              <div style={{ height: "60%", width:"100%" }}>
+              <>
                 <Button
                   type="submit"
                   fullWidth
@@ -459,27 +461,25 @@ export default function Navbar({
                 >
                   가입
                 </Button>
-              </div>
+              </>
             ) : (
               <>
-                <div style={{ height: "60%" }}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      // height: "60%",
-                      width: "100%",
-                      marginRight: "5px",
-                      fontWeight: "bold",
-                      display: "inline-block",
-                    }}
-                    size="small"
-                    onClick={Logout}
-                  >
-                    로그아웃
-                  </Button>
-                </div>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    // height: "60%",
+                    width: "100%",
+                    marginRight: "5px",
+                    fontWeight: "bold",
+                    display: "inline-block",
+                  }}
+                  size="small"
+                  onClick={Logout}
+                >
+                  로그아웃
+                </Button>
                 <IconButton
                   size="large"
                   edge="end"

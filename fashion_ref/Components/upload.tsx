@@ -181,18 +181,37 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
   const onSubmit = useCallback(
     (e: any) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log(imageFile);
-      const formData = new FormData();
-      formData.append("image", imageFile as File);
-      formData.append("nickname", nickname);
-      formData.append("brand", brand);
-      formData.append("link", link);
-      formData.append("category", category);
-      formData.append("season", season);
-      formData.append("hashtag", text);
-      axios.post(API, formData);
+      if(category=="" || season==""){
+        e.preventDefault();
+        e.stopPropagation();
+        alert("카테고리, 시즌 필수")
+      }
+      else if(brand=="" || link ==""){
+        e.preventDefault();
+        e.stopPropagation();
+        alert("브랜드, 링크 입력 필수")
+      }
+      else if(imageFile == undefined){
+        e.preventDefault();
+        e.stopPropagation();
+        alert("이미지 필수")
+
+      }
+      else{
+        // e.preventDefault();
+        // e.stopPropagation();
+
+        console.log(imageFile);
+        const formData = new FormData();
+        formData.append("image", imageFile as File);
+        formData.append("nickname", nickname);
+        formData.append("brand", brand);
+        formData.append("link", link);
+        formData.append("category", category);
+        formData.append("season", season);
+        formData.append("hashtag", text);
+        axios.post(API, formData);
+      }
       //   axios
       //     .post(
       //       API,
@@ -243,7 +262,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         sx={style}
       >
         {/* <form onSubmit={onSubmit}> */}
-        <Typography component="h1" variant="h5">
+        <Typography sx={{textAlign: "center"}} component="h1" variant="h5">
           업로드
         </Typography>
         {/* <TextField
@@ -257,13 +276,13 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
           onChange={onChangeNickname}
         /> */}
         <TextField
+          required
           label="브랜드"
           fullWidth
           sx={{marginTop : "5px"}}
           name="user-brand"
           type="text"
           value={brand}
-          required
           variant="standard"
           onChange={onChangeBrand}
         />
@@ -299,6 +318,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             id="demo-simple-select"
             value={category}
             label="category"
+            required
             onChange={handleCategoryChange}
           >
             <MenuItem value={10}>상의</MenuItem>
@@ -317,6 +337,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             id="demo-simple-select"
             value={season}
             label="season"
+            required
             onChange={handleSeasonChange}
           >
             <MenuItem value={10}>23SS</MenuItem>

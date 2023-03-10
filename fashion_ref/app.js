@@ -208,7 +208,7 @@ app.prepare().then(() => {
       brand: req.body.brand,
       category: req.body.category,
       season: req.body.season,
-      name: req.body.nickname,
+      name: req.session.name,
       reason : req.body.reason,
     });
 
