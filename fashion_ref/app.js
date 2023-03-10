@@ -256,6 +256,7 @@ app.prepare().then(() => {
           },
         ],
       });
+      console.log(posts)
       res.status(200).json(posts);
     } catch (error) {
       console.error(error);
