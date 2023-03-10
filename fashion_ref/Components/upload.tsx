@@ -181,6 +181,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
   const onSubmit = useCallback(
     (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
       if(category=="" || season==""){
         e.preventDefault();
         e.stopPropagation();
