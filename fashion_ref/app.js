@@ -215,7 +215,9 @@ app.prepare().then(() => {
       name: req.session.name,
       reason : req.body.reason,
     });
-
+    console.log("--------------------")
+    console.log(post)
+    console.log("--------------------")
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) =>
