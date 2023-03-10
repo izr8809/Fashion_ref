@@ -1,7 +1,7 @@
 
 {
   "development": {
-    "username": "root",
+    "username": "user",
     "password": "qwe123!@",
     "database": "refdb",
     "host": "127.0.0.1",
