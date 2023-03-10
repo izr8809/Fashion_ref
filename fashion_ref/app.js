@@ -15,7 +15,7 @@ const passport = require("passport");
 const { User, Post, Hashtag, Image } = require("./models");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
-
+const cors = require('cors');
 sequelize
   .sync({ force: false })
   .then(() => {
@@ -47,7 +47,9 @@ app.prepare().then(() => {
   server.use(express.static(__dirname));
   server.use("/", express.static(path.join(__dirname, "public")));
   // server.use('/', express.static(path.join(__dirname, '/')));
-
+  server.use(cors({
+    origin: '*'
+}));
   server.use(
     bodyParser.urlencoded({
       extended: true,
