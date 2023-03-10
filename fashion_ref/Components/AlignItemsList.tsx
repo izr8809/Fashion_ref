@@ -103,7 +103,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
       <CardActionArea href={`${props.link}`} target='_blank'>
         <CardMedia
           component="img"
-          height="100%"
+          height="300"
           image={`../${props.src}`}
           alt="green iguana"
         />
