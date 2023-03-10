@@ -212,7 +212,13 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         formData.append("category", category);
         formData.append("season", season);
         formData.append("hashtag", text);
-        axios.post(API, formData);
+        axios.post(API, formData)
+        .then((result)=>{
+          console.log(result) 
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
       }
       //   axios
       //     .post(
