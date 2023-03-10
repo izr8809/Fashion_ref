@@ -181,8 +181,6 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
   const onSubmit = useCallback(
     (e: any) => {
-      e.preventDefault();
-      e.stopPropagation();
       if(category=="" || season==""){
         e.preventDefault();
         e.stopPropagation();
@@ -212,6 +210,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         formData.append("category", category);
         formData.append("season", season);
         formData.append("hashtag", text);
+        alert(formData)
         axios.post(API, formData)
         .then((result)=>{
           console.log(result) 
