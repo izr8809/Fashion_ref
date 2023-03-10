@@ -5,7 +5,23 @@ class Post extends Sequelize.Model{
   static init(sequelize){
     return super.init({
       // id가 기본적으로 들어있다.
-      content: {
+      name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      link: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      brand: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      category: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      season: {
         type: Sequelize.TEXT,
         allowNull: false,
       },

@@ -15,11 +15,6 @@ class User extends Sequelize.Model{
         type: Sequelize.STRING(100),
         allowNull : false,
         unique : true,
-      },
-      created_at : {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue : Sequelize.NOW,
       }
     },{
       sequelize,

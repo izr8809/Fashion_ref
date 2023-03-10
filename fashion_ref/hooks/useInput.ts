@@ -1,11 +1,13 @@
-import { useInput } from '@mui/base';
 import { useState, useCallback } from 'react';
 
 
-export default (initValue : null | string) => {
+const useInput = (initValue : any) => {
   const [value, setter] = useState(initValue);
-  const handler : any = useCallback((e : any) => {
-    setter(e);
+  const handler = useCallback((e : any) => {
+    setter(e.target.value);
   }, []);
   return [value, handler, setter];
 };
+
+
+export default useInput;
