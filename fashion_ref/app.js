@@ -202,6 +202,8 @@ app.prepare().then(() => {
   // server.use('/post', postrouter)
   server.post("/uploads", upload.single("image"), async (req, res) => {
     console.log("id" + req.session.userId);
+
+    try{
     const hashtags = req.body.hashtag.match(/#[^\s#]+/g);
 
     const post = await Post.create({
@@ -234,6 +236,9 @@ app.prepare().then(() => {
       // } else { // 이미지를 하나만 올리면 image: 제로초.png
       // }
     }
+  } catch (err){
+    console.log(err);
+  }
   });
 
   server.get("/loadpost", async function (req, res) {
