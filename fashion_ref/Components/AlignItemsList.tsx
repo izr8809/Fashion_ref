@@ -10,11 +10,11 @@ import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 
 type AlignItemsListProps = {
-  category: number;
+  category: string;
   brand: string;
   link: string;
   src: string;
-  season: number;
+  season: string;
   reason: string;
   hashtags: any[];
   id : number,
@@ -64,32 +64,10 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   
   console.log("rendered");
   useEffect(()=>{
-    if(props.category == 10){      
-      setCategory("상의")
-    }
-    else if(props.category == 20){
-      setCategory("하의")
-    }
-    else if(props.category == 30){
-      setCategory("아우터")
-    }
-    else if(props.category == 40){
-      setCategory("디테일")
-    }
-    else if(props.category == 50){
-      setCategory("이미지")
-    }
-    else if(props.category == 60){
-      setCategory("악세사리")
-    }
-    
-    if(props.season == 10){   
-      setSeason("23SS")
-    }
-    else if(props.category == 20){
-      setSeason("23FW")
-    }
-  },[props.category, props.category])
+    setCategory(props.category)
+    setSeason("23SS")
+
+  },[props.category])
 
   return (
     <Card
@@ -127,7 +105,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         </Button> */}
         <div style={{ margin: "2px" }}>
           <div
-            className={`Tag${props.category / 10} Tag`}
+            className={`Tag${parseInt(props.season) % 10} Tag`}
             style={{ display: "inline-block", margin: "2px" }}
           >
             <a href="">#{season}</a>
@@ -136,7 +114,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         </div>
         <div style={{ margin: "2px" }}>
           <div
-            className="Tag1 Tag"
+            className={`Tag${parseInt(props.category) % 10} Tag`}
             style={{ display: "inline-block", margin: "2px" }}
           >
             <a href="">#{category}</a>

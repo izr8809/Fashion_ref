@@ -343,7 +343,7 @@ export default function Navbar({
               <SearchIcon />
             </SearchIconWrapper>
           </Search> */}
-          <FormControl
+          {/* <FormControl
             variant="standard"
             sx={{
               m: 1,
@@ -396,7 +396,7 @@ export default function Navbar({
               <MenuItem value={"23SS"}>23SS</MenuItem>
               <MenuItem value={"23FW"}>23FW</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           <form onSubmit={TagSearch} style={{ width: "50%" }}>
             <IconButton type="submit" aria-label="search">
               <SearchIcon style={{ fill: "#9A9A9A" }} />

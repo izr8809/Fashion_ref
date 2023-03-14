@@ -198,8 +198,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
       }
       else{
-        // e.preventDefault();
-        // e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
         console.log(imageFile);
         const formData = new FormData();
@@ -329,12 +329,12 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             required
             onChange={handleCategoryChange}
           >
-            <MenuItem value={10}>상의</MenuItem>
-            <MenuItem value={20}>하의</MenuItem>
-            <MenuItem value={30}>아우터</MenuItem>
-            <MenuItem value={40}>디테일</MenuItem>
-            <MenuItem value={50}>이미지</MenuItem>
-            <MenuItem value={60}>악세사리</MenuItem>
+            <MenuItem value={"상의"}>상의</MenuItem>
+            <MenuItem value={"하의"}>하의</MenuItem>
+            <MenuItem value={"아우터"}>아우터</MenuItem>
+            <MenuItem value={"디테일"}>디테일</MenuItem>
+            <MenuItem value={"이미지"}>이미지</MenuItem>
+            <MenuItem value={"악세사리"}>악세사리</MenuItem>
           </Select>
         </FormControl>
         <FormControl 
@@ -348,8 +348,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             required
             onChange={handleSeasonChange}
           >
-            <MenuItem value={10}>23SS</MenuItem>
-            <MenuItem value={20}>23FW</MenuItem>
+            <MenuItem value={"23SS"}>23SS</MenuItem>
+            <MenuItem value={"23FW"}>23FW</MenuItem>
           </Select>
         </FormControl>
         <TextField
