@@ -219,28 +219,22 @@ app.prepare().then(() => {
       name: req.session.name,
       reason : req.body.reason,
     });
-    console.log("--------------------")
-    console.log(post)
-    console.log("--------------------")
-
-    
-    if (hashtags) {
-      hashtags.push(req.body.category);
-      hashtags.push(req.body.season);
-      const result = await Promise.all(
-        hashtags.map((tag) =>
-          Hashtag.findOrCreate({
-            where: { name: tag.slice(1).toLowerCase() },
-          })
-        )
-      ); // [[노드, true], [리액트, true]]
-      await post.addHashtags(result.map((v) => v[0]));
-    }
-    else{
+   
+    if (!hashtags){
       hashtags = []
-      hashtags.push(req.body.category);
-      hashtags.push(req.body.season);
-    }
+    }  
+      
+    hashtags.push(req.body.category);
+    hashtags.push(req.body.season);
+    const result = await Promise.all(
+      hashtags.map((tag) =>
+        Hashtag.findOrCreate({
+          where: { name: tag.slice(1).toLowerCase() },
+        })
+      )
+    ); // [[노드, true], [리액트, true]]
+    await post.addHashtags(result.map((v) => v[0]));
+    
     console.log(req.file);
     if (req.file) {
       const image = await Image.create({ src: req.file.path });
