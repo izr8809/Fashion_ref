@@ -114,7 +114,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         </div>
         <div style={{ margin: "2px" }}>
           <div
-            className={`Tag${parseInt(props.category) % 10} Tag`}
+            className={`TagCategory Tag`}
             style={{ display: "inline-block", margin: "2px" }}
           >
             <a href="">#{category}</a>
