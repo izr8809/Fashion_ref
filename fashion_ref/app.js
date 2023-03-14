@@ -208,7 +208,7 @@ app.prepare().then(() => {
     console.log("--------------------------===-===========================================================");
 
     try{
-    const hashtags = req.body.hashtag.match(/#[^\s#]+/g);
+    let hashtags = req.body.hashtag.match(/#[^\s#]+/g);
 
     const post = await Post.create({
       UserId: req.session.usedId,
