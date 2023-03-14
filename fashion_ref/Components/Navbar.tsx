@@ -1,6 +1,6 @@
 import { Inter } from "@next/font/google";
 import * as React from "react";
-import { HtmlHTMLAttributes, ReactElement } from "react";
+import { HtmlHTMLAttributes, ReactElement, useRef  } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -106,6 +106,14 @@ export default function Navbar({
 
   const [category, setCategory] = React.useState("");
   const [season, setSeason] = React.useState("");
+  const searchBar = useRef<HTMLInputElement>(null);
+
+  useEffect(()=>{
+    if(searchBar.current ){
+      searchBar.current.focus();
+    }
+  }
+  ,[])
 
   const onChangeCategory = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
@@ -211,7 +219,7 @@ export default function Navbar({
           });
       }
     },
-    [value, setPost]
+    [value, setPost, category, season]
   );
 
   const menuId = "primary-search-account-menu";
@@ -403,6 +411,7 @@ export default function Navbar({
               variant="outlined"
               placeholder="Search..."
               size="small"
+              inputRef={searchBar}
             />
           </form>
           <Box sx={{ flexGrow: 1 }} />

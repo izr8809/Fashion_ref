@@ -113,7 +113,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
           </span>
 
           <Typography variant="body2" color="text.secondary">
-            선정이유 {props.reason}
+            참고할 부분 {props.reason}
           </Typography>
         </CardContent>
       </CardActionArea>
