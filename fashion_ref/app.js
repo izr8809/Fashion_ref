@@ -222,6 +222,8 @@ app.prepare().then(() => {
     console.log("--------------------")
     console.log(post)
     console.log("--------------------")
+
+    
     hashtags.push(req.body.category);
     hashtags.push(req.body.season);
     if (hashtags) {
