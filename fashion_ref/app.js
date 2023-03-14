@@ -224,9 +224,9 @@ app.prepare().then(() => {
     console.log("--------------------")
 
     
-    hashtags.push(req.body.category);
-    hashtags.push(req.body.season);
     if (hashtags) {
+      hashtags.push(req.body.category);
+      hashtags.push(req.body.season);
       const result = await Promise.all(
         hashtags.map((tag) =>
           Hashtag.findOrCreate({
@@ -235,6 +235,10 @@ app.prepare().then(() => {
         )
       ); // [[노드, true], [리액트, true]]
       await post.addHashtags(result.map((v) => v[0]));
+    }
+    else{
+      hashtags.push(req.body.category);
+      hashtags.push(req.body.season);
     }
     console.log(req.file);
     if (req.file) {
