@@ -237,6 +237,7 @@ app.prepare().then(() => {
       await post.addHashtags(result.map((v) => v[0]));
     }
     else{
+      hashtags = []
       hashtags.push(req.body.category);
       hashtags.push(req.body.season);
     }
