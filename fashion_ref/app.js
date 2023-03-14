@@ -306,8 +306,8 @@ app.prepare().then(() => {
     where = {};
     const posts = await Post.findAll({
       where: {
-        season: req.body.season,
-        category: req.body.category,
+        // season: req.body.season,
+        // category: req.body.category,
       },
       limit: 10,
       order: [['createdAt', 'DESC']],
