@@ -214,6 +214,7 @@ export default function Upload(props: UploadProps) {
           .post(API, formData)
           .then((result) => {
             console.log(result)
+            props.setuploadModalOpen(false);
           })
           .catch((err) => {
             console.log(err)
