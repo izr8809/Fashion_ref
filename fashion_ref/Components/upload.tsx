@@ -86,8 +86,8 @@ export default function Upload(props: UploadProps) {
   // }
 
   const inputRef = useRef(null);
-  const [category, setCategory] = React.useState("");
-  const [season, setSeason] = React.useState("");
+  const [category, setCategory] = React.useState("상의");
+  const [season, setSeason] = React.useState("23SS");
 
   const [text, onChangeText, setText] = useInput("");
   const handleCategoryChange = (event: SelectChangeEvent) => {
