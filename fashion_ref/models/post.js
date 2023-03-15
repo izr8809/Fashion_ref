@@ -11,7 +11,7 @@ class Post extends Sequelize.Model{
       },
       link: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       brand: {
         type: Sequelize.TEXT,
