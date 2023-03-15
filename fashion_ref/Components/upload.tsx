@@ -414,7 +414,7 @@ export default function Upload(props: UploadProps) {
             </div>
           </div>
         </div>
-        <button id="submit_bt" style={{display: "hidden"}} type="submit">
+        <button id="submit_bt" style={{display: "none"}} type="submit">
 
         </button>
         <Button
