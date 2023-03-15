@@ -330,12 +330,13 @@ export default function Upload(props: UploadProps) {
         <FormControl
           sx={{ width: "40%", marginRight: "10%", marginTop: "25px" }}
         >
-          <InputLabel id="demo-simple-select-label">카테고리</InputLabel>
+          <InputLabel id="demo-simple-select-label">상의</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
+            defaultValue={"상의"}
             value={category}
-            label="category"
+            label="카테고리"
             required
             onChange={handleCategoryChange}
           >
@@ -348,12 +349,13 @@ export default function Upload(props: UploadProps) {
           </Select>
         </FormControl>
         <FormControl sx={{ width: "40%", marginTop: "25px" }}>
-          <InputLabel id="demo-simple-select-label">시즌</InputLabel>
+          <InputLabel id="demo-simple-select-label">23SS</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
+            defaultValue={"23SS"}
             value={season}
-            label="season"
+            label="시즌"
             required
             onChange={handleSeasonChange}
           >
