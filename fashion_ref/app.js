@@ -62,7 +62,7 @@ app.prepare().then(() => {
     session({
       resave: false,
       saveUninitialized: false,
-      secret: process.env.COOKIE_SECRET,
+      secret: process.env.COOKIE_SECRETKEY,
       cookie: {
         httpOnly: true,
         secure: false,
