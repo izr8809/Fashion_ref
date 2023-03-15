@@ -409,7 +409,7 @@ export default function Upload(props: UploadProps) {
           </div>
         </div>
         <Button
-          type="submit"
+          // type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
