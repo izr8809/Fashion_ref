@@ -183,14 +183,10 @@ export default function Upload(props: UploadProps) {
       });
   }, [props.userId]);
 
-  const onSubmit = 
+  const onSubmit = useCallback(
     (e: any) => {
       console.log("!");
-      if (category == "" || season == "") {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("카테고리, 시즌 필수");
-      } else if (brand == "") {
+      if (brand == "") {
         e.preventDefault();
         e.stopPropagation();
         alert("브랜드입력 필수");
@@ -263,7 +259,7 @@ export default function Upload(props: UploadProps) {
       //       alert("회원가입이 정상적으로 되지 않았습니다.");
       //       console.log(error);
       //     });
-    };
+    },[]);
   return (
     <Modal
       open={true}
