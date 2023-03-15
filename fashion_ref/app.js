@@ -216,7 +216,7 @@ app.prepare().then(() => {
     try{
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
     console.log("qqqq"+req.body.userId)
-    console.log("qqqq"+req.sessionID.userId)
+    console.log("qqqq"+req.session.userId)
 
     const post = await Post.create({
       link: req.body.link,
@@ -224,8 +224,10 @@ app.prepare().then(() => {
       category: req.body.category,
       season: req.body.season,
       reason : req.body.reason,
-      name: req.body.userName,
-      UserId : req.body.userId,
+      // name: req.body.userName,
+      // UserId : req.body.userId,
+      name : req.session.name,
+      UserId : req.sessionID.userId,
     });
 
     if (!hashtags){
