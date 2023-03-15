@@ -181,7 +181,7 @@ export default function Upload(props: UploadProps) {
       });
   }, [props.userId]);
 
-  const onSubmit = useCallback(
+  const onSubmit = 
     (e: any) => {
       if (category == "" || season == "") {
         e.preventDefault();
@@ -217,7 +217,7 @@ export default function Upload(props: UploadProps) {
           .post(API, formData)
           .then((result) => {
             console.log(result)
-            location.reload();
+
           })
           .catch((err) => {
             console.log(err)
@@ -255,9 +255,7 @@ export default function Upload(props: UploadProps) {
       //       alert("회원가입이 정상적으로 되지 않았습니다.");
       //       console.log(error);
       //     });
-    },
-    [brand, link, nickname, imageFile, category, text, season]
-  );
+    };
   return (
     <Modal
       open={true}
