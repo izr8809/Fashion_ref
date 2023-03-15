@@ -55,6 +55,7 @@ interface IFileTypes {
 }
 export default function Upload(props: UploadProps) {
   const [file, setFile] = useState({ name: "" });
+  const button = useRef();
   // const handleChange = (file: any) => {
   //   setFile(file);
   //   console.log(file);
@@ -84,6 +85,7 @@ export default function Upload(props: UploadProps) {
   //   })
   // }
 
+  const inputRef = useRef(null);
   const [category, setCategory] = React.useState("");
   const [season, setSeason] = React.useState("");
 
@@ -183,6 +185,7 @@ export default function Upload(props: UploadProps) {
 
   const onSubmit = 
     (e: any) => {
+      console.log("!");
       if (category == "" || season == "") {
         e.preventDefault();
         e.stopPropagation();
@@ -196,8 +199,8 @@ export default function Upload(props: UploadProps) {
         e.stopPropagation();
         alert("이미지 필수");
       } else {
-        // e.preventDefault();
-        // e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
         console.log("submit");
         console.log(props.userId);
         console.log(props.userName);
@@ -213,14 +216,19 @@ export default function Upload(props: UploadProps) {
         formData.append("hashtag", text);
         formData.append("reason", reason);
         // alert(formData)
+
         axios
           .post(API, formData)
           .then((result) => {
             console.log(result)
-
+            location.reload();
+            // const ele = document.getElementById('submit_bt');
+            // ele?.click();
+            
           })
           .catch((err) => {
             console.log(err)
+            location.reload();
           });
       }
       //   axios
@@ -408,8 +416,11 @@ export default function Upload(props: UploadProps) {
             </div>
           </div>
         </div>
+        <button id="submit_bt" style={{display: "hidden"}} type="submit">
+
+        </button>
         <Button
-          // type="submit"
+          type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}

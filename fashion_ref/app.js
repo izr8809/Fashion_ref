@@ -254,6 +254,7 @@ app.prepare().then(() => {
       // } else { // 이미지를 하나만 올리면 image: 제로초.png
       // }
     }
+    res.json({ data: null, message: "ok" });
   } catch (err){
     console.log(err);
   }
