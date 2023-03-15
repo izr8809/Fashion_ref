@@ -188,7 +188,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         alert("이미지 필수");
       } else {
         e.preventDefault();
-        e.stopPropagation();
+        // e.stopPropagation();
         console.log("submit");
 
         const formData = new FormData();
