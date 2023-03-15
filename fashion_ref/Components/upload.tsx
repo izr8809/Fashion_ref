@@ -187,6 +187,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         e.stopPropagation();
         alert("이미지 필수");
       } else {
+        console.log("submit");
 
         const formData = new FormData();
         formData.append("image", imageFile as File);
@@ -204,6 +205,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             console.log(result)
           })
           .catch((err) => {
+            console.log(err)
           });
       }
       //   axios
