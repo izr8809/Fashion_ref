@@ -227,7 +227,7 @@ app.prepare().then(() => {
       // name: req.body.userName,
       // UserId : req.body.userId,
       name : req.session.name,
-      UserId : req.sessionID.userId,
+      UserId : req.session.userId,
     });
 
     if (!hashtags){
