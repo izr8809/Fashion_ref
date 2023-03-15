@@ -229,6 +229,8 @@ app.prepare().then(() => {
       name: req.session.name,
       reason : req.body.reason,
     });
+    
+    await post.addHashtags(result.map((v) => v[0]));
    
     if (!hashtags){
       hashtags = []
