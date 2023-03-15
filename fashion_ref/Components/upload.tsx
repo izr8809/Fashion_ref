@@ -20,6 +20,9 @@ import Button from "@mui/material/Button";
 import useInput from "../hooks/useInput";
 import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
+import Router from "next/router";
+
+
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 type UploadProps = {
@@ -214,7 +217,7 @@ export default function Upload(props: UploadProps) {
           .post(API, formData)
           .then((result) => {
             console.log(result)
-            props.setuploadModalOpen(false);
+            Router.push("/")
           })
           .catch((err) => {
             console.log(err)
