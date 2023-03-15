@@ -214,12 +214,10 @@ app.prepare().then(() => {
   // })
   // server.use('/post', postrouter)
   server.post("/uploads", upload.single("image"), async (req, res) => {
-    console.log(req.session.userId)
     try{
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
 
     const post = await Post.create({
-      UserId: req.session.usedId,
       link: req.body.link,
       brand: req.body.brand,
       category: req.body.category,
@@ -227,8 +225,8 @@ app.prepare().then(() => {
       name: req.session.name,
       reason : req.body.reason,
     });
-    console.log("#######################################################");
-    
+    await post.addUser(req.session.usedId)
+
     if (!hashtags){
       hashtags = []
     }  
