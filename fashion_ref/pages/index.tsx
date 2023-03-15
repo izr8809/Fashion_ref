@@ -5,7 +5,7 @@ import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
 import axios from "axios";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect,useMemo  } from "react";
 import Link from "next/link";
 // const inter = Inter({ subsets: ["latin"] });
 
