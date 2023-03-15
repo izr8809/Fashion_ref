@@ -52,7 +52,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
   //   setFile(file);
   //   console.log(file);
   // };
-  const API = "http://15.164.224.172:8080/uploads";
+  const API = `${process.env.NEXT_PUBLIC_API}/uploads`;
   const [imageFile, setImageFile] = useState<File>();
   const [value, setValue] = React.useState("");
   const [isImage, setIsImage] = useState(false);
@@ -77,11 +77,10 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
   //   })
   // }
 
-
   const [category, setCategory] = React.useState("");
   const [season, setSeason] = React.useState("");
 
-  const [text, onChangeText, setText] = useInput('');
+  const [text, onChangeText, setText] = useInput("");
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
   };
@@ -164,44 +163,37 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
     e.preventDefault();
   }, []);
 
-  const USERINFOAPI = `http://15.164.224.172:8080/USERINFO`
-  const [userInfo, setUserInfo]= useState({name : ""});
+  const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
+  const [userInfo, setUserInfo] = useState({ name: "" });
 
-  useEffect(()=>{
-    axios.get(USERINFOAPI,{
-    }).then((result)=>{
-      console.log(result.data)
-      setUserInfo(result.data)
-    })
-    .catch((err)=>{
-
-      console.log(err)
-    })
-  },[]);
+  useEffect(() => {
+    axios
+      .get(USERINFOAPI, {})
+      .then((result) => {
+        console.log(result.data);
+        setUserInfo(result.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const onSubmit = useCallback(
     (e: any) => {
-      if(category=="" || season==""){
+      if (category == "" || season == "") {
         e.preventDefault();
         e.stopPropagation();
-        alert("카테고리, 시즌 필수")
-      }
-      else if(brand=="" || link ==""){
+        alert("카테고리, 시즌 필수");
+      } else if (brand == "" || link == "") {
         e.preventDefault();
         e.stopPropagation();
-        alert("브랜드, 링크 입력 필수")
-      }
-      else if(imageFile == undefined){
+        alert("브랜드, 링크 입력 필수");
+      } else if (imageFile == undefined) {
         e.preventDefault();
         e.stopPropagation();
-        alert("이미지 필수")
+        alert("이미지 필수");
+      } else {
 
-      }
-      else{
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log(imageFile);
         const formData = new FormData();
         formData.append("image", imageFile as File);
         formData.append("nickname", nickname);
@@ -210,15 +202,17 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         formData.append("category", category);
         formData.append("season", season);
         formData.append("hashtag", text);
+        formData.append("reason", reason);
         // alert(formData)
-        axios.post(API, formData)
-        .then((result)=>{
-          console.log("result")
-          console.log(result) 
-        })
-        .catch((err)=>{
-          console.log(err);
-        });
+        axios
+          .post(API, formData)
+          .then((result) => {
+            console.log("result");
+            console.log(result);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
       //   axios
       //     .post(
@@ -270,7 +264,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         sx={style}
       >
         {/* <form onSubmit={onSubmit}> */}
-        <Typography sx={{textAlign: "center"}} component="h1" variant="h5">
+        <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
           업로드
         </Typography>
         {/* <TextField
@@ -287,7 +281,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
           required
           label="브랜드"
           fullWidth
-          sx={{marginTop : "5px"}}
+          sx={{ marginTop: "5px" }}
           name="user-brand"
           type="text"
           value={brand}
@@ -297,7 +291,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         <TextField
           label="Link"
           fullWidth
-          sx={{marginTop : "5px"}}
+          sx={{ marginTop: "5px" }}
           name="user-link"
           type="text"
           value={link}
@@ -305,11 +299,11 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
           variant="standard"
           onChange={onChangeLink}
         />
-        
+
         <TextField
           label="선정이유"
           fullWidth
-          sx={{marginTop : "5px"}}
+          sx={{ marginTop: "5px" }}
           name="user-link"
           type="text"
           value={reason}
@@ -318,8 +312,9 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
           onChange={onChangeReason}
         />
 
-        <FormControl 
-        sx={{width: "40%", marginRight : "10%", marginTop : "25px"}}>
+        <FormControl
+          sx={{ width: "40%", marginRight: "10%", marginTop: "25px" }}
+        >
           <InputLabel id="demo-simple-select-label">카테고리</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -337,8 +332,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             <MenuItem value={"악세사리"}>악세사리</MenuItem>
           </Select>
         </FormControl>
-        <FormControl 
-        sx={{width: "40%", marginTop : "25px"}}>
+        <FormControl sx={{ width: "40%", marginTop: "25px" }}>
           <InputLabel id="demo-simple-select-label">시즌</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -354,12 +348,12 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         </FormControl>
         <TextField
           id="standard-basic"
-          sx={{marginTop : "30px"}}
+          sx={{ marginTop: "30px" }}
           value={text}
           onChange={onChangeText}
           fullWidth
           label="해시태그입력 #검정 #반팔 "
-          variant= "outlined"
+          variant="outlined"
         />
 
         {/* <FileUploader
@@ -367,8 +361,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
             name="file"
             types={fileTypes}
          ><div><p>this is inside drop area</p></div></FileUploader> */}
-        <div className="file-upload"
-          style={{marginTop : "6px"}}>
+        <div className="file-upload" style={{ marginTop: "6px" }}>
           <div className="custom-form-group">
             {!isImage && (
               <div

@@ -103,19 +103,25 @@ app.prepare().then(() => {
 
   server.post("/login", async (req, res) => {
     // user 정보를 DB에서 조회
+    let passwordmatch;
     const userInfo = await User.findOne({
       where: { email: req.body.email },
       // attributes: {
       //   exclude: ['password']
       // },
     });
-    console.log(userInfo.password);
-    let passwordmatch = bcrypt.compareSync(
-      req.body.password,
-      userInfo.password,
-      12
-    );
+
+    if(userInfo){
+      passwordmatch = bcrypt.compareSync(
+        req.body.password,
+        userInfo.password,
+        12
+      );
+      console.log("passwordamtch")
+    }
+    
     // userInfo 결과 존재 여부에 따른 응답
+    console.log(passwordmatch)
     if (!userInfo) {
       res.status(400).send({ data: null, message: "not authorized" });
     } else if (passwordmatch) {
@@ -126,6 +132,8 @@ app.prepare().then(() => {
         res.json({ data: userInfo, message: "ok" });
         // post 요청에 대한 응답이기에 {data:null}이 되므로, {data: userInfo} 무의미하여 생략 가능
       });
+    } else{
+      res.status(400).send({ data: null, message: "wrong" });
     }
   });
 
@@ -165,9 +173,11 @@ app.prepare().then(() => {
     console.log(hashedPassword);
     try {
       const userInfo = await User.findOne({
-        where: { email: req.body.email, password: hashedPassword },
+        where: { email: req.body.email },
       });
+      console.log("uerInfo" + userInfo)
       if (!userInfo) {
+        console.log("uerInfo" + userInfo)
         //회원가입 성공
         const user = await User.create({
           email: req.body.email,
@@ -224,12 +234,12 @@ app.prepare().then(() => {
       hashtags = []
     }  
       
-    hashtags.push(req.body.category);
-    hashtags.push(req.body.season);
+    hashtags.push("#"+req.body.category);
+    hashtags.push("#"+req.body.season);
     const result = await Promise.all(
       hashtags.map((tag) =>
         Hashtag.findOrCreate({
-          where: { name: tag.slice(1).toLowerCase() },
+          where: { name: tag.slice(1).toUpperCase() },
         })
       )
     ); // [[노드, true], [리액트, true]]
@@ -270,7 +280,7 @@ app.prepare().then(() => {
           },
         ],
       });
-      console.log(posts)
+      // console.log(posts)
       res.status(200).json(posts);
     } catch (error) {
       console.error(error);
@@ -310,7 +320,7 @@ app.prepare().then(() => {
         // season: req.body.season,
         // category: req.body.category,
       },
-      limit: 10,
+      limit: 100,
       order: [['createdAt', 'DESC']],
       include: [{
         model: Hashtag,
@@ -323,21 +333,37 @@ app.prepare().then(() => {
       },
     );
 
-    var Postlist =[]
+    var PostIdlist =[]
     for(let i =0 ; i< posts.length; i++){
       if(posts[i].Hashtags.length == hashtags.length)
-        Postlist =[
-          ...Postlist,
-          posts[i]
+      PostIdlist =[
+          ...PostIdlist,
+          {"id" : posts[i].id},
         ]
     }
-    console.log("--------------------------");
-    console.log(Postlist)
-    res.status(200).json(Postlist);
-    console.log("--------------------------");
-    console.log(Postlist)
-    console.log(Postlist.length)
-    console.log("--------------------------");
+    console.log("########################")
+    console.log(PostIdlist)
+    where = {};
+    const postsAllHashtags = await Post.findAll({
+      where: {
+        [Op.or] : PostIdlist,
+        // season: req.body.season,
+        // category: req.body.category,
+      },
+      limit: 100,
+      order: [['createdAt', 'DESC']],
+      include: [{
+        model: Hashtag,
+    },{
+      model : Image,
+    },]
+      },
+    );
+    console.log(postsAllHashtags)
+
+    // console.log("--------------------------");
+    // console.log(Postlist)
+    res.status(200).json(postsAllHashtags);
     } catch (err) {
       console.log(err)
     }// const postid = await Hashtag.findAll({

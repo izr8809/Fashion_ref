@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
+import { color } from "@mui/system";
 
 type SignupProps = {
   setModalOpen: any;
@@ -30,8 +31,9 @@ const style = {
   p: 4,
 };
 export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): ReactElement {
-  const API = "http://15.164.224.172:8080/signups";
+  const API = `${process.env.NEXT_PUBLIC_API}/signups`;
   const [email, onChangeEmail] = useInput("");
+  const [emailError, setEmailError] = useState(false);
   const [nickname, onChangeNickname] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [passwordCheck, setPasswordCheck] = useInput("");
@@ -64,38 +66,18 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
     setModalOpen(false);
   };
 
-  // const modalRef = useRef<HTMLDivElement>(null);
-  // useEffect(() => {
-  //   // 이벤트 핸들러 함수
-  //   const handler = (event: any) => {
-  //     // mousedown 이벤트가 발생한 영역이 모달창이 아닐 때, 모달창 제거 처리
-  //     if (modalRef.current && !modalRef.current.contains(event.target)) {
-  //       setModalOpen(false);
-  //     }
-  //   };
-
-  //   // 이벤트 핸들러 등록
-  //   document.addEventListener("mousedown", handler);
-  //   // document.addEventListener('touchstart', handler); // 모바일 대응
-
-  //   return () => {
-  //     // 이벤트 핸들러 해제
-  //     document.removeEventListener("mousedown", handler);
-  //     // document.removeEventListener('touchstart', handler); // 모바일 대응
-  //   };
-  // }, []);
-
   const onSubmit = useCallback(
     (e: any) => {
-      if (password !== passwordCheck) {
-        return setPasswordError(true);
-      }
       e.preventDefault();
-      // if (!term) {
-      //   return setTermError(true);
-      // }
-      console.log(email, nickname, password);
-      axios
+      e.stopPropagation();
+      if (password !== passwordCheck) {
+        setPasswordError(true);
+      }
+      else if (!checkEmail(email)){
+        setEmailError(true);
+      }
+      else{
+        axios
         .post(
           API,
           // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
@@ -118,17 +100,23 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
         //   console.log(response); // response.data로 해야?
         // })
         .then((result) => {
-          console.log(result);
-          console.log("singupDB!");
-          console.log(result.data);
           setIsLoggedIn(true);
           // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
           // history.replace('/login');
         })
         .catch((error) => {
-          alert("회원가입이 정상적으로 되지 않았습니다.");
-          console.log(error);
+          if(error.response.data.message == 'already exist'){
+            alert("이미 존재하는 이메일입니다.");
+          }
+          else{
+            alert("회원가입이 정상적으로 되지 않았습니다.");
+          }
         });
+      }
+      // if (!term) {
+      //   return setTermError(true);
+      // }
+      
     },
     [email, password, passwordCheck,setIsLoggedIn , nickname]
   );
@@ -147,12 +135,14 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
         onSubmit={onSubmit}
         sx={style}>
           {/* <form onSubmit={onSubmit}> */}
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" 
+              sx={{ textAlign:"center"}}>
             회원가입
           </Typography>
             <TextField
               label="이메일"
               name="user-email"
+              sx={{marginTop:3}}
               fullWidth
               type="email"
               value={email}
@@ -160,9 +150,11 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
               // error={checkEmail(email)}
               onChange={onChangeEmail}
             />
+            {emailError && <span style={{color:"red"}}>Email 형식이 잘못되었습니다</span>}
             <TextField
               label="이름"
               name="user-nick"
+              sx={{marginTop:3}}
               fullWidth
               value={nickname}
               required
@@ -172,6 +164,7 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
               label="비밀번호"
               fullWidth
               name="user-password"
+              sx={{marginTop:3}}
               type="password"
               value={password}
               required
@@ -181,12 +174,13 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
               label="비밀번호체크"
               fullWidth
               name="user-password-check"
+              sx={{marginTop:3}}
               type="password"
               value={passwordCheck}
               required
               onChange={setPasswordCheck}
             />
-            {passwordError && <span>비밀번호가 일치하지 않습니다.</span>}
+            {passwordError && <span style={{color:"red"}}>비밀번호가 일치하지 않습니다</span>}
             <Button
                 type="submit"
                 fullWidth
@@ -194,7 +188,7 @@ export default function Signup({ setIsLoggedIn, setModalOpen }: SignupProps): Re
                 sx={{ mt: 3, mb: 2 }}
                 size="large"
               >
-                회원가입
+                확인
               </Button>
           {/* </form> */}
         </Box>

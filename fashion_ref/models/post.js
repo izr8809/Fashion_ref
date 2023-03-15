@@ -25,6 +25,10 @@ class Post extends Sequelize.Model{
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      reason: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       // RetweetId
     }, {
       modelName: 'Post',

@@ -1,6 +1,6 @@
 import { Inter } from "@next/font/google";
 import * as React from "react";
-import { HtmlHTMLAttributes, ReactElement, useRef  } from "react";
+import { HtmlHTMLAttributes, ReactElement, useRef } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -94,8 +94,8 @@ export default function Navbar({
   setPost,
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
-  const HASHAPI = "http://15.164.224.172:8080/hashtagsearch";
-  const API = "http://15.164.224.172:8080/loadpost";
+  const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
+  const API = `${process.env.NEXT_PUBLIC_API}/loadpost`;
   const [modalOpen, setModalOpen] = React.useState(false);
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
@@ -108,24 +108,14 @@ export default function Navbar({
   const [season, setSeason] = React.useState("");
   const searchBar = useRef<HTMLInputElement>(null);
 
-  useEffect(()=>{
-    if(searchBar.current ){
+  useEffect(() => {
+    if (searchBar.current) {
       searchBar.current.focus();
     }
-  }
-  ,[])
+  }, []);
 
-  const onChangeCategory = (event: SelectChangeEvent) => {
-    setCategory(event.target.value as string);
-  };
-  const onChangeSeason = (event: SelectChangeEvent) => {
-    setSeason(event.target.value as string);
-  };
   const showModal = () => {
     setModalOpen(true);
-  };
-  const reloadPost = () => {
-    // navigate('/home'); // /test로 url 이동
   };
   const showLoginModal = () => {
     setloginModalOpen(true);
@@ -150,14 +140,14 @@ export default function Navbar({
     handleMobileMenuClose();
   };
   const Logout = useCallback(() => {
-    const LOGOUTAPI = "http://15.164.224.172:8080/logout";
+    const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
     axios
       .get(LOGOUTAPI)
       .then((result) => {
         if (result.data.message == "ok") setIsLoggedIn(false);
         setloginModalOpen(false);
       })
-      .catch((err) => {});
+      .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
   }, [setIsLoggedIn]);
 
   const uploadClick = useCallback(() => {
@@ -172,8 +162,12 @@ export default function Navbar({
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const onReady = useCallback(()=>{alert("준비중입니다.")},[])
+
   const TagSearch = React.useCallback(
     (e: any) => {
+      // e.preventDeafult();
+      // e.stopPropagation();
       if (value == "") {
         axios
           .get(API)
@@ -184,18 +178,18 @@ export default function Navbar({
           })
           .catch((error) => {
             alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
-            console.log(error);
           });
       } else if (value.split("#").length < 2) {
         alert("태그 앞에 #를 붙여주세요");
       } else {
+        let upperCaseValue = value.toUpperCase();
         e.preventDefault();
         e.stopPropagation();
         axios
           .post(
             HASHAPI,
             {
-              hashtags: value,
+              hashtags: upperCaseValue,
               category: category,
               season: season,
             },
@@ -207,8 +201,6 @@ export default function Navbar({
             }
           )
           .then((result) => {
-            console.log("----------------------------");
-            console.log(result.data);
             setPost(result.data);
             // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
             // history.replace('/login');
@@ -262,6 +254,9 @@ export default function Navbar({
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
+        <p>만드는 중입니다</p>
+      </MenuItem>
+      {/* <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
             <MailIcon />
@@ -287,8 +282,8 @@ export default function Navbar({
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+        <p>프로필</p>
+      </MenuItem> */}
     </Menu>
   );
 
@@ -397,8 +392,16 @@ export default function Navbar({
               <MenuItem value={"23FW"}>23FW</MenuItem>
             </Select>
           </FormControl> */}
-          <form onSubmit={TagSearch} style={{ width: "50%" }}>
-            <IconButton type="submit" aria-label="search">
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+          <form
+            onSubmit={TagSearch}
+            style={{ width: "70%", flex: "auto", marginLeft: "15%" }}
+          >
+            <IconButton
+              type="submit"
+              aria-label="search"
+              sx={{ display: { xs: "none", md: "inline-block" } }}
+            >
               <SearchIcon style={{ fill: "#9A9A9A" }} />
             </IconButton>
             <TextField
@@ -414,7 +417,7 @@ export default function Navbar({
               inputRef={searchBar}
             />
           </form>
-          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {/* <IconButton
@@ -428,7 +431,7 @@ export default function Navbar({
               <IconButton
                 size="large"
                 edge="end"
-                sx={{marginRight:"10px"}}
+                sx={{ marginRight: "10px" }}
                 aria-label="account of current user"
                 aria-haspopup="false"
                 color="primary"
@@ -483,6 +486,7 @@ export default function Navbar({
                     marginRight: "5px",
                     fontWeight: "bold",
                     display: "inline-block",
+                    whiteSpace: "nowrap",
                   }}
                   size="small"
                   onClick={Logout}
@@ -496,6 +500,7 @@ export default function Navbar({
                   aria-controls={menuId}
                   aria-haspopup="true"
                   color="primary"
+                  onClick={onReady}
                 >
                   <AccountCircle />
                 </IconButton>
@@ -512,7 +517,7 @@ export default function Navbar({
               </Badge>
             </IconButton> */}
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" }, float: "right" }}>
             <IconButton
               size="large"
               aria-label="show more"

@@ -4,50 +4,49 @@ import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
-import axios from 'axios';
-import React, { useCallback, useState, useEffect } from 'react';
-import Link from 'next/link'
+import axios from "axios";
+import React, { useCallback, useState, useEffect } from "react";
+import Link from "next/link";
 // const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [posts, setPost] = useState<any[]>([])
+  const [posts, setPost] = useState<any[]>([]);
 
-  const LOADAPI = "http://15.164.224.172:8080/loadpost";
+  const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
   const loadPost = useCallback(() => {
-    axios.get(LOADAPI)
+    axios
+      .get(LOADAPI)
       .then((result) => {
-        console.log(result.data)
         setPost(result.data);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
       })
       .catch((error) => {
-        alert('로그인이 정상적으로 되지 않았습니다.?');
-        console.log(error); 
-      })
+        alert("로딩이 정상적으로 되지 않았습니다.?");
+        setPost([]);
+        console.log(error);
+      });
+  }, [setPost]);
 
-  },[setPost])
+  useEffect(() => {
+    loadPost();
+  }, [loadPost]);
 
-  useEffect(()=>{
-    loadPost()
-  },[loadPost])
-  
-  const LOGINCHECKAPI = "http://15.164.224.172:8080/logincheck";
-  useEffect( ()=>{
-    axios.get(LOGINCHECKAPI)
+  const LOGINCHECKAPI = `${process.env.NEXT_PUBLIC_API}/logincheck`;
+  useEffect(() => {
+    axios
+      .get(LOGINCHECKAPI)
       .then((result) => {
-        console.log(result.data.login)
-        if(result.data.login){
+        if (result.data.login) {
           setIsLoggedIn(true);
         }
       })
       .catch((error) => {
-        console.log(error); 
-      })
-  },[])
+        console.log(error);
+      });
+  }, []);
 
   return (
     <>
@@ -57,13 +56,24 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div style={{ margin: "auto", width: "80%" }}>
-        <a onClick={loadPost}><h1 id="title">CRUMP REFERENCE</h1></a>
-        <div style={{marginBottom: "40px"}}>
-          <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setPost={setPost}/>
+        <a onClick={loadPost}>
+          <h1 id="title">CRUMP REFERENCE</h1>
+        </a>
+        <div style={{ marginBottom: "40px" }}>
+          <Navbar
+            isLoggedIn={isLoggedIn}
+            setIsLoggedIn={setIsLoggedIn}
+            setPost={setPost}
+          />
           {/* <LoginForm /> */}
           {/* <SignupForm /> */}
         </div>
-        <ResponsiveGrid setPost={setPost} posts={posts}/>
+        <ResponsiveGrid
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+          setPost={setPost}
+          posts={posts}
+        />
       </div>
     </>
   );
