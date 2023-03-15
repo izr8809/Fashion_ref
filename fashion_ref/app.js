@@ -216,7 +216,7 @@ app.prepare().then(() => {
     try{
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
     console.log("qqqq"+req.body.userId)
-    console.log("qqqq"+req.session.userId)
+    console.log("qqqq"+req.session)
 
     const post = await Post.create({
       link: req.body.link,
