@@ -101,7 +101,6 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         for (let i = 0; i < files.length; i++) {
           let file = files[i];
           setImageFile(files[i]);
-          console.log(files[i]);
           let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.addEventListener("load", () => {
@@ -124,9 +123,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
 
   const handeldelete = (e: React.MouseEvent<HTMLSpanElement>) => {
     let target = (e.target as HTMLSpanElement).parentElement;
-    console.log(target?.dataset);
     let targetindex = 1;
-    console.log(targetindex);
     setPost({
       ...post,
       photos: [
@@ -134,7 +131,6 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         ...photos.slice(targetindex + 1),
       ],
     });
-    console.log(photos);
     setIsImage(false);
   };
   const handlehighlight = useCallback((e: any) => {
@@ -146,7 +142,6 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
   const handleunhighlight = useCallback((e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("leave");
     setHighlight(false);
   }, []);
   const handledrop = (e: any) => {
@@ -170,7 +165,6 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
     axios
       .get(USERINFOAPI, {})
       .then((result) => {
-        console.log(result.data);
         setUserInfo(result.data);
       })
       .catch((err) => {
@@ -184,10 +178,10 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         e.preventDefault();
         e.stopPropagation();
         alert("카테고리, 시즌 필수");
-      } else if (brand == "" || link == "") {
+      } else if (brand == "") {
         e.preventDefault();
         e.stopPropagation();
-        alert("브랜드, 링크 입력 필수");
+        alert("브랜드입력 필수");
       } else if (imageFile == undefined) {
         e.preventDefault();
         e.stopPropagation();
@@ -207,11 +201,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         axios
           .post(API, formData)
           .then((result) => {
-            console.log("result");
-            console.log(result);
           })
           .catch((err) => {
-            console.log(err);
           });
       }
       //   axios

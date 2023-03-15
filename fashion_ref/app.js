@@ -215,7 +215,7 @@ app.prepare().then(() => {
   // server.use('/post', postrouter)
   server.post("/uploads", upload.single("image"), async (req, res) => {
     console.log("id" + req.session.userId);
-    console.log("--------------------------===-===========================================================");
+    console.log("#######################################################");
 
     try{
     let hashtags = req.body.hashtag.match(/#[^\s#]+/g);
@@ -229,6 +229,7 @@ app.prepare().then(() => {
       name: req.session.name,
       reason : req.body.reason,
     });
+    console.log("#######################################################");
     
     await post.addHashtags(result.map((v) => v[0]));
    
@@ -247,7 +248,6 @@ app.prepare().then(() => {
     ); // [[노드, true], [리액트, true]]
     await post.addHashtags(result.map((v) => v[0]));
     
-    console.log(req.file);
     if (req.file) {
       const image = await Image.create({ src: req.file.path });
       await post.addImages(image);
