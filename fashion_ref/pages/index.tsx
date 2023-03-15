@@ -24,7 +24,7 @@ export default function Home() {
         // history.replace('/login');
       })
       .catch((error) => {
-        alert("로딩이 정상적으로 되지 않았습니다.?");
+        alert("로딩이 정상적으로 되지 않았습니다.");
         setPost([]);
         console.log(error);
       });
