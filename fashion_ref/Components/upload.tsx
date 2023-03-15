@@ -183,7 +183,7 @@ export default function Upload(props: UploadProps) {
       });
   }, [props.userId]);
 
-  const onSubmit = useCallback(
+  const onSubmit = 
     (e: any) => {
       console.log("!");
       if (brand == "") {
@@ -259,7 +259,7 @@ export default function Upload(props: UploadProps) {
       //       alert("회원가입이 정상적으로 되지 않았습니다.");
       //       console.log(error);
       //     });
-    },[brand, category, link, text, season, reason, imageFile, props.userId, props.userName]);
+    };
   return (
     <Modal
       open={true}
