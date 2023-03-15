@@ -214,6 +214,7 @@ app.prepare().then(() => {
   // })
   // server.use('/post', postrouter)
   server.post("/uploads", upload.single("image"), async (req, res) => {
+    console.log(req.session.userId)
     try{
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
 
@@ -228,8 +229,6 @@ app.prepare().then(() => {
     });
     console.log("#######################################################");
     
-    await post.addHashtags(result.map((v) => v[0]));
-   
     if (!hashtags){
       hashtags = []
     }  
