@@ -11,6 +11,10 @@ import Typography from "@mui/material/Typography";
 type LoginFormProps = {
   setloginModalOpen: any;
   setIsLoggedIn: any;
+  userId : string;
+  setUserId : any;
+  userName : string;
+  setUserName : any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -26,6 +30,10 @@ const style = {
 export default function LoginForm({
   setIsLoggedIn,
   setloginModalOpen,
+  userId,
+  setUserId,
+  userName,
+  setUserName,
 }: LoginFormProps): ReactElement {
   const API = `${process.env.NEXT_PUBLIC_API}/login`;
   const [email, onChangeEmail] = useInput("");
@@ -67,6 +75,9 @@ export default function LoginForm({
         .then((result) => {
           setUser(result.data.data);
           setIsLoggedIn(true);
+          setUserId(result.data.data.id);
+          setUserName(result.data.data.name);
+          console.log(result.data.data)
           // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
           // history.replace('/login');
         })

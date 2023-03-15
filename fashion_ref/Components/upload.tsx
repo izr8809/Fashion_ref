@@ -24,6 +24,10 @@ const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 type UploadProps = {
   setuploadModalOpen: any;
+  userId : string;
+  setUserId : any;
+  userName : string;
+  setUserName : any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -46,7 +50,7 @@ interface IFileTypes {
   id: number;
   object: File;
 }
-export default function Upload({ setuploadModalOpen }: UploadProps) {
+export default function Upload(props: UploadProps) {
   const [file, setFile] = useState({ name: "" });
   // const handleChange = (file: any) => {
   //   setFile(file);
@@ -67,7 +71,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
     photos: [null],
   });
   const closeModal = () => {
-    setuploadModalOpen(false);
+    props.setuploadModalOpen(false);
   };
   const { title, desc, photos } = post;
   // const handlechange = e =>{
@@ -162,6 +166,8 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
   const [userInfo, setUserInfo] = useState({ name: "" });
 
   useEffect(() => {
+    console.log(props.userId)
+    console.log(props.userName)
     axios
       .get(USERINFOAPI, {})
       .then((result) => {
@@ -170,7 +176,7 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [props.userId]);
 
   const onSubmit = useCallback(
     (e: any) => {
@@ -187,13 +193,16 @@ export default function Upload({ setuploadModalOpen }: UploadProps) {
         e.stopPropagation();
         alert("이미지 필수");
       } else {
-        e.preventDefault();
+        // e.preventDefault();
         // e.stopPropagation();
         console.log("submit");
+        console.log(props.userId);
+        console.log(props.userName);
 
         const formData = new FormData();
         formData.append("image", imageFile as File);
-        formData.append("nickname", nickname);
+        formData.append("userId", props.userId);
+        formData.append("userName", props.userName);
         formData.append("brand", brand);
         formData.append("link", link);
         formData.append("category", category);

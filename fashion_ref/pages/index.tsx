@@ -12,6 +12,8 @@ import Link from "next/link";
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [posts, setPost] = useState<any[]>([]);
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
 
   const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
@@ -64,6 +66,11 @@ export default function Home() {
             isLoggedIn={isLoggedIn}
             setIsLoggedIn={setIsLoggedIn}
             setPost={setPost}
+            userId = {userId}
+            setUserId = {setUserId}
+            userName= {userName}
+            setUserName = {setUserName}
+
           />
           {/* <LoginForm /> */}
           {/* <SignupForm /> */}

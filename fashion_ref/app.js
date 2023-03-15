@@ -185,10 +185,9 @@ app.prepare().then(() => {
           password: hashedPassword,
         });
         const { password, ...userWithoutPassword } = user;
-        console.log(userWithoutPassword);
         req.session.userId = user.id;
         req.session.name = user.name;
-        res.status(201).json({ data: "success" });
+        res.status(201).json({ userId: userWithoutPassword.dataValues.id, userName : userWithoutPassword.dataValues.name, message : "success" });
       } else {
         //이미 존재하는 ID
         res.status(400).send({ data: null, message: "already exist" });
@@ -216,16 +215,17 @@ app.prepare().then(() => {
   server.post("/uploads", upload.single("image"), async (req, res) => {
     try{
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
+    console.log("qqqq"+req.body.userId)
 
     const post = await Post.create({
       link: req.body.link,
       brand: req.body.brand,
       category: req.body.category,
       season: req.body.season,
-      name: req.session.name,
       reason : req.body.reason,
+      name: req.body.userName,
+      UserId : req.body.userId,
     });
-    await post.addUser(req.session.usedId)
 
     if (!hashtags){
       hashtags = []

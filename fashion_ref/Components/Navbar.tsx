@@ -86,12 +86,20 @@ type NavbarProps = {
   setIsLoggedIn: any;
   isLoggedIn: boolean;
   setPost: any;
+  userId : string;
+  setUserId : any;
+  userName : string;
+  setUserName : any;
 };
 
 export default function Navbar({
   isLoggedIn,
   setIsLoggedIn,
   setPost,
+  userId,
+  setUserId,
+  userName,
+  setUserName
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
@@ -290,15 +298,27 @@ export default function Navbar({
   return (
     <Box sx={{ flexGrow: 1 }}>
       {!isLoggedIn && modalOpen && (
-        <Signup setIsLoggedIn={setIsLoggedIn} setModalOpen={setModalOpen} />
+        <Signup setIsLoggedIn={setIsLoggedIn} setModalOpen={setModalOpen} 
+        userId = {userId}
+        setUserId = {setUserId}
+        userName= {userName}
+        setUserName = {setUserName}/>
       )}
       {isLoggedIn && uploadModalOpen && (
-        <Upload setuploadModalOpen={setuploadModalOpen} />
+        <Upload setuploadModalOpen={setuploadModalOpen} 
+        userId = {userId}
+        setUserId = {setUserId}
+        userName= {userName}
+        setUserName = {setUserName}/>
       )}
       {!isLoggedIn && loginModalOpen && (
         <LoginForm
           setIsLoggedIn={setIsLoggedIn}
           setloginModalOpen={setloginModalOpen}
+          userId = {userId}
+          setUserId = {setUserId}
+          userName= {userName}
+          setUserName = {setUserName}
         />
       )}
       <AppBar
