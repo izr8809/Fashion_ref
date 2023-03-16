@@ -21,6 +21,7 @@ export default function Home() {
     axios
       .get(LOADAPI)
       .then((result) => {
+        console.log(result)
         for(let i =0; i++; i< result.data.length){
           console.log(result.data[i].src)
         }
