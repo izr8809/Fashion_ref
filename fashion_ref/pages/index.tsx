@@ -23,7 +23,7 @@ export default function Home() {
       .then((result) => {
         // setPost(result.data);
         for(let i=0; i< result.data.length ; i++){
-          console.log(result.data[i].Images)
+          console.log(result.data[i].Images.src)
           console.log(i)
         }
         // for(let i=0 ; i< result.data.lengths
