@@ -18,10 +18,12 @@ export default function Home() {
   const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
   const loadPost = useCallback(() => {
+    alert("점검 중입니다. 업로드 금지.!")
     axios
       .get(LOADAPI)
       .then((result) => {
-        setPost(result.data);
+        // setPost(result.data);
+        console.log(result.data);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
       })
