@@ -23,7 +23,8 @@ export default function Home() {
       .then((result) => {
         // setPost(result.data);
         for(let i=0; i< result.data.length ; i++){
-          if(!result.data[i].Images[0].src){
+
+          if(result.data[i].Images[0].src == undefined){
             console.log(i)
             console.log(result.data[i])
 
