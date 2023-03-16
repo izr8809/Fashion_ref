@@ -226,9 +226,9 @@ export default function Upload(props: UploadProps) {
       e.stopPropagation();
       alert("이미지 필수");
     } else {
-      location.reload();
       e.preventDefault();
       e.stopPropagation();
+      // location.reload();
       console.log("submit");
       console.log(props.userId);
       console.log(props.userName);

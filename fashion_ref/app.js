@@ -240,43 +240,46 @@ app.prepare().then(() => {
       console.log("qqqq" + req.body.userId);
       console.log("qqqq" + req.session.userId);
 
-      const post = await Post.create({
-        link: req.body.link,
-        brand: req.body.brand,
-        category: req.body.category,
-        season: req.body.season,
-        reason: req.body.reason,
-        // name: req.body.userName,
-        // UserId : req.body.userId,
-        name: req.session.name,
-        UserId: req.session.userId,
-      });
+      if(req.file){
 
-      if (!hashtags) {
-        hashtags = [];
+        const post = await Post.create({
+          link: req.body.link,
+          brand: req.body.brand,
+          category: req.body.category,
+          season: req.body.season,
+          reason: req.body.reason,
+          // name: req.body.userName,
+          // UserId : req.body.userId,
+          name: req.session.name,
+          UserId: req.session.userId,
+        });
+  
+        if (!hashtags) {
+          hashtags = [];
+        }
+  
+        hashtags.push("#" + req.body.category);
+        hashtags.push("#" + req.body.season);
+        const result = await Promise.all(
+          hashtags.map((tag) =>
+            Hashtag.findOrCreate({
+              where: { name: tag.slice(1).toUpperCase() },
+            })
+          )
+        ); // [[노드, true], [리액트, true]]
+        await post.addHashtags(result.map((v) => v[0]));
+  
+        if (req.file) {
+          const image = await Image.create({ src: req.file.path });
+          await post.addImages(image);
+          // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+          //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+          //   await post.addImages(images);
+          // } else { // 이미지를 하나만 올리면 image: 제로초.png
+          // }
+        }
+        res.json({ data: null, message: "ok" });
       }
-
-      hashtags.push("#" + req.body.category);
-      hashtags.push("#" + req.body.season);
-      const result = await Promise.all(
-        hashtags.map((tag) =>
-          Hashtag.findOrCreate({
-            where: { name: tag.slice(1).toUpperCase() },
-          })
-        )
-      ); // [[노드, true], [리액트, true]]
-      await post.addHashtags(result.map((v) => v[0]));
-
-      if (req.file) {
-        const image = await Image.create({ src: req.file.path });
-        await post.addImages(image);
-        // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-        //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-        //   await post.addImages(images);
-        // } else { // 이미지를 하나만 올리면 image: 제로초.png
-        // }
-      }
-      res.json({ data: null, message: "ok" });
     } catch (err) {
       console.log(err);
     }
