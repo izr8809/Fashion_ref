@@ -8,6 +8,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
 type AlignItemsListProps = {
   category: string;
@@ -25,7 +27,17 @@ type AlignItemsListProps = {
   setIsLoggedIn: any;
   isLoggedIn: boolean;
 };
-
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 const category = {
   상의: 1,
   하의: 2,
@@ -45,7 +57,32 @@ export default function AlignItemsList(props: AlignItemsListProps) {
 
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
   const DELAPI = `${process.env.NEXT_PUBLIC_API}/deletpost/${props.id}`;
+  const [modalOpen, setModalOpen] = React.useState(false);
+  
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   const delClick = useCallback(() => {
+    setModalOpen(true)
+    // if (props.isLoggedIn) {
+    //   axios
+    //     .post(DELAPI, {})
+    //     .then((result) => {
+    //       const Posts = props.posts.filter((post) => post.id !== props.id);
+    //       props.setPost(Posts);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // } else {
+    //   //로그인 모달 띄우기
+    //   alert("로그인 해주세요");
+    // }
+  }, [DELAPI, props]);
+
+
+  const onSubmit = useCallback((e:any)=>{
+    // e.preventDefault();
     if (props.isLoggedIn) {
       axios
         .post(DELAPI, {})
@@ -60,7 +97,13 @@ export default function AlignItemsList(props: AlignItemsListProps) {
       //로그인 모달 띄우기
       alert("로그인 해주세요");
     }
-  }, [DELAPI, props]);
+  },[props.isLoggedIn, props.posts])
+
+
+
+
+
+
   const editClick = useCallback(() => {
     alert("만드는 중입니다..");
   }, []);
@@ -99,6 +142,48 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   }, []);
 
   return (
+    <>
+    { modalOpen && 
+    <Modal
+      open={true}
+      onClose={closeModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        onSubmit={onSubmit}
+        sx={style}
+      >
+        {/* <form onSubmit={onSubmit}> */}
+        <Typography component="h2" variant="h5" sx={{ textAlign: "center" }}>
+          정말 삭제하시겠습니까?
+        </Typography>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ mt: 3, mb: 2, width:"40%", marginLeft:"5%", marginRight:"10%" }}
+          size="large"
+        >
+          삭제
+        </Button>
+        
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2, width:"40%" }}
+          size="large"
+          onClick={closeModal}
+        >
+          취소
+        </Button>
+        {/* </form> */}
+      </Box>
+      {/* <Button onClick={closeModal}>닫기</Button> */}
+    </Modal>
+    }
     <Card
       sx={{
         maxWidth: "15",
@@ -187,5 +272,6 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         ))}
       </CardActions>
     </Card>
+    </>
   );
 }

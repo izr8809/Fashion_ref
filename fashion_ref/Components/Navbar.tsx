@@ -27,6 +27,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Signup from "@/Components/signup";
+import Modal from "@mui/material/Modal";
 import Upload from "@/Components/upload";
 import { useCallback, useEffect, useState } from "react";
 import Login from "@/Components/LoginForm";
@@ -104,7 +105,6 @@ export default function Navbar({
   // const navigate = useNavigate();
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
   const API = `${process.env.NEXT_PUBLIC_API}/loadpost`;
-  const [modalOpen, setModalOpen] = React.useState(false);
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
   const [value, onChangeValue] = useInput("");
@@ -115,6 +115,11 @@ export default function Navbar({
   const [category, setCategory] = React.useState("");
   const [season, setSeason] = React.useState("");
   const searchBar = useRef<HTMLInputElement>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     if (searchBar.current) {
@@ -321,6 +326,7 @@ export default function Navbar({
           setUserName = {setUserName}
         />
       )}
+      
       <AppBar
         position="static"
         style={{ backgroundColor: "#FFF", color: "#000" }}
