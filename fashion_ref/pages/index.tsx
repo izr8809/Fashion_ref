@@ -18,7 +18,6 @@ export default function Home() {
   const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
   const loadPost = useCallback(() => {
-    alert("점검 중입니다. 업로드 금지.!")
     axios
       .get(LOADAPI)
       .then((result) => {

@@ -255,7 +255,6 @@ export default function Navbar({
     axios
     .get(GETHASHAPI)
     .then((result) => {
-      console.log(result)
       setShowHashModalOpen(true);
       setHashTags(result)
       // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
