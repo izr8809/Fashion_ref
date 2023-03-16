@@ -15,7 +15,7 @@ const passport = require("passport");
 const { User, Post, Hashtag, Image } = require("./models");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
-const cors = require('cors');
+const cors = require("cors");
 sequelize
   .sync({ force: false })
   .then(() => {
@@ -47,9 +47,11 @@ app.prepare().then(() => {
   server.use(express.static(__dirname));
   server.use("/", express.static(path.join(__dirname, "public")));
   // server.use('/', express.static(path.join(__dirname, '/')));
-  server.use(cors({
-    origin: '*'
-}));
+  server.use(
+    cors({
+      origin: "*",
+    })
+  );
   server.use(
     bodyParser.urlencoded({
       extended: true,
@@ -111,17 +113,17 @@ app.prepare().then(() => {
       // },
     });
 
-    if(userInfo){
+    if (userInfo) {
       passwordmatch = bcrypt.compareSync(
         req.body.password,
         userInfo.password,
         12
       );
-      console.log("passwordamtch")
+      console.log("passwordamtch");
     }
-    
+
     // userInfo 결과 존재 여부에 따른 응답
-    console.log(passwordmatch)
+    console.log(passwordmatch);
     if (!userInfo) {
       res.status(400).send({ data: null, message: "not authorized" });
     } else if (passwordmatch) {
@@ -132,7 +134,7 @@ app.prepare().then(() => {
         res.json({ data: userInfo, message: "ok" });
         // post 요청에 대한 응답이기에 {data:null}이 되므로, {data: userInfo} 무의미하여 생략 가능
       });
-    } else{
+    } else {
       res.status(400).send({ data: null, message: "wrong" });
     }
   });
@@ -157,8 +159,8 @@ app.prepare().then(() => {
   });
 
   server.get("/logout", (req, res) => {
-    console.log("logout")
-    console.log(req.session.userId)
+    console.log("logout");
+    console.log(req.session.userId);
     if (!req.session.userId) {
       res.status(400).send({ data: null, message: "not authorized" });
     } else {
@@ -175,9 +177,9 @@ app.prepare().then(() => {
       const userInfo = await User.findOne({
         where: { email: req.body.email },
       });
-      console.log("uerInfo" + userInfo)
+      console.log("uerInfo" + userInfo);
       if (!userInfo) {
-        console.log("uerInfo" + userInfo)
+        console.log("uerInfo" + userInfo);
         //회원가입 성공
         const user = await User.create({
           email: req.body.email,
@@ -187,7 +189,13 @@ app.prepare().then(() => {
         const { password, ...userWithoutPassword } = user;
         req.session.userId = user.id;
         req.session.name = user.name;
-        res.status(201).json({ userId: userWithoutPassword.dataValues.id, userName : userWithoutPassword.dataValues.name, message : "success" });
+        res
+          .status(201)
+          .json({
+            userId: userWithoutPassword.dataValues.id,
+            userName: userWithoutPassword.dataValues.name,
+            message: "success",
+          });
       } else {
         //이미 존재하는 ID
         res.status(400).send({ data: null, message: "already exist" });
@@ -212,52 +220,66 @@ app.prepare().then(() => {
   //   }
   // })
   // server.use('/post', postrouter)
-  server.post("/uploads", upload.single("image"), async (req, res) => {
-    try{
-    let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
-    console.log("qqqq"+req.body.userId)
-    console.log("qqqq"+req.session.userId)
-
-    const post = await Post.create({
-      link: req.body.link,
-      brand: req.body.brand,
-      category: req.body.category,
-      season: req.body.season,
-      reason : req.body.reason,
-      // name: req.body.userName,
-      // UserId : req.body.userId,
-      name : req.session.name,
-      UserId : req.session.userId,
-    });
-
-    if (!hashtags){
-      hashtags = []
-    }  
-      
-    hashtags.push("#"+req.body.category);
-    hashtags.push("#"+req.body.season);
-    const result = await Promise.all(
-      hashtags.map((tag) =>
-        Hashtag.findOrCreate({
-          where: { name: tag.slice(1).toUpperCase() },
-        })
-      )
-    ); // [[노드, true], [리액트, true]]
-    await post.addHashtags(result.map((v) => v[0]));
-    
-    if (req.file) {
-      const image = await Image.create({ src: req.file.path });
-      await post.addImages(image);
-      // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-      //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-      //   await post.addImages(images);
-      // } else { // 이미지를 하나만 올리면 image: 제로초.png
-      // }
+  server.get("/getHash", async function (req, res) {
+    try {
+      where ={};
+      const hashtags = await Hashtag.findAll({
+        where,
+        // limit: 10,
+        order: [["createdAt", "DESC"]],
+      });
+      res.status(200).json(hashtags);
+    } catch (error) {
+      console.error(error);
     }
-    res.json({ data: null, message: "ok" });
-  } catch (err){
-    console.log(err);
-  }
+  });
+
+  server.post("/uploads", upload.single("image"), async (req, res) => {
+    try {
+      let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
+      console.log("qqqq" + req.body.userId);
+      console.log("qqqq" + req.session.userId);
+
+      const post = await Post.create({
+        link: req.body.link,
+        brand: req.body.brand,
+        category: req.body.category,
+        season: req.body.season,
+        reason: req.body.reason,
+        // name: req.body.userName,
+        // UserId : req.body.userId,
+        name: req.session.name,
+        UserId: req.session.userId,
+      });
+
+      if (!hashtags) {
+        hashtags = [];
+      }
+
+      hashtags.push("#" + req.body.category);
+      hashtags.push("#" + req.body.season);
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { name: tag.slice(1).toUpperCase() },
+          })
+        )
+      ); // [[노드, true], [리액트, true]]
+      await post.addHashtags(result.map((v) => v[0]));
+
+      if (req.file) {
+        const image = await Image.create({ src: req.file.path });
+        await post.addImages(image);
+        // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+        //   await post.addImages(images);
+        // } else { // 이미지를 하나만 올리면 image: 제로초.png
+        // }
+      }
+      res.json({ data: null, message: "ok" });
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   server.get("/loadpost", async function (req, res) {
@@ -286,7 +308,7 @@ app.prepare().then(() => {
       console.error(error);
     }
   });
-  server.post("/deletpost/:postId", async function(req,res) {
+  server.post("/deletpost/:postId", async function (req, res) {
     try {
       await Post.destroy({
         where: {
@@ -300,73 +322,70 @@ app.prepare().then(() => {
   });
 
   server.post("/hashtagsearch", async (req, res) => {
-    try{
-    const hashtags = req.body.hashtags.match(/#[^\s#]+/g);
-    // console.log("--------------------------");
-    // console.log("hash" + hashtags[0].split("#")[1]);
-    // console.log("hashtags length" + hashtags.length)
-    var hashtagjson = []
-    for (let i =0; i< hashtags.length; i++){
-      hashtagjson =[
-        ...hashtagjson,
-        {name : hashtags[i].split("#")[1]}
-      ]
-    }
+    try {
+      const hashtags = req.body.hashtags.match(/#[^\s#]+/g);
+      // console.log("--------------------------");
+      // console.log("hash" + hashtags[0].split("#")[1]);
+      // console.log("hashtags length" + hashtags.length)
+      var hashtagjson = [];
+      for (let i = 0; i < hashtags.length; i++) {
+        hashtagjson = [...hashtagjson, { name: hashtags[i].split("#")[1] }];
+      }
 
+      where = {};
+      const posts = await Post.findAll({
+        where: {
+          // season: req.body.season,
+          // category: req.body.category,
+        },
+        limit: 100,
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Hashtag,
+            where: {
+              [Op.or]: hashtagjson,
+            },
+          },
+          {
+            model: Image,
+          },
+        ],
+      });
 
-    where = {};
-    const posts = await Post.findAll({
-      where: {
-        // season: req.body.season,
-        // category: req.body.category,
-      },
-      limit: 100,
-      order: [['createdAt', 'DESC']],
-      include: [{
-        model: Hashtag,
-        where: { 
-          [Op.or]: hashtagjson,
-      },
-    },{
-      model : Image,
-    },]
-      },
-    );
+      var PostIdlist = [];
+      for (let i = 0; i < posts.length; i++) {
+        if (posts[i].Hashtags.length == hashtags.length)
+          PostIdlist = [...PostIdlist, { id: posts[i].id }];
+      }
+      console.log("########################");
+      console.log(PostIdlist);
+      where = {};
+      const postsAllHashtags = await Post.findAll({
+        where: {
+          [Op.or]: PostIdlist,
+          // season: req.body.season,
+          // category: req.body.category,
+        },
+        limit: 100,
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Hashtag,
+          },
+          {
+            model: Image,
+          },
+        ],
+      });
+      console.log(postsAllHashtags);
 
-    var PostIdlist =[]
-    for(let i =0 ; i< posts.length; i++){
-      if(posts[i].Hashtags.length == hashtags.length)
-      PostIdlist =[
-          ...PostIdlist,
-          {"id" : posts[i].id},
-        ]
-    }
-    console.log("########################")
-    console.log(PostIdlist)
-    where = {};
-    const postsAllHashtags = await Post.findAll({
-      where: {
-        [Op.or] : PostIdlist,
-        // season: req.body.season,
-        // category: req.body.category,
-      },
-      limit: 100,
-      order: [['createdAt', 'DESC']],
-      include: [{
-        model: Hashtag,
-    },{
-      model : Image,
-    },]
-      },
-    );
-    console.log(postsAllHashtags)
-
-    // console.log("--------------------------");
-    // console.log(Postlist)
-    res.status(200).json(postsAllHashtags);
+      // console.log("--------------------------");
+      // console.log(Postlist)
+      res.status(200).json(postsAllHashtags);
     } catch (err) {
-      console.log(err)
-    }// const postid = await Hashtag.findAll({
+      console.log(err);
+    } // const postid = await Hashtag.findAll({
     //   where : { name : [hashtags]}
     // })
 

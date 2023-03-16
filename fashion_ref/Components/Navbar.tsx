@@ -104,6 +104,7 @@ export default function Navbar({
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
+  const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
   const API = `${process.env.NEXT_PUBLIC_API}/loadpost`;
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
@@ -227,6 +228,19 @@ export default function Navbar({
     [value, setPost, category, season]
   );
 
+  const getHashtags = useCallback(()=>{
+    axios
+    .get(GETHASHAPI)
+    .then((result) => {
+      console.log(result)
+      // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
+      // history.replace('/login');
+    })
+    .catch((error) => {
+      alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
+    });
+  },[])
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -332,6 +346,20 @@ export default function Navbar({
         style={{ backgroundColor: "#FFF", color: "#000" }}
       >
         <Toolbar>
+          {/* <Button
+            variant="contained"
+            sx={{
+              // height: "60%",
+              whiteSpace: "nowrap",
+              marginRight: "5px",
+              fontWeight: "bold",
+              display: "inline-block",
+            }}
+            size="small"
+            onClick={getHashtags}
+          >
+            태그모음
+          </Button> */}
           {/* <IconButton
             size="large"
             edge="start"

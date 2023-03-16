@@ -196,7 +196,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         <CardMedia
           component="img"
           height="400"
-          image={`../${props.src}`}
+          image={`../${props.src}` || ""}
           alt="green iguana"
         />
         <CardContent>
