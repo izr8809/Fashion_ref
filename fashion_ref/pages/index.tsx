@@ -23,6 +23,9 @@ export default function Home() {
       .get(LOADAPI)
       .then((result) => {
         // setPost(result.data);
+        for(let i=0 ; i< result.data.length ; i++){
+          console.log(result.data[i].Images[0].src)
+        }
         console.log(result.data);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
