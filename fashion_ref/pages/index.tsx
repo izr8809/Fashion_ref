@@ -21,11 +21,7 @@ export default function Home() {
     axios
       .get(LOADAPI)
       .then((result) => {
-        console.log(result)
-        for(let i =0; i++; i< result.data.length){
-          console.log(result.data[i].src)
-        }
-        // setPost(result.data);
+        setPost(result.data);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
       })
