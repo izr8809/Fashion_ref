@@ -22,15 +22,25 @@ import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
 import Router from "next/router";
 
-
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
+const modalstyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 type UploadProps = {
   setuploadModalOpen: any;
-  userId : string;
-  setUserId : any;
-  userName : string;
-  setUserName : any;
+  userId: string;
+  setUserId: any;
+  userName: string;
+  setUserName: any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -69,6 +79,8 @@ export default function Upload(props: UploadProps) {
   const [reason, onChangeReason] = useInput("");
   const [brand, onChangeBrand] = useInput("");
   const [link, onChangeLink] = useInput("");
+  const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
+  const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
   const [post, setPost] = useState({
     title: "",
     desc: "",
@@ -85,6 +97,9 @@ export default function Upload(props: UploadProps) {
   //   })
   // }
 
+  const closehashtagsModal = () => {
+    setShowHashModalOpen(false);
+  };
   const inputRef = useRef(null);
   const [category, setCategory] = React.useState("상의");
   const [season, setSeason] = React.useState("23SS");
@@ -170,9 +185,12 @@ export default function Upload(props: UploadProps) {
   const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
   const [userInfo, setUserInfo] = useState({ name: "" });
 
+  const [hashTags, setHashTags] = React.useState({
+    data: [{ name: "" }],
+  });
   useEffect(() => {
-    console.log(props.userId)
-    console.log(props.userName)
+    console.log(props.userId);
+    console.log(props.userName);
     axios
       .get(USERINFOAPI, {})
       .then((result) => {
@@ -183,102 +201,147 @@ export default function Upload(props: UploadProps) {
       });
   }, [props.userId]);
 
-  const onSubmit = 
-    (e: any) => {
-      console.log("!");
-      if (brand == "") {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("브랜드입력 필수");
-      } else if (imageFile == undefined) {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("이미지 필수");
-      } else {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("submit");
-        console.log(props.userId);
-        console.log(props.userName);
+  const getHashtags = useCallback(() => {
+    axios
+      .get(GETHASHAPI)
+      .then((result) => {
+        console.log(result);
+        setShowHashModalOpen(true);
+        setHashTags(result);
+        // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
+        // history.replace('/login');
+      })
+      .catch((error) => {
+        alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
+      });
+  }, []);
+  const onSubmit = (e: any) => {
+    console.log("!");
+    if (brand == "") {
+      e.preventDefault();
+      e.stopPropagation();
+      alert("브랜드입력 필수");
+    } else if (imageFile == undefined) {
+      e.preventDefault();
+      e.stopPropagation();
+      alert("이미지 필수");
+    } else {
+      location.reload();
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("submit");
+      console.log(props.userId);
+      console.log(props.userName);
 
-        const formData = new FormData();
-        formData.append("image", imageFile as File);
-        formData.append("userId", props.userId);
-        formData.append("userName", props.userName);
-        formData.append("brand", brand);
-        formData.append("link", link);
-        formData.append("category", category);
-        formData.append("season", season);
-        formData.append("hashtag", text);
-        formData.append("reason", reason);
-        // alert(formData)
+      const formData = new FormData();
+      formData.append("image", imageFile as File);
+      formData.append("userId", props.userId);
+      formData.append("userName", props.userName);
+      formData.append("brand", brand);
+      formData.append("link", link);
+      formData.append("category", category);
+      formData.append("season", season);
+      formData.append("hashtag", text);
+      formData.append("reason", reason);
+      // alert(formData)
 
-        axios
-          .post(API, formData)
-          .then((result) => {
-            console.log(result)
-            location.reload();
-            // const ele = document.getElementById('submit_bt');
-            // ele?.click();
-            
-          })
-          .catch((err) => {
-            console.log(err)
-            location.reload();
-          });
-      }
-      //   axios
-      //     .post(
-      //       API,
-      //       // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-      //       // 회원가입창에서 클라이언트가 입력하는 데이터
-      //       {
-      //         nickname: nickname,
-      //         brand: brand,
-      //         link: link, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
-      //         image : (imageFile as File).name
-      //       },
-      //       {
-      //         headers: {
-      //           "Content-Type": "application/json",
-      //           // 'Accept': 'application/json',
-      //         },
-      //       }
-      //     )
-      //     // 그러면 서버에서 클라이언트로 response(응답)으로
-      //     // {ok: true} 아니면 {ok: false}가 온다.
-      //     // .then((response) => {
-      //     //   console.log(response); // response.data로 해야?
-      //     // })
-      //     .then((result) => {
-      //       console.log(result);
-      //       // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-      //       // history.replace('/login');
-      //     })
-      //     .catch((error) => {
-      //       alert("회원가입이 정상적으로 되지 않았습니다.");
-      //       console.log(error);
-      //     });
-    };
+      axios
+        .post(API, formData)
+        .then((result) => {
+          console.log(result);
+          location.reload();
+          // const ele = document.getElementById('submit_bt');
+          // ele?.click();
+        })
+        .catch((err) => {
+          console.log(err);
+          location.reload();
+        });
+    }
+    //   axios
+    //     .post(
+    //       API,
+    //       // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
+    //       // 회원가입창에서 클라이언트가 입력하는 데이터
+    //       {
+    //         nickname: nickname,
+    //         brand: brand,
+    //         link: link, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
+    //         image : (imageFile as File).name
+    //       },
+    //       {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           // 'Accept': 'application/json',
+    //         },
+    //       }
+    //     )
+    //     // 그러면 서버에서 클라이언트로 response(응답)으로
+    //     // {ok: true} 아니면 {ok: false}가 온다.
+    //     // .then((response) => {
+    //     //   console.log(response); // response.data로 해야?
+    //     // })
+    //     .then((result) => {
+    //       console.log(result);
+    //       // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
+    //       // history.replace('/login');
+    //     })
+    //     .catch((error) => {
+    //       alert("회원가입이 정상적으로 되지 않았습니다.");
+    //       console.log(error);
+    //     });
+  };
   return (
-    <Modal
-      open={true}
-      onClose={closeModal}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        onSubmit={onSubmit}
-        sx={style}
+    <>
+      {showHashModalOpen && (
+        <Modal
+          open={true}
+          onClose={closehashtagsModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box component="form" noValidate autoComplete="off" sx={modalstyle}>
+            <div style={{ height: "300px", overflow: "overlay" }}>
+              {hashTags.data.map((hashtag, index) => (
+                <li key={index} style={{ listStyle: "none" }}>
+                  {" "}
+                  #{hashtag.name}
+                </li>
+              ))}
+            </div>
+
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              size="large"
+              onClick={closehashtagsModal}
+            >
+              확인
+            </Button>
+            {/* </form> */}
+          </Box>
+          {/* <Button onClick={closeModal}>닫기</Button> */}
+        </Modal>
+      )}
+      <Modal
+        open={true}
+        onClose={closeModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        {/* <form onSubmit={onSubmit}> */}
-        <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
-          업로드
-        </Typography>
-        {/* <TextField
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          onSubmit={onSubmit}
+          sx={style}
+        >
+          {/* <form onSubmit={onSubmit}> */}
+          <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
+            업로드
+          </Typography>
+          {/* <TextField
           label="이름"
           sx={{marginTop : "5px"}}
           name="user-nick"
@@ -288,147 +351,166 @@ export default function Upload(props: UploadProps) {
           variant="standard"
           onChange={onChangeNickname}
         /> */}
-        <TextField
-          required
-          label="브랜드"
-          fullWidth
-          sx={{ marginTop: "5px" }}
-          name="user-brand"
-          type="text"
-          value={brand}
-          variant="standard"
-          onChange={onChangeBrand}
-        />
-        <TextField
-          label="Link"
-          fullWidth
-          sx={{ marginTop: "5px" }}
-          name="user-link"
-          type="text"
-          value={link}
-          required
-          variant="standard"
-          onChange={onChangeLink}
-        />
-
-        <TextField
-          label="선정이유"
-          fullWidth
-          sx={{ marginTop: "5px" }}
-          name="user-link"
-          type="text"
-          value={reason}
-          required
-          variant="standard"
-          onChange={onChangeReason}
-        />
-
-        <FormControl
-          sx={{ width: "40%", marginRight: "10%", marginTop: "25px" }}
-        >
-          <InputLabel id="demo-simple-select-label">상의</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            defaultValue={"상의"}
-            value={category}
-            label="카테고리"
+          <TextField
             required
-            onChange={handleCategoryChange}
-          >
-            <MenuItem value={"상의"}>상의</MenuItem>
-            <MenuItem value={"하의"}>하의</MenuItem>
-            <MenuItem value={"아우터"}>아우터</MenuItem>
-            <MenuItem value={"디테일"}>디테일</MenuItem>
-            <MenuItem value={"이미지"}>이미지</MenuItem>
-            <MenuItem value={"악세사리"}>악세사리</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ width: "40%", marginTop: "25px" }}>
-          <InputLabel id="demo-simple-select-label">23SS</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            defaultValue={"23SS"}
-            value={season}
-            label="시즌"
+            label="브랜드"
+            fullWidth
+            sx={{ marginTop: "5px" }}
+            name="user-brand"
+            type="text"
+            value={brand}
+            variant="standard"
+            onChange={onChangeBrand}
+          />
+          <TextField
+            label="Link"
+            fullWidth
+            sx={{ marginTop: "5px" }}
+            name="user-link"
+            type="text"
+            value={link}
             required
-            onChange={handleSeasonChange}
-          >
-            <MenuItem value={"23SS"}>23SS</MenuItem>
-            <MenuItem value={"23FW"}>23FW</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          id="standard-basic"
-          sx={{ marginTop: "30px" }}
-          value={text}
-          onChange={onChangeText}
-          fullWidth
-          label="해시태그입력 #검정 #반팔 "
-          variant="outlined"
-        />
+            variant="standard"
+            onChange={onChangeLink}
+          />
 
-        {/* <FileUploader
+          <TextField
+            label="선정이유"
+            fullWidth
+            sx={{ marginTop: "5px" }}
+            name="user-link"
+            type="text"
+            value={reason}
+            required
+            variant="standard"
+            onChange={onChangeReason}
+          />
+
+          <FormControl
+            sx={{ width: "40%", marginRight: "10%", marginTop: "25px" }}
+          >
+            <InputLabel id="demo-simple-select-label">상의</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              defaultValue={"상의"}
+              value={category}
+              label="카테고리"
+              required
+              onChange={handleCategoryChange}
+            >
+              <MenuItem value={"상의"}>상의</MenuItem>
+              <MenuItem value={"하의"}>하의</MenuItem>
+              <MenuItem value={"아우터"}>아우터</MenuItem>
+              <MenuItem value={"디테일"}>디테일</MenuItem>
+              <MenuItem value={"이미지"}>이미지</MenuItem>
+              <MenuItem value={"악세사리"}>악세사리</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: "40%", marginTop: "25px" }}>
+            <InputLabel id="demo-simple-select-label">23SS</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              defaultValue={"23SS"}
+              value={season}
+              label="시즌"
+              required
+              onChange={handleSeasonChange}
+            >
+              <MenuItem value={"23SS"}>23SS</MenuItem>
+              <MenuItem value={"23FW"}>23FW</MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            id="standard-basic"
+            sx={{ marginTop: "30px" }}
+            value={text}
+            onChange={onChangeText}
+            fullWidth
+            label="해시태그입력 #검정 #반팔 "
+            variant="outlined"
+          />
+
+          <Button
+            variant="contained"
+            sx={{
+              // height: "60%",
+              whiteSpace: "nowrap",
+              marginRight: "5px",
+              marginTop: "5px",
+              fontWeight: "bold",
+              display: "inline-block",
+            }}
+            size="small"
+            onClick={getHashtags}
+          >
+            #목록
+          </Button>
+          {/* <FileUploader
             handleChange={handleChange}
             name="file"
             types={fileTypes}
          ><div><p>this is inside drop area</p></div></FileUploader> */}
-        <div className="file-upload" style={{ marginTop: "6px" }}>
-          <div className="custom-form-group">
-            {!isImage && (
-              <div
-                className={
-                  highlight
-                    ? "custom-file-drop-area highlight"
-                    : "custom-file-drop-area"
-                }
-                onDragEnter={handlehighlight}
-                onDragOver={handlehighlight}
-                onDragLeave={handleunhighlight}
-                onDrop={handledrop}
-              >
-                <input
-                  type="file"
-                  name="photos"
-                  placeholder="Enter photos"
-                  multiple={false}
-                  id="filephotos"
-                  onChange={handlefilechange}
-                />
-                <label htmlFor="filephotos">Drag & Drop</label>
+          <div className="file-upload" style={{ marginTop: "10px" }}>
+            <div className="custom-form-group">
+              {!isImage && (
+                <div
+                  className={
+                    highlight
+                      ? "custom-file-drop-area highlight"
+                      : "custom-file-drop-area"
+                  }
+                  onDragEnter={handlehighlight}
+                  onDragOver={handlehighlight}
+                  onDragLeave={handleunhighlight}
+                  onDrop={handledrop}
+                >
+                  <input
+                    type="file"
+                    name="photos"
+                    placeholder="Enter photos"
+                    multiple={false}
+                    id="filephotos"
+                    onChange={handlefilechange}
+                  />
+                  <label htmlFor="filephotos">Drag & Drop</label>
+                </div>
+              )}
+              <div className="custom-file-preview">
+                {photos.length > 0 &&
+                  photos.map((item: any, index) =>
+                    index != 0 ? (
+                      <div className="prev-img" key={index}>
+                        <span onClick={handeldelete}>&times;</span>
+                        {item && <Image src={item.src} alt={item.name} />}
+                      </div>
+                    ) : (
+                      <></>
+                    )
+                  )}
               </div>
-            )}
-            <div className="custom-file-preview">
-              {photos.length > 0 &&
-                photos.map((item: any, index) =>
-                  index != 0 ? (
-                    <div className="prev-img" key={index}>
-                      <span onClick={handeldelete}>&times;</span>
-                      {item && <Image src={item.src} alt={item.name} />}
-                    </div>
-                  ) : (
-                    <></>
-                  )
-                )}
             </div>
           </div>
-        </div>
-        <button id="submit_bt" style={{display: "none"}} type="submit">
-
-        </button>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          size="large"
-        >
-          확인
-        </Button>
-        {/* </form> */}
-      </Box>
-      {/* <Button onClick={closeModal}>닫기</Button> */}
-    </Modal>
+          <button
+            id="submit_bt"
+            style={{ display: "none" }}
+            type="submit"
+          ></button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            size="large"
+          >
+            확인
+          </Button>
+          {/* </form> */}
+        </Box>
+        {/* <Button onClick={closeModal}>닫기</Button> */}
+      </Modal>
+    </>
   );
 }

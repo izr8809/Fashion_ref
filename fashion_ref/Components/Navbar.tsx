@@ -3,7 +3,6 @@ import * as React from "react";
 import { HtmlHTMLAttributes, ReactElement, useRef } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import axios from "axios";
 import IconButton from "@mui/material/IconButton";
@@ -28,6 +27,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Signup from "@/Components/signup";
 import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import Upload from "@/Components/upload";
 import { useCallback, useEffect, useState } from "react";
 import Login from "@/Components/LoginForm";
@@ -39,6 +39,18 @@ const style: React.CSSProperties = {
   padding: "8px 0",
   margin: "16px auto",
   height: "54px",
+};
+
+const modalstyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 const inter = Inter({ subsets: ["latin"] });
 
@@ -117,9 +129,20 @@ export default function Navbar({
   const [season, setSeason] = React.useState("");
   const searchBar = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
-  
+  const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
+  const [hashTags, setHashTags] = React.useState({
+    data :[
+      {name : ""},
+    ]
+  });
+
+
   const closeModal = () => {
     setModalOpen(false);
+  };
+  
+  const closehashtagsModal = () => {
+    setShowHashModalOpen(false);
   };
 
   useEffect(() => {
@@ -233,6 +256,8 @@ export default function Navbar({
     .get(GETHASHAPI)
     .then((result) => {
       console.log(result)
+      setShowHashModalOpen(true);
+      setHashTags(result)
       // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
       // history.replace('/login');
     })
@@ -340,13 +365,46 @@ export default function Navbar({
           setUserName = {setUserName}
         />
       )}
+      {showHashModalOpen && <Modal
+      open={true}
+      onClose={closehashtagsModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        sx={modalstyle}
+      >
+      <div style={{height:"300px", overflow : "overlay"}}>
+      {hashTags.data.map((hashtag, index)=> (
+        <li key={index} style={{listStyle: "none"}}> #{hashtag.name}</li>
+      ))}
+      </div>
+        
+      <Button
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2}}
+        size="large"
+        onClick={closehashtagsModal}
+      >
+        확인
+      </Button>
+        {/* </form> */}
+      </Box>
+      {/* <Button onClick={closeModal}>닫기</Button> */}
+    </Modal>
+
+      }
       
       <AppBar
         position="static"
         style={{ backgroundColor: "#FFF", color: "#000" }}
       >
         <Toolbar>
-          {/* <Button
+          <Button
             variant="contained"
             sx={{
               // height: "60%",
@@ -358,8 +416,8 @@ export default function Navbar({
             size="small"
             onClick={getHashtags}
           >
-            태그모음
-          </Button> */}
+            #목록
+          </Button>
           {/* <IconButton
             size="large"
             edge="start"

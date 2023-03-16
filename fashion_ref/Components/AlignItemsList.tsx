@@ -10,6 +10,8 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 type AlignItemsListProps = {
   category: string;
@@ -63,7 +65,13 @@ export default function AlignItemsList(props: AlignItemsListProps) {
     setModalOpen(false);
   };
   const delClick = useCallback(() => {
-    setModalOpen(true)
+    if(props.isLoggedIn)
+    {
+      setModalOpen(true)
+    }
+    else{
+      alert("로그인 해주세요")
+    }
     // if (props.isLoggedIn) {
     //   axios
     //     .post(DELAPI, {})
@@ -80,18 +88,27 @@ export default function AlignItemsList(props: AlignItemsListProps) {
     // }
   }, [DELAPI, props]);
 
+  const copyClick = useCallback(()=>{
+
+    alert("준비중입니다.")
+  },[])
+
 
   const onSubmit = useCallback((e:any)=>{
-    // e.preventDefault();
+    e.preventDefault();
+    e.stopPropagation();
+
     if (props.isLoggedIn) {
       axios
         .post(DELAPI, {})
         .then((result) => {
           const Posts = props.posts.filter((post) => post.id !== props.id);
           props.setPost(Posts);
+          setModalOpen(false);
         })
         .catch((err) => {
           console.log(err);
+          alert("버그 발생!")
         });
     } else {
       //로그인 모달 띄우기
@@ -158,7 +175,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         sx={style}
       >
         {/* <form onSubmit={onSubmit}> */}
-        <Typography component="h2" variant="h5" sx={{ textAlign: "center" }}>
+        <Typography component="h2" variant="h5" sx={{ textAlign: "center", marginBottom:"15px" }}>
           정말 삭제하시겠습니까?
         </Typography>
         <Button
@@ -229,9 +246,16 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <div style={{ width: "100%", marginBottom: "3%" }}>
-          <EditIcon id="editicon" onClick={editClick} />
-          <DeleteIcon id="delicon" onClick={delClick} />
+        <div style={{ width: "100%", display:"inline-block", marginBottom:"5px"}}>
+          <div style={{ width: "20%", marginBottom: "3%", verticalAlign:"center" , display:"inline-block"}}>
+            <FavoriteBorderIcon onClick={() => alert("준비중입니다")}  sx={{opacity:"40%"}}/>
+            <span style={{position:"relative", top:"-7px", marginLeft:"5px", color:"#A6A6A6"}}>0</span>
+          </div>
+          <div style={{ width: "60%", marginBottom: "3%", display:"inline-block", float:"right"}}>
+            <DeleteIcon id="delicon" onClick={delClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
+            <EditIcon id="editicon" onClick={editClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
+            <FileCopyIcon id="copyicon" onClick={copyClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
+          </div>
         </div>
         {/* <Button size="small" color="primary">
           Share
