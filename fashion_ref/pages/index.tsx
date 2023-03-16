@@ -23,8 +23,11 @@ export default function Home() {
       .then((result) => {
         // setPost(result.data);
         for(let i=0; i< result.data.length ; i++){
-          console.log(result.data[i].Images[0].src)
-          console.log(i)
+          if(!result.data[i].Images[0].src){
+            console.log(i)
+            console.log(result.data[i])
+
+          }
         }
         // for(let i=0 ; i< result.data.lengths
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
