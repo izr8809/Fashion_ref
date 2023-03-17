@@ -361,8 +361,8 @@ app.prepare().then(() => {
         if (posts[i].Hashtags.length == hashtags.length)
           PostIdlist = [...PostIdlist, { id: posts[i].id }];
       }
-      console.log("########################");
-      console.log(PostIdlist);
+      // console.log("########################");
+      // console.log(PostIdlist);
       where = {};
       const postsAllHashtags = await Post.findAll({
         where: {
@@ -381,7 +381,7 @@ app.prepare().then(() => {
           },
         ],
       });
-      console.log(postsAllHashtags);
+      // console.log(postsAllHashtags);
 
       // console.log("--------------------------");
       // console.log(Postlist)

@@ -99,6 +99,7 @@ export default function Home() {
             setUserId={setUserId}
             userName={userName}
             setUserName={setUserName}
+            setCount={setCount}
           />
           {/* <LoginForm /> */}
           {/* <SignupForm /> */}

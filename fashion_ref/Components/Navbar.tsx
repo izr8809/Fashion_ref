@@ -103,6 +103,7 @@ type NavbarProps = {
   setUserId : any;
   userName : string;
   setUserName : any;
+  setCount: any,
 };
 
 export default function Navbar({
@@ -112,7 +113,8 @@ export default function Navbar({
   userId,
   setUserId,
   userName,
-  setUserName
+  setUserName,
+  setCount,
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
@@ -239,6 +241,7 @@ export default function Navbar({
           )
           .then((result) => {
             setPost(result.data);
+            setCount(1)
             // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
             // history.replace('/login');
           })
