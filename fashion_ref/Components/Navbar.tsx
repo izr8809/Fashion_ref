@@ -379,9 +379,9 @@ export default function Navbar({
         autoComplete="off"
         sx={modalstyle}
       >
-      <div style={{height:"300px", overflow : "overlay"}}>
+      <div className="hashlistdiv" style={{height:"300px", overflow : "overlay"}}>
       {hashTags.data.map((hashtag, index)=> (
-        <li key={index} style={{listStyle: "none"}}> #{hashtag.name}</li>
+        <li id="hashlist" key={index} style={{listStyle: "none", marginBottom:"5px"}}> #{hashtag.name}</li>
       ))}
       </div>
         
@@ -420,16 +420,6 @@ export default function Navbar({
           >
             #목록
           </Button>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-            onClick={reloadPost}
-          >
-            <HomeIcon color="disabled" />
-          </IconButton> */}
           <Typography
             noWrap
             component="div"
