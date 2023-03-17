@@ -115,6 +115,7 @@ export default function Home() {
           setIsLoggedIn={setIsLoggedIn}
           setPost={setPost}
           posts={posts}
+          setCount={setCount}
         />
         <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>

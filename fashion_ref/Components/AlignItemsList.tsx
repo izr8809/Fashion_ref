@@ -32,6 +32,7 @@ type AlignItemsListProps = {
   name: string;
   setIsLoggedIn: any;
   isLoggedIn: boolean;
+  setCount :any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -154,6 +155,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
       )
       .then((result) => {
         props.setPost(result.data);
+        props.setCount(1);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
         // history.replace('/login');
       })
@@ -254,7 +256,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
             참고할 부분
           </span> */}
             <Typography
-              sx={{ fontWeight: 900, marginBottom: "1%" }}
+              sx={{ fontWeight: 900, marginBottom: "2%" }}
               variant="subtitle2"
               color="text.secondary"
             >
