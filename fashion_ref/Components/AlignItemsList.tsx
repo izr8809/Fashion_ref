@@ -140,7 +140,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
       // console.log(props)
       setImagePath(`../${props.Images[0].src}`)
     }
-  }, [props.category]);
+  }, [props.category,props.Images]);
 
   const TagClick = React.useCallback((e: any, hashname: string) => {
     e.preventDefault();
