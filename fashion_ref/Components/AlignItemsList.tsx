@@ -10,16 +10,17 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 type AlignItemsListProps = {
   category: string;
   brand: string;
   link: string;
-  Images: [{
-    src :string,
-  }
+  Images: [
+    {
+      src: string;
+    }
   ];
   season: string;
   reason: string;
@@ -64,17 +65,15 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   const DELAPI = `${process.env.NEXT_PUBLIC_API}/deletpost/${props.id}`;
   const [modalOpen, setModalOpen] = React.useState(false);
   const [ImagePath, setImagePath] = React.useState("");
-  
+
   const closeModal = () => {
     setModalOpen(false);
   };
   const delClick = useCallback(() => {
-    if(props.isLoggedIn)
-    {
-      setModalOpen(true)
-    }
-    else{
-      alert("로그인 해주세요")
+    if (props.isLoggedIn) {
+      setModalOpen(true);
+    } else {
+      alert("로그인 해주세요");
     }
     // if (props.isLoggedIn) {
     //   axios
@@ -92,38 +91,34 @@ export default function AlignItemsList(props: AlignItemsListProps) {
     // }
   }, [DELAPI, props]);
 
-  const copyClick = useCallback(()=>{
+  const copyClick = useCallback(() => {
+    alert("준비중입니다.");
+  }, []);
 
-    alert("준비중입니다.")
-  },[])
+  const onSubmit = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-
-  const onSubmit = useCallback((e:any)=>{
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (props.isLoggedIn) {
-      axios
-        .post(DELAPI, {})
-        .then((result) => {
-          const Posts = props.posts.filter((post) => post.id !== props.id);
-          props.setPost(Posts);
-          setModalOpen(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("버그 발생!")
-        });
-    } else {
-      //로그인 모달 띄우기
-      alert("로그인 해주세요");
-    }
-  },[props.isLoggedIn, props.posts])
-
-
-
-
-
+      if (props.isLoggedIn) {
+        axios
+          .post(DELAPI, {})
+          .then((result) => {
+            const Posts = props.posts.filter((post) => post.id !== props.id);
+            props.setPost(Posts);
+            setModalOpen(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("버그 발생!");
+          });
+      } else {
+        //로그인 모달 띄우기
+        alert("로그인 해주세요");
+      }
+    },
+    [props.isLoggedIn, props.posts]
+  );
 
   const editClick = useCallback(() => {
     alert("만드는 중입니다..");
@@ -132,15 +127,13 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   useEffect(() => {
     setCategory(props.category);
     setSeason("23SS");
-    if(props.Images[0] == undefined){
-
-    }
-    else{
+    if (props.Images[0] == undefined) {
+    } else {
       // console.log("props")
       // console.log(props)
-      setImagePath(`../${props.Images[0].src}`)
+      setImagePath(`../${props.Images[0].src}`);
     }
-  }, [props.category,props.Images]);
+  }, [props.category, props.Images]);
 
   const TagClick = React.useCallback((e: any, hashname: string) => {
     e.preventDefault();
@@ -172,107 +165,171 @@ export default function AlignItemsList(props: AlignItemsListProps) {
 
   return (
     <>
-    { modalOpen && 
-    <Modal
-      open={true}
-      onClose={closeModal}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        onSubmit={onSubmit}
-        sx={style}
-      >
-        {/* <form onSubmit={onSubmit}> */}
-        <Typography component="h2" variant="h5" sx={{ textAlign: "center", marginBottom:"15px" }}>
-          정말 삭제하시겠습니까?
-        </Typography>
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{ mt: 3, mb: 2, width:"40%", marginLeft:"5%", marginRight:"10%" }}
-          size="large"
+      {modalOpen && (
+        <Modal
+          open={true}
+          onClose={closeModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          삭제
-        </Button>
-        
-        <Button
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2, width:"40%" }}
-          size="large"
-          onClick={closeModal}
-        >
-          취소
-        </Button>
-        {/* </form> */}
-      </Box>
-      {/* <Button onClick={closeModal}>닫기</Button> */}
-    </Modal>
-    }
-    <Card
-      sx={{
-        maxWidth: "15",
-        marginTop: "20px",
-        // borderRadius: "24px",
-        boxShadow: "none",
-      }}
-    >
-      <CardActionArea href={`${props.link}`} target="_blank">
-        <CardMedia
-          component="img"
-          height="400"
-          image={ImagePath}
-          alt="이미지 오류, 삭제 후 다시 등록해주세요"
-        />
-        <CardContent>
-          <Typography>
-            <span
-              style={{ fontWeight: 900, fontSize: "130%", marginBottom: "4%" }}
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            onSubmit={onSubmit}
+            sx={style}
+          >
+            {/* <form onSubmit={onSubmit}> */}
+            <Typography
+              component="h2"
+              variant="h5"
+              sx={{ textAlign: "center", marginBottom: "15px" }}
             >
-              {props.name[0]}_{`${props.brand}`}
-            </span>
-          </Typography>
+              정말 삭제하시겠습니까?
+            </Typography>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                mt: 3,
+                mb: 2,
+                width: "40%",
+                marginLeft: "5%",
+                marginRight: "10%",
+              }}
+              size="large"
+            >
+              삭제
+            </Button>
 
-          {/* <span style={{fontWeight :900, fontSize: "100%", marginBottom: 5}}>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, width: "40%" }}
+              size="large"
+              onClick={closeModal}
+            >
+              취소
+            </Button>
+            {/* </form> */}
+          </Box>
+          {/* <Button onClick={closeModal}>닫기</Button> */}
+        </Modal>
+      )}
+      <Card
+        sx={{
+          maxWidth: "15",
+          marginTop: "20px",
+          // borderRadius: "24px",
+          boxShadow: "none",
+        }}
+      >
+        {/* <Typography>
+          <span style={{ float: "left", color: "#A6A6A6", fontSize: "80%" }}>
+            {props.name}문병욱
+          </span>
+        </Typography> */}
+        <CardActionArea href={`${props.link}`} target="_blank">
+          <CardMedia
+            component="img"
+            height="400"
+            image={ImagePath}
+            alt="이미지 오류, 삭제 후 다시 등록해주세요"
+          />
+
+          <CardContent>
+            <Typography>
+              <span
+                style={{
+                  fontWeight: 900,
+                  fontSize: "130%",
+                  marginBottom: "4%",
+                }}
+              >
+                {`${props.brand}`}
+              </span>
+            </Typography>
+
+            {/* <span style={{fontWeight :900, fontSize: "100%", marginBottom: 5}}>
             참고할 부분
           </span> */}
-          <Typography
-            sx={{ fontWeight: 900, marginBottom: "1%" }}
-            variant="subtitle2"
-            color="text.secondary"
-          >
-            참고할 부분
-          </Typography>
+            <Typography
+              sx={{ fontWeight: 900, marginBottom: "1%" }}
+              variant="subtitle2"
+              color="text.secondary"
+            >
+              참고할 부분
+            </Typography>
 
-          <Typography
-            sx={{ marginBottom: "1%" }}
-            variant="body2"
-            color="text.secondary"
+            <Typography
+              sx={{ marginBottom: "1%" }}
+              variant="body2"
+              color="text.secondary"
+            >
+              {props.reason}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <div
+            style={{
+              width: "100%",
+              display: "inline-block",
+              marginBottom: "5px",
+            }}
           >
-            {props.reason}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <div style={{ width: "100%", display:"inline-block", marginBottom:"5px"}}>
-          <div style={{ width: "20%", marginBottom: "3%", verticalAlign:"center" , display:"inline-block"}}>
-            <FavoriteBorderIcon onClick={() => alert("준비중입니다")}  sx={{opacity:"40%"}}/>
-            <span style={{position:"relative", top:"-7px", marginLeft:"5px", color:"#A6A6A6"}}>0</span>
+            <div
+              style={{
+                width: "20%",
+                marginBottom: "3%",
+                verticalAlign: "center",
+                display: "inline-block",
+              }}
+            >
+              <FavoriteBorderIcon
+                onClick={() => alert("준비중입니다")}
+                sx={{ opacity: "40%" }}
+              />
+              <span
+                style={{
+                  position: "relative",
+                  top: "-7px",
+                  marginLeft: "5px",
+                  color: "#A6A6A6",
+                }}
+              >
+                0
+              </span>
+            </div>
+            <div
+              style={{
+                width: "60%",
+                marginBottom: "3%",
+                display: "inline-block",
+                float: "right",
+              }}
+            >
+              <DeleteIcon
+                id="delicon"
+                onClick={delClick}
+                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
+              />
+              <EditIcon
+                id="editicon"
+                onClick={editClick}
+                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
+              />
+              <FileCopyIcon
+                id="copyicon"
+                onClick={copyClick}
+                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
+              />
+            </div>
           </div>
-          <div style={{ width: "60%", marginBottom: "3%", display:"inline-block", float:"right"}}>
-            <DeleteIcon id="delicon" onClick={delClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
-            <EditIcon id="editicon" onClick={editClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
-            <FileCopyIcon id="copyicon" onClick={copyClick} sx={{marginRight:"10px", opacity:"40%", float:"right"}}/>
-          </div>
-        </div>
-        {/* <Button size="small" color="primary">
+          {/* <Button size="small" color="primary">
           Share
         </Button> */}
-        {/* <div style={{ margin: "2px" }}>
+          {/* <div style={{ margin: "2px" }}>
           <div
             className={`Tag${parseInt(props.season) % 10} Tag`}
             style={{ display: "inline-block", margin: "2px" }}
@@ -290,24 +347,37 @@ export default function AlignItemsList(props: AlignItemsListProps) {
           </div>{" "}
           &nbsp;
         </div> */}
-        {props.hashtags.map((hashtag, index) => (
-          <div style={{ margin: "2px" }} key={index}>
-            <div
-              className={`Tag${
-                parseInt(hashtag.PostHashtag.HashtagId) % 8
-              } Tag`}
-              style={{ display: "inline-block", margin: "2px" }}
-              onClick={(e) => {
-                TagClick(e, hashtag.name);
+          {props.hashtags.map((hashtag, index) => (
+            <div style={{ margin: "2px" }} key={index}>
+              <div
+                className={`Tag${
+                  parseInt(hashtag.PostHashtag.HashtagId) % 8
+                } Tag`}
+                style={{ display: "inline-block", margin: "2px" }}
+                onClick={(e) => {
+                  TagClick(e, hashtag.name);
+                }}
+              >
+                <a href="">#{hashtag.name}</a>
+              </div>{" "}
+              &nbsp;
+            </div>
+          ))}
+
+          <div style={{width:"100%"}}>
+            <span
+              style={{
+                float: "left",
+                color: "#A6A6A6",
+                fontSize: "80%",
+                marginTop: "10px",
               }}
             >
-              <a href="">#{hashtag.name}</a>
-            </div>{" "}
-            &nbsp;
+              작성자 : {props.name}
+            </span>
           </div>
-        ))}
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
     </>
   );
 }

@@ -18,6 +18,8 @@ export default function Home() {
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
   const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+
   var sliceCount = 24;
   var resultStore:any[];
 
@@ -33,6 +35,8 @@ export default function Home() {
           slicedPosts.push(result.data[i])
         }
         setPost(slicedPosts);
+        setPage(1)
+        console.log("loadpost")
         setCount( Math.ceil(result.data.length / sliceCount))
         // for(let i=0; i< result.data.length ; i++){
         //   console.log(result.data[i].Images[0])
@@ -57,6 +61,8 @@ export default function Home() {
       slicedPosts.push(resultStore[i])
     }
     setPost(slicedPosts);
+    setPage(value)
+    console.log("hanlde")
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
   },[])
@@ -112,7 +118,7 @@ export default function Home() {
         />
         <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
-            <Pagination count={count} color="primary" onChange={handleChange}/>
+            <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
           </Stack>
         </div>
       </div>

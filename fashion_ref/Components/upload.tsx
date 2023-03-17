@@ -296,9 +296,9 @@ export default function Upload(props: UploadProps) {
           aria-describedby="modal-modal-description"
         >
           <Box component="form" noValidate autoComplete="off" sx={modalstyle}>
-            <div style={{ height: "300px", overflow: "overlay" }}>
+            <div className="hashlistdiv" style={{ height: "300px", overflow: "overlay" }}>
               {hashTags.data.map((hashtag, index) => (
-                <li key={index} style={{ listStyle: "none" }}>
+                <li id="hashlist" key={index} style={{ listStyle: "none" }}>
                   {" "}
                   #{hashtag.name}
                 </li>
