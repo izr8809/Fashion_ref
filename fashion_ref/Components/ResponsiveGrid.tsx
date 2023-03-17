@@ -31,6 +31,7 @@ export default function ResponsiveGrid({ setIsLoggedIn, isLoggedIn, setPost, pos
   },[])
 
   return (
+    <>
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
         {posts.map((post, index) => (
@@ -51,5 +52,6 @@ export default function ResponsiveGrid({ setIsLoggedIn, isLoggedIn, setPost, pos
         ))}
       </Grid>
     </Box>
+    </>
   );
 }

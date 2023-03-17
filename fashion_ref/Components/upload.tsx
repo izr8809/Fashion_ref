@@ -189,8 +189,6 @@ export default function Upload(props: UploadProps) {
     data: [{ name: "" }],
   });
   useEffect(() => {
-    console.log(props.userId);
-    console.log(props.userName);
     axios
       .get(USERINFOAPI, {})
       .then((result) => {
@@ -205,7 +203,6 @@ export default function Upload(props: UploadProps) {
     axios
       .get(GETHASHAPI)
       .then((result) => {
-        console.log(result);
         setShowHashModalOpen(true);
         setHashTags(result);
         // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
@@ -215,6 +212,8 @@ export default function Upload(props: UploadProps) {
         alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
       });
   }, []);
+
+
   const onSubmit = (e: any) => {
     console.log("!");
     if (brand == "") {
@@ -229,10 +228,6 @@ export default function Upload(props: UploadProps) {
       e.preventDefault();
       e.stopPropagation();
       // location.reload();
-      console.log("submit");
-      console.log(props.userId);
-      console.log(props.userName);
-
       const formData = new FormData();
       formData.append("image", imageFile as File);
       formData.append("userId", props.userId);

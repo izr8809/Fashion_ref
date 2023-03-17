@@ -5,15 +5,21 @@ import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
 import axios from "axios";
-import React, { useCallback, useState, useEffect,useMemo  } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 // const inter = Inter({ subsets: ["latin"] });
+
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [posts, setPost] = useState<any[]>([]);
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
+  const [count, setCount] = useState(0);
+  var sliceCount = 24;
+  var resultStore:any[];
 
   const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
@@ -21,7 +27,13 @@ export default function Home() {
     axios
       .get(LOADAPI)
       .then((result) => {
-        setPost(result.data);
+        const slicedPosts =[];
+        resultStore = result.data;
+        for(let i=0; i< sliceCount; i++){
+          slicedPosts.push(result.data[i])
+        }
+        setPost(slicedPosts);
+        setCount( Math.ceil(result.data.length / sliceCount))
         // for(let i=0; i< result.data.length ; i++){
         //   console.log(result.data[i].Images[0])
         //   console.log(i)
@@ -32,12 +44,22 @@ export default function Home() {
         // history.replace('/login');
       })
       .catch((error) => {
-        
         alert("로딩이 정상적으로 되지 않았습니다.");
         setPost([]);
         console.log(error);
       });
   }, [setPost]);
+
+  const handleChange = useCallback((event: React.ChangeEvent<unknown>, value: number)=>{
+    const slicedPosts =[];
+    const num = (resultStore.length < sliceCount*value) ? resultStore.length : sliceCount*value
+    for(let i=sliceCount*(value-1); i< num; i++){
+      slicedPosts.push(resultStore[i])
+    }
+    setPost(slicedPosts);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  },[])
 
   useEffect(() => {
     loadPost();
@@ -73,11 +95,10 @@ export default function Home() {
             isLoggedIn={isLoggedIn}
             setIsLoggedIn={setIsLoggedIn}
             setPost={setPost}
-            userId = {userId}
-            setUserId = {setUserId}
-            userName= {userName}
-            setUserName = {setUserName}
-
+            userId={userId}
+            setUserId={setUserId}
+            userName={userName}
+            setUserName={setUserName}
           />
           {/* <LoginForm /> */}
           {/* <SignupForm /> */}
@@ -88,6 +109,11 @@ export default function Home() {
           setPost={setPost}
           posts={posts}
         />
+        <div>
+          <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
+            <Pagination count={count} color="primary" onChange={handleChange}/>
+          </Stack>
+        </div>
       </div>
     </>
   );
