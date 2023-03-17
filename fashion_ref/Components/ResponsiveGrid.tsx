@@ -26,6 +26,10 @@ type ResponsiveGridProps = {
 };
 
 export default function ResponsiveGrid({ setIsLoggedIn, isLoggedIn, setPost, posts }: ResponsiveGridProps) {
+  const [Imagesrc, setImagesrc] = useState("");
+  useEffect(()=>{
+  },[])
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
@@ -41,7 +45,7 @@ export default function ResponsiveGrid({ setIsLoggedIn, isLoggedIn, setPost, pos
                 // marginTop: "1%",-
               }}
             >
-            <AlignItemsList isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={post.name} index={index} setPost={setPost} posts={posts} id={post.id} category={post.category} brand={post.brand} src={post.Images[0].src}link={post.link} season={post.season} hashtags ={post.Hashtags} reason ={post.reason}/> </li>
+            <AlignItemsList isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} name={post.name} index={index} setPost={setPost} posts={posts} id={post.id} category={post.category} brand={post.brand} Images={post.Images}link={post.link} season={post.season} hashtags ={post.Hashtags} reason ={post.reason}/> </li>
             </Item>
           </Grid>
         ))}

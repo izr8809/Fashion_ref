@@ -17,7 +17,10 @@ type AlignItemsListProps = {
   category: string;
   brand: string;
   link: string;
-  src: string;
+  Images: [{
+    src :string,
+  }
+  ];
   season: string;
   reason: string;
   hashtags: any[];
@@ -60,6 +63,7 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
   const DELAPI = `${process.env.NEXT_PUBLIC_API}/deletpost/${props.id}`;
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [ImagePath, setImagePath] = React.useState("");
   
   const closeModal = () => {
     setModalOpen(false);
@@ -128,6 +132,14 @@ export default function AlignItemsList(props: AlignItemsListProps) {
   useEffect(() => {
     setCategory(props.category);
     setSeason("23SS");
+    if(props.Images[0] == undefined){
+
+    }
+    else{
+      // console.log("props")
+      // console.log(props)
+      setImagePath(`../${props.Images[0].src}`)
+    }
   }, [props.category]);
 
   const TagClick = React.useCallback((e: any, hashname: string) => {
@@ -213,8 +225,8 @@ export default function AlignItemsList(props: AlignItemsListProps) {
         <CardMedia
           component="img"
           height="400"
-          image={`../${props.src}`}
-          alt="green iguana"
+          image={ImagePath}
+          alt="이미지 오류, 삭제 후 다시 등록해주세요"
         />
         <CardContent>
           <Typography>
