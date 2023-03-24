@@ -1,6 +1,14 @@
 import '@/styles/globals.scss'
+import '@/styles/uploadfiles.scss'
 import type { AppProps } from 'next/app'
+import wrapper from '../store/configureStore';
 
-export default function App({ Component, pageProps }: AppProps) {
+
+const App = ({ Component, pageProps }: AppProps) =>{
+
   return <Component {...pageProps} />
 }
+
+// export default App;
+export default wrapper.withRedux(App);
+;

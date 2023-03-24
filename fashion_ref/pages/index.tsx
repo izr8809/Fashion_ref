@@ -5,85 +5,92 @@ import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
 import axios from "axios";
+import { useSelector } from 'react-redux';
+import { initialState as postinitialState } from "@/reducers/post";
+import { initialState as userinitialState } from "@/reducers/user";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-// const inter = Inter({ subsets: ["latin"] });
-
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { loadPost } from "@/reducers/post";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [posts, setPost] = useState<any[]>([]);
+  // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  const { user } = useSelector((state : any) => state.user)
+  const dispatch = useDispatch();
+
+
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
+  const [resultStore, setResultStore] = useState([]);
 
   var sliceCount = 24;
-  var resultStore:any[];
 
   const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
 
-  const loadPost = useCallback(() => {
+  const loadPosts = useCallback(() => {
     axios
       .get(LOADAPI)
       .then((result) => {
         const slicedPosts =[];
-        resultStore = result.data;
+        setResultStore(result.data)
         for(let i=0; i< sliceCount; i++){
           slicedPosts.push(result.data[i])
         }
-        setPost(slicedPosts);
-        setPage(1)
-        console.log("loadpost")
-        setCount( Math.ceil(result.data.length / sliceCount))
-        // for(let i=0; i< result.data.length ; i++){
-        //   console.log(result.data[i].Images[0])
-        //   console.log(i)
 
-        // }
-        // for(let i=0 ; i< result.data.lengths
-        // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-        // history.replace('/login');
+        dispatch(loadPost(slicedPosts))
+
+        console.log(result.data)
+        // setPost(slicedPosts);
+        setPage(1)
+        setCount( Math.ceil(result.data.length / sliceCount))
       })
       .catch((error) => {
         alert("로딩이 정상적으로 되지 않았습니다.");
-        setPost([]);
+        
         console.log(error);
+        dispatch(loadPost([]))
       });
-  }, [setPost]);
+  }, [LOADAPI, dispatch, sliceCount]);
 
   const handleChange = useCallback((event: React.ChangeEvent<unknown>, value: number)=>{
-    const slicedPosts =[];
+    const slicedPosts:any[] =[];
     const num = (resultStore.length < sliceCount*value) ? resultStore.length : sliceCount*value
     for(let i=sliceCount*(value-1); i< num; i++){
       slicedPosts.push(resultStore[i])
     }
-    setPost(slicedPosts);
+
+    
+    dispatch(loadPost(slicedPosts))
+
     setPage(value)
     console.log("hanlde")
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  },[])
+  },[dispatch, sliceCount, resultStore])
 
   useEffect(() => {
-    loadPost();
-  }, [loadPost]);
+    loadPosts();
+  }, [loadPosts]);
 
-  const LOGINCHECKAPI = `${process.env.NEXT_PUBLIC_API}/logincheck`;
-  useEffect(() => {
-    axios
-      .get(LOGINCHECKAPI)
-      .then((result) => {
-        if (result.data.login) {
-          setIsLoggedIn(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  // const LOGINCHECKAPI = `${process.env.NEXT_PUBLIC_API}/logincheck`;
+  // useEffect(() => {
+  //   axios
+  //     .get(LOGINCHECKAPI)
+  //     .then((result) => {
+  //       if (result.data.login) {
+  //         dispatch(loginAction())
+  //         // setIsLoggedIn(true);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [LOGINCHECKAPI, dispatch]);
 
   return (
     <>
@@ -93,35 +100,26 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div style={{ margin: "auto", width: "80%" }}>
-        <a onClick={loadPost}>
+        <a onClick={loadPosts}>
           <h1 id="title">CRUMP REFERENCE</h1>
         </a>
         <div style={{ marginBottom: "40px" }}>
           <Navbar
-            isLoggedIn={isLoggedIn}
-            setIsLoggedIn={setIsLoggedIn}
-            setPost={setPost}
             userId={userId}
             setUserId={setUserId}
             userName={userName}
             setUserName={setUserName}
             setCount={setCount}
           />
-          {/* <LoginForm /> */}
-          {/* <SignupForm /> */}
         </div>
         <ResponsiveGrid
-          isLoggedIn={isLoggedIn}
-          setIsLoggedIn={setIsLoggedIn}
-          setPost={setPost}
-          posts={posts}
           setCount={setCount}
         />
-        <div>
+        {/* <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
           </Stack>
-        </div>
+        </div> */}
       </div>
     </>
   );

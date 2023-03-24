@@ -12,27 +12,28 @@ import Badge from "@mui/material/Badge";
 // import { useNavigate  } from 'react-router-dom'; // 설치한 패키지
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import useInput from "../hooks/useInput";
 import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
-import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import Signup from "@/Components/signup";
+import Signup from "@/Components/Signup";
+import Upload from "@/Components/Upload";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import Upload from "@/Components/upload";
 import { useCallback, useEffect, useState } from "react";
 import Login from "@/Components/LoginForm";
 import LoginForm from "@/Components/LoginForm";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
+import Searchbar from "./Searchbar";
+
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -52,53 +53,8 @@ const modalstyle = {
   boxShadow: 24,
   p: 4,
 };
-const inter = Inter({ subsets: ["latin"] });
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha("#F8F8F8", 0.73),
-  "&:hover": {
-    backgroundColor: alpha("#F8F8F8", 0.33),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-    height: "40%",
-  },
-}));
 
 type NavbarProps = {
-  setIsLoggedIn: any;
-  isLoggedIn: boolean;
-  setPost: any;
   userId : string;
   setUserId : any;
   userName : string;
@@ -107,9 +63,6 @@ type NavbarProps = {
 };
 
 export default function Navbar({
-  isLoggedIn,
-  setIsLoggedIn,
-  setPost,
   userId,
   setUserId,
   userName,
@@ -117,19 +70,22 @@ export default function Navbar({
   setCount,
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
-  const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
+  
+  //redux
+  const {isLoggedIn} = useSelector((state : any) => state.user)  
+  const { user } = useSelector((state : any) => state.user)
+  // const isLoggedIn = false;
+  const dispatch = useDispatch();
+
   const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
-  const API = `${process.env.NEXT_PUBLIC_API}/loadpost`;
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
-  const [value, onChangeValue] = useInput("");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
   const [category, setCategory] = React.useState("");
   const [season, setSeason] = React.useState("");
-  const searchBar = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
   const [hashTags, setHashTags] = React.useState({
@@ -147,11 +103,6 @@ export default function Navbar({
     setShowHashModalOpen(false);
   };
 
-  useEffect(() => {
-    if (searchBar.current) {
-      searchBar.current.focus();
-    }
-  }, []);
 
   const showModal = () => {
     setModalOpen(true);
@@ -183,11 +134,13 @@ export default function Navbar({
     axios
       .get(LOGOUTAPI)
       .then((result) => {
-        if (result.data.message == "ok") setIsLoggedIn(false);
-        setloginModalOpen(false);
+        if (result.data.message == "ok")
+          dispatch(logoutRequestAction());
+          //dispatch 
+        // setloginModalOpen(false);
       })
       .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
-  }, [setIsLoggedIn]);
+  }, [dispatch]);
 
   const uploadClick = useCallback(() => {
     if (isLoggedIn) {
@@ -203,56 +156,6 @@ export default function Navbar({
 
   const onReady = useCallback(()=>{alert("준비중입니다.")},[])
 
-  const TagSearch = React.useCallback(
-    (e: any) => {
-      // e.preventDeafult();
-      // e.stopPropagation();
-      if (value == "") {
-        axios
-          .get(API)
-          .then((result) => {
-            setPost(result.data);
-            // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-            // history.replace('/login');
-          })
-          .catch((error) => {
-            alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
-          });
-      } else if (value.split("#").length < 2) {
-        alert("태그 앞에 #를 붙여주세요");
-      } else {
-        let upperCaseValue = value.toUpperCase();
-        e.preventDefault();
-        e.stopPropagation();
-        axios
-          .post(
-            HASHAPI,
-            {
-              hashtags: upperCaseValue,
-              category: category,
-              season: season,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                // 'Accept': 'application/json',
-              },
-            }
-          )
-          .then((result) => {
-            setPost(result.data);
-            setCount(1)
-            // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-            // history.replace('/login');
-          })
-          .catch((error) => {
-            alert("해시태그 포함된 포스팅이 없습니다.");
-            console.log(error);
-          });
-      }
-    },
-    [value, setPost, category, season]
-  );
 
   const getHashtags = useCallback(()=>{
     axios
@@ -266,7 +169,7 @@ export default function Navbar({
     .catch((error) => {
       alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
     });
-  },[])
+  },[GETHASHAPI])
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -344,7 +247,7 @@ export default function Navbar({
   return (
     <Box sx={{ flexGrow: 1 }}>
       {!isLoggedIn && modalOpen && (
-        <Signup setIsLoggedIn={setIsLoggedIn} setModalOpen={setModalOpen} 
+        <Signup setModalOpen={setModalOpen} 
         userId = {userId}
         setUserId = {setUserId}
         userName= {userName}
@@ -359,12 +262,7 @@ export default function Navbar({
       )}
       {!isLoggedIn && loginModalOpen && (
         <LoginForm
-          setIsLoggedIn={setIsLoggedIn}
           setloginModalOpen={setloginModalOpen}
-          userId = {userId}
-          setUserId = {setUserId}
-          userName= {userName}
-          setUserName = {setUserName}
         />
       )}
       {showHashModalOpen && <Modal
@@ -497,30 +395,7 @@ export default function Navbar({
             </Select>
           </FormControl> */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
-          <form
-            onSubmit={TagSearch}
-            style={{ width: "70%", flex: "auto", marginLeft: "15%" }}
-          >
-            <IconButton
-              type="submit"
-              aria-label="search"
-              sx={{ display: { xs: "none", md: "inline-block" } }}
-            >
-              <SearchIcon style={{ fill: "#9A9A9A" }} />
-            </IconButton>
-            <TextField
-              id="search-bar"
-              className="text"
-              sx={{ display: "inline-block", width: "80%" }}
-              value={value}
-              onChange={onChangeValue}
-              label="#상의 #검정"
-              variant="outlined"
-              placeholder="Search..."
-              size="small"
-              inputRef={searchBar}
-            />
-          </form>
+          <Searchbar />
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>

@@ -12,11 +12,11 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { color } from "@mui/system";
+import { useDispatch } from "react-redux";
+import { loginRequestAction } from "@/reducers/user";
 
 type SignupProps = {
   setModalOpen: any;
-  setIsLoggedIn: any;
   userId : string;
   setUserId : any;
   userName : string;
@@ -35,13 +35,13 @@ const style = {
   p: 4,
 };
 export default function Signup({
-  setIsLoggedIn,
   setModalOpen,
   userId,
   setUserId,
   userName,
   setUserName,
 }: SignupProps): ReactElement {
+  const dispatch = useDispatch();
   const API = `${process.env.NEXT_PUBLIC_API}/signups`;
   const [email, onChangeEmail] = useInput("");
   const [emailError, setEmailError] = useState(false);
@@ -109,7 +109,7 @@ export default function Signup({
           //   console.log(response); // response.data로 해야?
           // })
           .then((result) => {
-            setIsLoggedIn(true);
+            dispatch(loginRequestAction())
             setUserId(result.data.userId);
             setUserName(result.data.userName);
             // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
@@ -127,7 +127,7 @@ export default function Signup({
       //   return setTermError(true);
       // }
     },
-    [email, password, passwordCheck, setIsLoggedIn, nickname]
+    [API, dispatch, setUserId, setUserName, email, password, passwordCheck, nickname]
   );
 
   return (

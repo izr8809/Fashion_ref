@@ -105,9 +105,14 @@ app.prepare().then(() => {
 
   server.post("/login", async (req, res) => {
     // user 정보를 DB에서 조회
+    console.log("email" +req.body.email)
+
+    let email = req.body.email;
+    let password = req.body.password;
+
     let passwordmatch;
     const userInfo = await User.findOne({
-      where: { email: req.body.email },
+      where: { email: email },
       // attributes: {
       //   exclude: ['password']
       // },
@@ -115,7 +120,7 @@ app.prepare().then(() => {
 
     if (userInfo) {
       passwordmatch = bcrypt.compareSync(
-        req.body.password,
+        password,
         userInfo.password,
         12
       );
@@ -123,7 +128,6 @@ app.prepare().then(() => {
     }
 
     // userInfo 결과 존재 여부에 따른 응답
-    console.log(passwordmatch);
     if (!userInfo) {
       res.status(400).send({ data: null, message: "not authorized" });
     } else if (passwordmatch) {
@@ -177,9 +181,7 @@ app.prepare().then(() => {
       const userInfo = await User.findOne({
         where: { email: req.body.email },
       });
-      console.log("uerInfo" + userInfo);
       if (!userInfo) {
-        console.log("uerInfo" + userInfo);
         //회원가입 성공
         const user = await User.create({
           email: req.body.email,
@@ -237,8 +239,6 @@ app.prepare().then(() => {
   server.post("/uploads", upload.single("image"), async (req, res) => {
     try {
       let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
-      console.log("qqqq" + req.body.userId);
-      console.log("qqqq" + req.session.userId);
 
       if(req.file){
 

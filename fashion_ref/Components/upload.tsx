@@ -21,7 +21,8 @@ import useInput from "../hooks/useInput";
 import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
 import Router from "next/router";
-
+import { useDispatch } from "react-redux";
+import { addPost } from "@/reducers/post";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 const modalstyle = {
@@ -64,18 +65,13 @@ interface IFileTypes {
   object: File;
 }
 export default function Upload(props: UploadProps) {
+
+  const dispatch = useDispatch();
   const [file, setFile] = useState({ name: "" });
-  const button = useRef();
-  // const handleChange = (file: any) => {
-  //   setFile(file);
-  //   console.log(file);
-  // };
   const API = `${process.env.NEXT_PUBLIC_API}/uploads`;
   const [imageFile, setImageFile] = useState<File>();
-  const [value, setValue] = React.useState("");
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
-  const [nickname, onChangeNickname] = useInput("");
   const [reason, onChangeReason] = useInput("");
   const [brand, onChangeBrand] = useInput("");
   const [link, onChangeLink] = useInput("");
@@ -90,13 +86,6 @@ export default function Upload(props: UploadProps) {
     props.setuploadModalOpen(false);
   };
   const { title, desc, photos } = post;
-  // const handlechange = e =>{
-  //   setPost({
-  //     ...post,
-  //     [e.target.name]: e.target.value;
-  //   })
-  // }
-
   const closehashtagsModal = () => {
     setShowHashModalOpen(false);
   };
@@ -178,26 +167,23 @@ export default function Upload(props: UploadProps) {
     handfiles(files);
   };
 
-  const uploadClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-  }, []);
+  // const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
+  // const [userInfo, setUserInfo] = useState({ name: "" });
 
-  const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
-  const [userInfo, setUserInfo] = useState({ name: "" });
-
+  // useEffect(() => {
+  //   axios
+  //     .get(USERINFOAPI, {})
+  //     .then((result) => {
+  //       setUserInfo(result.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, [props.userId, USERINFOAPI]);
+  
   const [hashTags, setHashTags] = React.useState({
     data: [{ name: "" }],
   });
-  useEffect(() => {
-    axios
-      .get(USERINFOAPI, {})
-      .then((result) => {
-        setUserInfo(result.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [props.userId]);
 
   const getHashtags = useCallback(() => {
     axios
@@ -211,7 +197,7 @@ export default function Upload(props: UploadProps) {
       .catch((error) => {
         alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
       });
-  }, []);
+  }, [GETHASHAPI]);
 
 
   const onSubmit = (e: any) => {
@@ -243,6 +229,7 @@ export default function Upload(props: UploadProps) {
       axios
         .post(API, formData)
         .then((result) => {
+          dispatch(addPost(result));
           console.log(result);
           location.reload();
           // const ele = document.getElementById('submit_bt');
@@ -253,38 +240,6 @@ export default function Upload(props: UploadProps) {
           location.reload();
         });
     }
-    //   axios
-    //     .post(
-    //       API,
-    //       // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-    //       // 회원가입창에서 클라이언트가 입력하는 데이터
-    //       {
-    //         nickname: nickname,
-    //         brand: brand,
-    //         link: link, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
-    //         image : (imageFile as File).name
-    //       },
-    //       {
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //           // 'Accept': 'application/json',
-    //         },
-    //       }
-    //     )
-    //     // 그러면 서버에서 클라이언트로 response(응답)으로
-    //     // {ok: true} 아니면 {ok: false}가 온다.
-    //     // .then((response) => {
-    //     //   console.log(response); // response.data로 해야?
-    //     // })
-    //     .then((result) => {
-    //       console.log(result);
-    //       // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-    //       // history.replace('/login');
-    //     })
-    //     .catch((error) => {
-    //       alert("회원가입이 정상적으로 되지 않았습니다.");
-    //       console.log(error);
-    //     });
   };
   return (
     <>
@@ -470,7 +425,7 @@ export default function Upload(props: UploadProps) {
                     id="filephotos"
                     onChange={handlefilechange}
                   />
-                  <label htmlFor="filephotos">Drag & Drop</label>
+                  <label htmlFor="filephotos">이미지를 드래그해서 넣어주세요</label>
                 </div>
               )}
               <div className="custom-file-preview">
