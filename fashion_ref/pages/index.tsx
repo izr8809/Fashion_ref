@@ -102,7 +102,7 @@ export default function Home() {
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
           </Stack>
         </div> */}
-        {loadPostLoading && <div style={{width:"100%"}}><span style={{fontSize : "240%"}}> 로딩중</span></div>}
+        {loadPostLoading && <div id="bottomloading" ><span style={{fontSize : "240%"}}> 로딩중...</span></div>}
       </div>
     </>
   );

@@ -2331,14 +2331,12 @@ function Home() {
                     }),
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {}),
                     loadPostLoading && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                        style: {
-                            width: "100%"
-                        },
+                        id: "bottomloading",
                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                             style: {
                                 fontSize: "240%"
                             },
-                            children: " 로딩중"
+                            children: " 로딩중..."
                         })
                     })
                 ]
