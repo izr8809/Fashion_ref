@@ -120,7 +120,7 @@ router.get("/loadPost", async function (req, res) {
     // console.log(req.query.lastId)
     const posts = await Post.findAll({
       where,
-      limit: 24,
+      limit: 16,
       order: [["createdAt", "DESC"]],
       include: [
         {
