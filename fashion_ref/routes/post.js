@@ -144,12 +144,51 @@ router.get("/loadPost", async function (req, res) {
 
 router.post("/deletpost/:postId", async function (req, res) {
   try {
-    await Post.destroy({
-      where: {
-        id: parseInt(req.params.postId),
-      },
+    const post = await Post.findOne({
+      where: { id: parseInt(req.params.postId) },
+      include: [
+        {
+          model: Hashtag,
+        },
+      ],
     });
-    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+
+    if (!post) {
+      res.status(403).send("게시글이 없습니다.");
+    } else {
+      // 해시태그 가진 포스팅 하나 남은 경우 헤ㅐ시태그제거
+      const where = {};
+      for (let i = 0; i < post.Hashtags.length; i++) {
+        console.log(post.Hashtags[i])
+        const postHasHashtag = await Post.findAll({
+          where,
+          // limit: 24, limit 나중에 줘야함
+          include: [
+            {
+              model: Hashtag,
+              where: {
+                name: post.Hashtags[i].name,
+              },
+            },
+          ],
+        });
+        
+        if (postHasHashtag.length == 1) {
+          await Hashtag.destroy({
+            where: {
+              name: post.Hashtags[i].name,
+            },
+          });
+        }
+      }
+
+      await Post.destroy({
+        where: {
+          id: parseInt(req.params.postId),
+        },
+      });
+      res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+    }
   } catch (error) {
     console.error(error);
   }
@@ -276,7 +315,7 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
       name: post.name,
       UserId: post.UserId,
     });
-    
+
     const result = await Promise.all(
       hashtags.map((tag) =>
         Hashtag.findOrCreate({

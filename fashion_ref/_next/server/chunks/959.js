@@ -500,6 +500,7 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_pos
 
 // axios.defaults.baseURL = process.env.NEXT_PUBLIC_API
 axios__WEBPACK_IMPORTED_MODULE_3__["default"].defaults.baseURL = "http://15.164.224.172:8080/";
+// axios.defaults.baseURL = 'http://localhost:8080/';
 axios__WEBPACK_IMPORTED_MODULE_3__["default"].defaults.withCredentials = true;
 function* rootSaga() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.all)([
@@ -627,7 +628,6 @@ function likePostAPI(data) {
 }
 function* likePost(action) {
     try {
-        console.log(action.data);
         const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(likePostAPI, action.data);
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
             type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .LIKE_POST_SUCCESS */ .SI,

@@ -6,6 +6,7 @@ import axios from "axios";
 // axios.defaults.baseURL = process.env.NEXT_PUBLIC_API
 
 axios.defaults.baseURL = 'http://15.164.224.172:8080/';
+// axios.defaults.baseURL = 'http://localhost:8080/';
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {
