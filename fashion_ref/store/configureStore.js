@@ -10,8 +10,7 @@ const loggerMiddleware = ({ dispatch, getState}) => (next) => (action) => {
   // if(typeof action ==='function'){
   //   return action(dispatch, getState, extraArgument)
   // }
-  console.log(action);
-
+  // console.log(action);
   return next(action);
 }
 

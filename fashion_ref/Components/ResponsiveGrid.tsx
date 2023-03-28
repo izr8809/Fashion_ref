@@ -3,7 +3,7 @@ import { experimentalStyled as styled } from "@mui/material/styles";
 import { useCallback, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import Card from "./Cardpost";
+import Cardpost from "./Cardpost";
 import Grid from "@mui/material/Grid";
 import { useInput } from "@mui/base";
 import axios from "axios";
@@ -19,15 +19,18 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 type ResponsiveGridProps = {
-  setCount: any;
 };
 
-export default function ResponsiveGrid({ setCount }: ResponsiveGridProps) {
+export default function ResponsiveGrid({}: ResponsiveGridProps) {
   const { postArray } = useSelector((state: any) => state.post);
 
   const [Imagesrc, setImagesrc] = useState("");
-  useEffect(() => {}, []);
 
+  useEffect(() => {
+    console.log(postArray)
+  }, [postArray]);
+
+  //check if I like
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -49,12 +52,12 @@ export default function ResponsiveGrid({ setCount }: ResponsiveGridProps) {
                       // marginTop: "1%",-
                     }}
                   >
-                    <Card
-                      setCount={setCount}
+                    <Cardpost
                       index={index}
                       name={post.name}
                       posts={postArray}
                       id={post.id}
+                      likers={post.Likers}
                       category={post.category}
                       brand={post.brand}
                       Images={post.Images}

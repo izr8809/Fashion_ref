@@ -4,93 +4,76 @@ import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
-import axios from "axios";
-import { useSelector } from 'react-redux';
-import { initialState as postinitialState } from "@/reducers/post";
+import axios, { AxiosHeaders } from "axios";
+import { useSelector } from "react-redux";
+import {
+  initialState as postinitialState,
+  LOAD_POST_REQUEST,
+} from "@/reducers/post";
 import { initialState as userinitialState } from "@/reducers/user";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import { loadPost } from "@/reducers/post";
+import { loadUser } from "@/reducers/user";
 import { useDispatch } from "react-redux";
+import wrapper from "@/store/configureStore";
+import { END } from "redux-saga";
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    const cookie: any = context.req ? context.req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+    context.store.dispatch(loadPost());
+    context.store.dispatch(loadUser());
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+  }
+);
 
 export default function Home() {
   // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
-  const { user } = useSelector((state : any) => state.user)
+  const { user } = useSelector((state: any) => state.user);
+  const { loadPostLoading } = useSelector((state: any) => state.post);
+  const { hasMorePost } = useSelector((state: any) => state.post);
+  const { postArray } = useSelector((state: any) => state.post);
   const dispatch = useDispatch();
-
 
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-  const [count, setCount] = useState(0);
-  const [page, setPage] = useState(1);
   const [resultStore, setResultStore] = useState([]);
 
   var sliceCount = 24;
 
-  const LOADAPI = `${process.env.NEXT_PUBLIC_API}/loadpost`;
+  useEffect(() => {
+    function onScroll() {
+      if (
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 350
+      ) {
+        if (hasMorePost && !loadPostLoading) {
+          const lastId = postArray[postArray.length - 1].id;
+          dispatch({
+            type: LOAD_POST_REQUEST,
+            data: lastId,
+          });
+        }
+      }
+    }
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [hasMorePost, loadPostLoading, dispatch, postArray]);
+
+
 
   const loadPosts = useCallback(() => {
-    axios
-      .get(LOADAPI)
-      .then((result) => {
-        const slicedPosts =[];
-        setResultStore(result.data)
-        for(let i=0; i< sliceCount; i++){
-          slicedPosts.push(result.data[i])
-        }
+    dispatch(loadPost());
+  }, [dispatch]);
 
-        dispatch(loadPost(slicedPosts))
-
-        console.log(result.data)
-        // setPost(slicedPosts);
-        setPage(1)
-        setCount( Math.ceil(result.data.length / sliceCount))
-      })
-      .catch((error) => {
-        alert("로딩이 정상적으로 되지 않았습니다.");
-        
-        console.log(error);
-        dispatch(loadPost([]))
-      });
-  }, [LOADAPI, dispatch, sliceCount]);
-
-  const handleChange = useCallback((event: React.ChangeEvent<unknown>, value: number)=>{
-    const slicedPosts:any[] =[];
-    const num = (resultStore.length < sliceCount*value) ? resultStore.length : sliceCount*value
-    for(let i=sliceCount*(value-1); i< num; i++){
-      slicedPosts.push(resultStore[i])
-    }
-
-    
-    dispatch(loadPost(slicedPosts))
-
-    setPage(value)
-    console.log("hanlde")
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  },[dispatch, sliceCount, resultStore])
-
-  useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
-
-  // const LOGINCHECKAPI = `${process.env.NEXT_PUBLIC_API}/logincheck`;
-  // useEffect(() => {
-  //   axios
-  //     .get(LOGINCHECKAPI)
-  //     .then((result) => {
-  //       if (result.data.login) {
-  //         dispatch(loginAction())
-  //         // setIsLoggedIn(true);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [LOGINCHECKAPI, dispatch]);
 
   return (
     <>
@@ -101,7 +84,9 @@ export default function Home() {
       </Head>
       <div style={{ margin: "auto", width: "80%" }}>
         <a onClick={loadPosts}>
-          <h1 id="title">CRUMP REFERENCE</h1>
+          <h1 id="title" style={{ cursor: "pointer" }}>
+            CRUMP REFERENCE
+          </h1>
         </a>
         <div style={{ marginBottom: "40px" }}>
           <Navbar
@@ -109,17 +94,15 @@ export default function Home() {
             setUserId={setUserId}
             userName={userName}
             setUserName={setUserName}
-            setCount={setCount}
           />
         </div>
-        <ResponsiveGrid
-          setCount={setCount}
-        />
+        <ResponsiveGrid />
         {/* <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
           </Stack>
         </div> */}
+        {loadPostLoading && <span>LOADING</span>}
       </div>
     </>
   );

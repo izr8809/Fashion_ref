@@ -33,6 +33,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
 import Searchbar from "./Searchbar";
+import LoadingButton from '@mui/lab/LoadingButton';
+import { GET_HASHTAGS_REQUEST } from "@/reducers/post";
 
 
 const style: React.CSSProperties = {
@@ -59,7 +61,6 @@ type NavbarProps = {
   setUserId : any;
   userName : string;
   setUserName : any;
-  setCount: any,
 };
 
 export default function Navbar({
@@ -67,13 +68,16 @@ export default function Navbar({
   setUserId,
   userName,
   setUserName,
-  setCount,
 }: NavbarProps): ReactElement {
   // const navigate = useNavigate();
   
   //redux
-  const {isLoggedIn} = useSelector((state : any) => state.user)  
+  const {logInDone} = useSelector((state : any) => state.user)  
+  // const {userInfo} = useSelector((state : any) => state.user)  
   const { user } = useSelector((state : any) => state.user)
+  const { logOutLoading } = useSelector((state : any) => state.user)
+  const { hashtags } = useSelector((state : any) => state.post)
+  
   // const isLoggedIn = false;
   const dispatch = useDispatch();
 
@@ -84,19 +88,13 @@ export default function Navbar({
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
-  const [category, setCategory] = React.useState("");
-  const [season, setSeason] = React.useState("");
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
-  const [hashTags, setHashTags] = React.useState({
-    data :[
-      {name : ""},
-    ]
-  });
+  
 
 
   const closeModal = () => {
-    setModalOpen(false);
+    setIsModalOpen(false);
   };
   
   const closehashtagsModal = () => {
@@ -105,8 +103,9 @@ export default function Navbar({
 
 
   const showModal = () => {
-    setModalOpen(true);
+    setIsModalOpen(true);
   };
+
   const showLoginModal = () => {
     setloginModalOpen(true);
   };
@@ -130,25 +129,30 @@ export default function Navbar({
     handleMobileMenuClose();
   };
   const Logout = useCallback(() => {
-    const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
-    axios
-      .get(LOGOUTAPI)
-      .then((result) => {
-        if (result.data.message == "ok")
-          dispatch(logoutRequestAction());
-          //dispatch 
-        // setloginModalOpen(false);
-      })
-      .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
+    dispatch(logoutRequestAction());
+
+    //왜인지 모르겠는데 로그아웃 후 모달 켜짐
+    setloginModalOpen(false)
+
+
+    // const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
+    // axios
+    //   .get(LOGOUTAPI)
+    //   .then((result) => {
+    //     if (result.data.message == "ok")
+    //       //dispatch 
+    //     // setloginModalOpen(false);
+    //   })
+    //   .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
   }, [dispatch]);
 
   const uploadClick = useCallback(() => {
-    if (isLoggedIn) {
+    if (user) {
       setuploadModalOpen(true);
     } else {
       setloginModalOpen(true);
     }
-  }, [isLoggedIn]);
+  }, [user]);
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
@@ -158,18 +162,24 @@ export default function Navbar({
 
 
   const getHashtags = useCallback(()=>{
-    axios
-    .get(GETHASHAPI)
-    .then((result) => {
-      setShowHashModalOpen(true);
-      setHashTags(result)
-      // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-      // history.replace('/login');
+    //dispatch
+    dispatch({
+      type: GET_HASHTAGS_REQUEST,
     })
-    .catch((error) => {
-      alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
-    });
-  },[GETHASHAPI])
+    setShowHashModalOpen(true);
+
+    // axios
+    // .get(GETHASHAPI)
+    // .then((result) => {
+    //   setShowHashModalOpen(true);
+    //   setHashTags(result)
+    //   // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
+    //   // history.replace('/login');
+    // })
+    // .catch((error) => {
+    //   alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
+    // });
+  },[dispatch])
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -246,22 +256,26 @@ export default function Navbar({
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {!isLoggedIn && modalOpen && (
-        <Signup setModalOpen={setModalOpen} 
+      {!user && isModalOpen && (
+        <Signup 
+        isModalOpen = {isModalOpen}
+        setIsModalOpen={setIsModalOpen} 
         userId = {userId}
         setUserId = {setUserId}
         userName= {userName}
         setUserName = {setUserName}/>
       )}
-      {isLoggedIn && uploadModalOpen && (
-        <Upload setuploadModalOpen={setuploadModalOpen} 
-        userId = {userId}
-        setUserId = {setUserId}
-        userName= {userName}
-        setUserName = {setUserName}/>
+      {user && uploadModalOpen && (
+        <Upload 
+        uploadModalOpen={uploadModalOpen} 
+        setuploadModalOpen={setuploadModalOpen} 
+        edit ={false}
+        postId ={null}
+        />
       )}
-      {!isLoggedIn && loginModalOpen && (
+      {!user && loginModalOpen && (
         <LoginForm
+          loginModalOpen = {loginModalOpen}
           setloginModalOpen={setloginModalOpen}
         />
       )}
@@ -278,8 +292,8 @@ export default function Navbar({
         sx={modalstyle}
       >
       <div className="hashlistdiv" style={{height:"300px", overflow : "overlay"}}>
-      {hashTags.data.map((hashtag, index)=> (
-        <li id="hashlist" key={index} style={{listStyle: "none", marginBottom:"5px"}}> #{hashtag.name}</li>
+      {hashtags && hashtags.map((hashtag:any, index:any)=> (
+        <li id="hashlist" key={hashtag.id} style={{listStyle: "none", marginBottom:"5px"}}> #{hashtag.name}</li>
       ))}
       </div>
         
@@ -419,7 +433,7 @@ export default function Navbar({
                 <AddIcon />
               </IconButton>
             </>
-            {!isLoggedIn ? (
+            {!user ? (
               <>
                 <Button
                   type="submit"
@@ -455,7 +469,7 @@ export default function Navbar({
               </>
             ) : (
               <>
-                <Button
+                <LoadingButton
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -469,9 +483,10 @@ export default function Navbar({
                   }}
                   size="small"
                   onClick={Logout}
+                  loading={logOutLoading}
                 >
                   로그아웃
-                </Button>
+                </LoadingButton>
                 <IconButton
                   size="large"
                   edge="end"

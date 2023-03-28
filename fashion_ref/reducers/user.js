@@ -1,20 +1,47 @@
+import produce from 'immer';
+
 export const initialState = {
-  isLoggedIn: false,
-  isLoggingIn: false,
-  isLoggingOut: false,
+  loadUserLoading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
+  logInLoading: false,
+  logInDone: false,
+  logInError: null,
+  logOutLoading: false,
+  logOutDone: false,
+  logOutError: null,
+  signUpLoading: false,
+  signUpDone: false,
+  signUpFailure: null,
   user: null,
   signUpData: {},
   loginData: {},
+  posts:[],
 };
 
-const LOG_IN_REQUEST = "LOG_IN_REQUEST";
-const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
-const LOG_IN_FAILURE = "LOG_IN_FAILURE";
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 
-const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
-const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
-const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
+export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
+export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
+export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
 
+export const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
+export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
+export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
+
+export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
+export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+
+export const loadUser = (data) => {
+  return {
+    type: LOAD_USER_REQUEST,
+    data,
+  };
+};
 
 export const loginRequestAction = (data) => {
   return {
@@ -58,52 +85,108 @@ export const logoutFailureAction = (data) => {
   };
 };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOG_IN_REQUEST:
-      return {
-        ...state,
-        isLoggedIn: true,
-        isLoggingIn: true,
-        user: action.data,
-      };
-    case LOG_IN_SUCCESS:
-      return {
-        ...state,
-        isLoggedIn: true,
-        isLoggingIn: false,
-        user: action.data,
-      };
-      
-    case LOG_IN_FAILURE:
-      return {
-        ...state,
-        isLoggedIn: false,
-        isLoggingIn: false,
-        user: null,
-      };
 
-    case LOG_OUT_REQUEST:
-      return {
-        ...state,
-        isLoggingOut: true,
-      };
-      
-    case LOG_OUT_SUCCESS:
-      return {
-        ...state,
-        isLoggingOut: false,
-        isLoggedIn:false,
-      };
-      
-    case LOG_OUT_FAILURE:
-      return {
-        ...state,
-        isLoggingOut: false,
-      };
-    default:
-      return state;
-  }
+export const signupRequestAction = (data) => {
+  return {
+    type: SIGN_UP_REQUEST,
+    data,
+  };
+};
+
+export const signupSuccessAction = (data) => {
+  return {
+    type: SIGN_UP_SUCCESS,
+    data,
+  };
+};
+
+export const signupFailureAction = (data) => {
+  return {
+    type: SIGN_UP_FAILURE,
+    data,
+  };
+};
+
+
+const reducer = (state = initialState, action) => {
+  return produce (state, (draft)=>{
+    switch (action.type) {
+    
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = true;
+        draft.user = action.data;
+        draft.loadUserDone = true;
+        break;
+        
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
+  
+      case LOG_IN_REQUEST:
+        draft.logInLoading = false;
+        draft.logInError = null;
+        draft.user = action.data;
+        break;
+
+      case LOG_IN_SUCCESS:
+        draft.logInDone = true;
+        draft.logInLoading = false;
+        draft.user = action.data;
+        break;
+
+      case LOG_IN_FAILURE:
+        draft.logInLoading = false;
+        draft.logInError = action.error;
+        draft.user = null;
+        break;
+  
+      case LOG_OUT_REQUEST:
+        draft.logOutLoading = true;
+        break;
+  
+      case LOG_OUT_SUCCESS:
+        draft.logOutDone = false;
+        draft.logOutLoading = false;
+        draft.logOutError = null; 
+        draft.user = null;
+        break;
+  
+      case LOG_OUT_FAILURE:
+        draft.logOutLoading = false;
+        draft.logOutError = action.error; 
+        break;
+
+        
+      case SIGN_UP_REQUEST:
+        draft.signUpLoading = true;
+        draft.signUpError = null;
+        draft.signUpDone = false;
+        break;
+
+      case SIGN_UP_SUCCESS:
+        draft.signUpLoading = true;
+        draft.user = action.data;
+        draft.signUpDone = true;
+        break;
+        
+      case SIGN_UP_FAILURE:
+        draft.signUpLoading = false;
+        draft.signUpError = action.error;
+        break;
+  
+        
+      default:
+        return state;
+    }
+  });
+  
 };
 
 export default reducer;

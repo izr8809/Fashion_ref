@@ -1,5 +1,6 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
+import { experimentalStyled as styled } from "@mui/material/styles";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
@@ -11,14 +12,22 @@ import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { loadPost } from "@/reducers/post"; 
-import FavoriteBorderTwoToneIcon from '@mui/icons-material/FavoriteBorderTwoTone';
+import {
+  DELETE_POST_REQUEST,
+  DUPLICATE_POST_REQUEST,
+  HASHTAG_SEARCH_REQUEST,
+  LIKE_POST_REQUEST,
+  loadPost,
+  UNLIKE_POST_REQUEST,
+} from "@/reducers/post";
+import FavoriteBorderTwoToneIcon from "@mui/icons-material/FavoriteBorderTwoTone";
+import LoginForm from "./LoginForm";
+import Upload from "./Upload";
 
 type CardpostProps = {
-  setCount: any;
   index: number;
   posts: any[];
   category: string;
@@ -37,6 +46,7 @@ type CardpostProps = {
     };
     name: string;
   }[];
+  likers : any[];
 };
 const style = {
   position: "absolute" as "absolute",
@@ -49,11 +59,25 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+const StyledCardAction = styled(CardActions)`
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 8px;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+
 export default function Cardpost(props: CardpostProps) {
   // const isLoggedIn = false;
   const [like, setLike] = useState(false);
-  const { isLoggedIn } = useSelector((state: any) => state.user);
-  const { postArray } = useSelector((state: any) => state.post);
+  const [likeClick, setLikeClick] = useState(props.likers?.length || 0);
+  const { user } = useSelector((state: any) => state.user);
+  const {logInDone}= useSelector((state: any) => state.user);
+  const [loginModalOpen, setIsLoginFormOpen] = useState(false);
+  const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+
   const dispatch = useDispatch();
 
   const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
@@ -65,65 +89,77 @@ export default function Cardpost(props: CardpostProps) {
     setModalOpen(false);
   };
 
-  const onToggleLike = useCallback(()=>{
-    setLike( (prev) => !prev )
-  },[])
+  const onToggleLike = useCallback(() => {
+    if (user) {
+      setLike((prev) => !prev);
+
+      if (!like) {
+        dispatch({
+          type: LIKE_POST_REQUEST,
+          data: props.id,
+        });
+        setLikeClick((prev) => prev+1)
+      } else {
+        dispatch({
+          type: UNLIKE_POST_REQUEST,
+          data: props.id,
+        });
+        setLikeClick((prev) => prev-1)
+      }
+    } else {
+      alert("로그인 해주세요");
+      setIsLoginFormOpen(true);
+      //로그인 모달 띄우기 넣어야
+    }
+  }, [user, like, props.id]);
 
   const delClick = useCallback(() => {
-    if (isLoggedIn) {
+    if (user) {
       setModalOpen(true);
     } else {
       alert("로그인 해주세요");
+      setIsLoginFormOpen(true);
       //로그인 모달 띄우기 넣어야
     }
-    // if (props.isLoggedIn) {
-    //   axios
-    //     .post(DELAPI, {})
-    //     .then((result) => {
-    //       const Posts = props.posts.filter((post) => post.id !== props.id);
-    //       props.setPost(Posts);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // } else {
-    //   //로그인 모달 띄우기
-    //   alert("로그인 해주세요");
-    // }
-  }, [isLoggedIn]);
+  }, [user]);
 
-  const copyClick = useCallback(() => {
-    alert("준비중입니다.");
-  }, []);
+  const duplicateClick = useCallback(() => {
+
+    if (!user) {
+      return alert("로그인이 필요합니다.");
+    }
+
+    return dispatch({
+      type: DUPLICATE_POST_REQUEST,
+      data: props.id,
+    });
+  }, [dispatch, props.id, user]);
 
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (isLoggedIn) {
-        axios
-          .post(DELAPI, {})
-          .then((result) => {
-            const Posts = props.posts.filter((post) => post.id !== props.id);
-            dispatch(loadPost(result.data));
-            setModalOpen(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("버그 발생!");
-          });
-      } else {
-        //로그인 모달 띄우기
-        alert("로그인 해주세요");
+      if (!user) {
+        return alert("로그인이 필요합니다.");
       }
+
+      return dispatch({
+        type: DELETE_POST_REQUEST,
+        data: props.id,
+      });
     },
-    [DELAPI,dispatch, props.id, props.posts,  isLoggedIn]
+    [dispatch, props.id, user]
   );
 
   const editClick = useCallback(() => {
-    alert("만드는 중입니다..");
-  }, []);
+    // if (!user) {
+    //   return alert("로그인이 필요합니다.");
+    // }
+    // setIsUploadFormOpen(true);
+    
+    alert("준비중입니다.");
+  }, [props.id, user, setIsUploadFormOpen]);
 
   useEffect(() => {
     if (props.Images[0] == undefined) {
@@ -134,37 +170,43 @@ export default function Cardpost(props: CardpostProps) {
     }
   }, [props.Images]);
 
-  const TagClick = React.useCallback((e: any, hashname: string) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const TagClick = React.useCallback(
+    (e: any, hashname: string) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    axios
-      .post(
-        HASHAPI,
-        {
+      dispatch({
+        type: HASHTAG_SEARCH_REQUEST,
+        data: {
           hashtags: "#" + hashname,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            // 'Accept': 'application/json',
-          },
-        }
-      )
-      .then((result) => {
-        dispatch(loadPost(result.data));
-        props.setCount(1);
-        // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-        // history.replace('/login');
-      })
-      .catch((error) => {
-        alert("해시태그 포함된 포스팅이 없습니다.");
-        console.log(error);
       });
-  }, [HASHAPI,dispatch, props]);
+    },
+    [ dispatch, props]
+  );
+
+    useEffect(()=>{
+      //like 눌렀는지
+      if(user?.data && props.likers ){
+        const isUserLiked = props.likers.find( (v) => v.id === user?.data.id)
+        if(isUserLiked)
+          setLike(true)
+        else 
+          setLike(false)
+      }
+    },[props.likers, user, props.id, logInDone])
 
   return (
     <>
+      {isUploadFormOpen && (
+        <Upload
+          setuploadModalOpen={setIsUploadFormOpen}
+          uploadModalOpen={isUploadFormOpen}
+          edit={true}
+          postId={props.id}
+        />
+      )}
+      {loginModalOpen && <LoginForm loginModalOpen={loginModalOpen} setloginModalOpen={setIsLoginFormOpen} />}
       {modalOpen && (
         <Modal
           open={true}
@@ -234,44 +276,84 @@ export default function Cardpost(props: CardpostProps) {
             component="img"
             height="400"
             image={ImagePath}
-            alt="이미지 오류, 삭제 후 다시 등록해주세요"
+            // alt="이미지 오류, 삭제 후 다시 등록해주세요"
           />
-          {/* <button style={{position: "absolute", top:"40%", left:"0%"}}> <span>s</span></button> */}
+        </CardActionArea>
+        {/* <button style={{position: "absolute", top:"40%", left:"0%"}}> <span>s</span></button> */}
 
-          <CardContent>
-            <Typography>
-              <span
-                style={{
-                  fontWeight: 900,
-                  fontSize: "130%",
-                  marginBottom: "4%",
-                }}
-              >
-                {`${props.brand}`}
-              </span>
-            </Typography>
+        <CardContent>
+          <div
+            style={{
+              width: "100%",
+              marginBottom: "3%",
+              display: "inline-block",
+            }}
+          >
+            <FileCopyIcon
+              id="copyicon"
+              onClick={duplicateClick}
+              sx={{
+                ":hover": { opacity: "50%" },
+                cursor: "pointer",
+                marginRight: "17px",
+                opacity: "25%",
+                width: "0.9em",
+              }}
+            />
+            <EditIcon
+              id="editicon"
+              onClick={editClick}
+              sx={{
+                ":hover": { opacity: "50%" },
+                cursor: "pointer",
+                opacity: "25%",
+                width: "0.9em",
+              }}
+            />
+            <DeleteIcon
+              id="delicon"
+              onClick={delClick}
+              sx={{
+                ":hover": { opacity: "50%" },
+                cursor: "pointer",
+                marginLeft: "17px",
+                opacity: "25%",
+                width: "0.9em",
+              }}
+            />
+          </div>
+          <Typography>
+            <span
+              style={{
+                fontWeight: 900,
+                fontSize: "130%",
+                marginBottom: "4%",
+              }}
+            >
+              {`${props.brand}`}
+            </span>
+          </Typography>
 
-            {/* <span style={{fontWeight :900, fontSize: "100%", marginBottom: 5}}>
+          {/* <span style={{fontWeight :900, fontSize: "100%", marginBottom: 5}}>
             참고할 부분
           </span> */}
-            <Typography
-              sx={{ fontWeight: 900, marginBottom: "2%" }}
-              variant="subtitle2"
-              color="text.secondary"
-            >
-              참고할 부분
-            </Typography>
+          <Typography
+            sx={{ fontWeight: 900, marginBottom: "2%" }}
+            variant="subtitle2"
+            color="text.secondary"
+          >
+            참고할 부분
+          </Typography>
 
-            <Typography
-              sx={{ marginBottom: "1%" }}
-              variant="body2"
-              color="text.secondary"
-            >
-              {props.reason}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
+          <Typography
+            sx={{ marginBottom: "1%" }}
+            variant="body2"
+            color="text.secondary"
+          >
+            {props.reason}
+          </Typography>
+        </CardContent>
+        <StyledCardAction>
           <div
             style={{
               width: "100%",
@@ -285,19 +367,20 @@ export default function Cardpost(props: CardpostProps) {
                 marginBottom: "3%",
                 verticalAlign: "center",
                 display: "inline-block",
+                float: "left",
               }}
             >
-              {like 
-              ? <FavoriteIcon
+              {like ? (
+                <FavoriteIcon
                   onClick={onToggleLike}
-                  sx={{ opacity: "80%", color:"#FF3040" }}
-                  
+                  sx={{ cursor: "pointer", opacity: "80%", color: "#FF3040" }}
                 />
-              : <FavoriteBorderTwoToneIcon
-                onClick={onToggleLike}
-                sx={{ opacity: "40%"}}
-              />
-              }
+              ) : (
+                <FavoriteBorderTwoToneIcon
+                  onClick={onToggleLike}
+                  sx={{ cursor: "pointer", opacity: "40%" }}
+                />
+              )}
               <span
                 style={{
                   position: "relative",
@@ -306,32 +389,8 @@ export default function Cardpost(props: CardpostProps) {
                   color: "#A6A6A6",
                 }}
               >
-                0
+                {likeClick ? likeClick : 0}
               </span>
-            </div>
-            <div
-              style={{
-                width: "60%",
-                marginBottom: "3%",
-                display: "inline-block",
-                float: "right",
-              }}
-            >
-              <DeleteIcon
-                id="delicon"
-                onClick={delClick}
-                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
-              />
-              <EditIcon
-                id="editicon"
-                onClick={editClick}
-                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
-              />
-              <FileCopyIcon
-                id="copyicon"
-                onClick={copyClick}
-                sx={{ marginRight: "10px", opacity: "40%", float: "right" }}
-              />
             </div>
           </div>
           {/* <Button size="small" color="primary">
@@ -382,7 +441,7 @@ export default function Cardpost(props: CardpostProps) {
               작성자 : {props.name}
             </span>
           </div>
-        </CardActions>
+        </StyledCardAction>
       </Card>
     </>
   );

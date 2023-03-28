@@ -26,13 +26,17 @@ const style = {
 };
 type LoginFormProps = {
   setloginModalOpen: any;
+  loginModalOpen : boolean;
 };
 export default function LoginForm({
   setloginModalOpen,
+  loginModalOpen,
 }: LoginFormProps): ReactElement {
   
   const dispatch = useDispatch();
-  const {isLoggingIn} = useSelector((state : any) => state.user)
+  const [isInitialOpen, setIsInitialOpen]= useState(true);
+  const {logInLoading} = useSelector((state : any) => state.user)
+  const {logInError} = useSelector((state : any) => state.user)
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
 
@@ -47,9 +51,8 @@ export default function LoginForm({
       } else if (password == "") {
         alert("비밀번호를 입력해주세요");
       } else {
-        console.log(email, password)
         dispatch(loginRequestAction({email,password}))
-        setloginModalOpen(false);
+        // setloginModalOpen(false);
         // axios
         //   .post(
         //     LOGINAPI,
@@ -85,8 +88,18 @@ export default function LoginForm({
         //   });
       }
     },
-    [email, password, dispatch, setloginModalOpen]
+    [email, password, dispatch]
   );
+
+  useEffect(()=>{
+    if(!logInLoading && !isInitialOpen){
+      console.log("change")
+      setloginModalOpen(false);
+    }
+    setIsInitialOpen(false);
+
+  },[logInLoading])
+
 
   return (
     <Modal
@@ -126,13 +139,14 @@ export default function LoginForm({
           variant="standard"
           onChange={onChangePassword}
         />
+        {logInError && <span style={{marginTop:"10px", color:"#F73334"}}> 로그인 정보가 일치하지 않습니다.</span>}
         <LoadingButton
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           size="large"
-          loading={isLoggingIn}
+          loading={logInLoading}
         >
           로그인
         </LoadingButton>

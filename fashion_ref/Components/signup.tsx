@@ -16,7 +16,8 @@ import { useDispatch } from "react-redux";
 import { loginRequestAction } from "@/reducers/user";
 
 type SignupProps = {
-  setModalOpen: any;
+  isModalOpen: boolean;
+  setIsModalOpen: any;
   userId : string;
   setUserId : any;
   userName : string;
@@ -35,7 +36,8 @@ const style = {
   p: 4,
 };
 export default function Signup({
-  setModalOpen,
+  setIsModalOpen,
+  isModalOpen,
   userId,
   setUserId,
   userName,
@@ -74,7 +76,7 @@ export default function Signup({
   };
 
   const closeModal = () => {
-    setModalOpen(false);
+    setIsModalOpen(false);
   };
 
   const onSubmit = useCallback(
@@ -112,6 +114,7 @@ export default function Signup({
             dispatch(loginRequestAction())
             setUserId(result.data.userId);
             setUserName(result.data.userName);
+            closeModal();
             // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
             // history.replace('/login');
           })

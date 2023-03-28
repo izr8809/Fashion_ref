@@ -1,21 +1,26 @@
 const express = require("express");
 const next = require("next");
-const path = require("path");
-const fs = require("fs");
-const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const multer = require("multer");
 const prod = true;
 const app = next({ prod });
-var bodyParser = require("body-parser");
 const handle = app.getRequestHandler();
 const { sequelize } = require("./models");
-const passport = require("passport");
 const { User, Post, Hashtag, Image } = require("./models");
-const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
+const passport = require("passport");
+const dotenv = require('dotenv');
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
+
+var bodyParser = require("body-parser");
+
+
+//router
+const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
+
+//seqeulize setting
 sequelize
   .sync({ force: false })
   .then(() => {
@@ -27,29 +32,15 @@ sequelize
 
 dotenv.config();
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads");
-    },
-    filename(req, file, done) {
-      // 제로초.png
-      const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); // 제로초
-      done(null, basename + "_" + new Date().getTime() + ext); // 제로초15184712891.png
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-});
 
 app.prepare().then(() => {
   const server = express();
   server.use(express.static(__dirname));
   server.use("/", express.static(path.join(__dirname, "public")));
-  // server.use('/', express.static(path.join(__dirname, '/')));
   server.use(
     cors({
       origin: "*",
+      credentials: true,
     })
   );
   server.use(
@@ -77,11 +68,31 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
+  server.get("/dbfix", async function (req, res) {
+    //한번 수정하고 지우기
+    const where = {};
+    // console.log(req.query.lastId)
+    const posts = await Post.findAll({
+      where,
+      order: [["createdAt", "DESC"]],
+    });
+    for (let i = 0; i < posts.length; i++) {
+      const hashtags = [];
+      hashtags.push("#" + posts[i].name);
+      hashtags.push("#" + posts[i].brand);
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { name: tag.slice(1).toUpperCase() },
+          })
+        )
+      ); // [[노드, true], [리액트, true]]
+      await posts[i].addHashtags(result.map((v) => v[0]));
+    }
+  });
+
   server.get("/", function (req, res) {
     handle(req, res);
-    console.log(req.session.userId);
-    console.log(req.sessionID);
-    console.log(req.url, req.headers.cookie);
     // res.writeHead(200, { 'Set-Cookie': 'mycookie=test' });
     // const c = parseCookies(req.headers.cookie)
     // res.cookie('name', 'zerocho', {
@@ -92,330 +103,21 @@ app.prepare().then(() => {
     // res.clearCookie('name', 'zerocho', { httpOnly: true, secure: true });
     // res.sendFile(path.join(__dirname, '/server/pages/index.js'));
   });
-  server.get("/logincheck", function (req, res) {
-    if (req.session.userId) {
-      res.status(201).json({ login: true });
-    } else {
-      res.status(201).json({ login: false });
-    }
-    console.log(req.session.userId);
-    console.log(req.sessionID);
-    console.log(req.url, req.headers.cookie);
-  });
 
-  server.post("/login", async (req, res) => {
-    // user 정보를 DB에서 조회
-    console.log("email" +req.body.email)
-
-    let email = req.body.email;
-    let password = req.body.password;
-
-    let passwordmatch;
-    const userInfo = await User.findOne({
-      where: { email: email },
-      // attributes: {
-      //   exclude: ['password']
-      // },
-    });
-
-    if (userInfo) {
-      passwordmatch = bcrypt.compareSync(
-        password,
-        userInfo.password,
-        12
-      );
-      console.log("passwordamtch");
-    }
-
-    // userInfo 결과 존재 여부에 따른 응답
-    if (!userInfo) {
-      res.status(400).send({ data: null, message: "not authorized" });
-    } else if (passwordmatch) {
-      req.session.save(function () {
-        // req.session.save(callback)은 사용하지 않아도 됨
-        req.session.userId = userInfo.id;
-        req.session.name = userInfo.name;
-        res.json({ data: userInfo, message: "ok" });
-        // post 요청에 대한 응답이기에 {data:null}이 되므로, {data: userInfo} 무의미하여 생략 가능
-      });
-    } else {
-      res.status(400).send({ data: null, message: "wrong" });
-    }
-  });
-
-  server.get("/logincheck", function (req, res) {
-    if (req.session.userId) {
-      res.status(201).json({ login: true });
-    } else {
-      res.status(201).json({ login: false });
-    }
-    console.log(req.session.userId);
-    console.log(req.sessionID);
-    console.log(req.url, req.headers.cookie);
-  });
-
-  server.get("/userInfo", function (req, res) {
-    if (req.session.userId) {
-      res.status(201).json({ id: req.session.id, name: req.session.name });
-    } else {
-      res.status(400).send({ data: null, message: "not authorized" });
-    }
-  });
-
-  server.get("/logout", (req, res) => {
-    console.log("logout");
-    console.log(req.session.userId);
-    if (!req.session.userId) {
-      res.status(400).send({ data: null, message: "not authorized" });
-    } else {
-      req.session.destroy(); // 세션 삭제
-      res.json({ data: null, message: "ok" });
-    }
-  });
-
-  server.post("/signups", async function (req, res) {
-    const hashedPassword = await bcrypt.hash(req.body.password, 12);
-    console.log(req.body.password);
-    console.log(hashedPassword);
-    try {
-      const userInfo = await User.findOne({
-        where: { email: req.body.email },
-      });
-      if (!userInfo) {
-        //회원가입 성공
-        const user = await User.create({
-          email: req.body.email,
-          name: req.body.name,
-          password: hashedPassword,
-        });
-        const { password, ...userWithoutPassword } = user;
-        req.session.userId = user.id;
-        req.session.name = user.name;
-        res
-          .status(201)
-          .json({
-            userId: userWithoutPassword.dataValues.id,
-            userName: userWithoutPassword.dataValues.name,
-            message: "success",
-          });
-      } else {
-        //이미 존재하는 ID
-        res.status(400).send({ data: null, message: "already exist" });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
-  // server.post('/addpost', async (req,res)=>{
-
-  //   try{
-  //     const post = await Post.create({
-  //       email : req.body.email,
-  //       name : req.body.name,
-  //       password : hashedPassword,
-  //     });
-
-  //   }
-  //   catch(err){
-  //     console.log(err);
-  //   }
-  // })
-  // server.use('/post', postrouter)
-  server.get("/getHash", async function (req, res) {
-    try {
-      where ={};
-      const hashtags = await Hashtag.findAll({
-        where,
-        // limit: 10,
-        order: [["createdAt", "DESC"]],
-      });
-      res.status(200).json(hashtags);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  server.post("/uploads", upload.single("image"), async (req, res) => {
-    try {
-      let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
-
-      if(req.file){
-
-        const post = await Post.create({
-          link: req.body.link,
-          brand: req.body.brand,
-          category: req.body.category,
-          season: req.body.season,
-          reason: req.body.reason,
-          // name: req.body.userName,
-          // UserId : req.body.userId,
-          name: req.session.name,
-          UserId: req.session.userId,
-        });
-  
-        if (!hashtags) {
-          hashtags = [];
-        }
-  
-        hashtags.push("#" + req.body.category);
-        hashtags.push("#" + req.body.season);
-        const result = await Promise.all(
-          hashtags.map((tag) =>
-            Hashtag.findOrCreate({
-              where: { name: tag.slice(1).toUpperCase() },
-            })
-          )
-        ); // [[노드, true], [리액트, true]]
-        await post.addHashtags(result.map((v) => v[0]));
-  
-        if (req.file) {
-          const image = await Image.create({ src: req.file.path });
-          await post.addImages(image);
-          // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-          //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-          //   await post.addImages(images);
-          // } else { // 이미지를 하나만 올리면 image: 제로초.png
-          // }
-        }
-        res.json({ data: null, message: "ok" });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  server.get("/loadpost", async function (req, res) {
-    try {
-      const where = {};
-      // if (parseInt(req.query.lastId, 10)) {
-      //   // 초기 로딩이 아닐 때
-      //   where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
-      // }
-      const posts = await Post.findAll({
-        where,
-        // limit: 10,
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Image,
-          },
-          {
-            model: Hashtag,
-          },
-        ],
-      });
-      // console.log(posts)
-      res.status(200).json(posts);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-  server.post("/deletpost/:postId", async function (req, res) {
-    try {
-      await Post.destroy({
-        where: {
-          id: req.params.postId,
-        },
-      });
-      res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  server.post("/hashtagsearch", async (req, res) => {
-    try {
-      const hashtags = req.body.hashtags.match(/#[^\s#]+/g);
-      // console.log("--------------------------");
-      // console.log("hash" + hashtags[0].split("#")[1]);
-      // console.log("hashtags length" + hashtags.length)
-      var hashtagjson = [];
-      for (let i = 0; i < hashtags.length; i++) {
-        hashtagjson = [...hashtagjson, { name: hashtags[i].split("#")[1] }];
-      }
-
-      where = {};
-      const posts = await Post.findAll({
-        where: {
-          // season: req.body.season,
-          // category: req.body.category,
-        },
-        limit: 100,
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Hashtag,
-            where: {
-              [Op.or]: hashtagjson,
-            },
-          },
-          {
-            model: Image,
-          },
-        ],
-      });
-
-      var PostIdlist = [];
-      for (let i = 0; i < posts.length; i++) {
-        if (posts[i].Hashtags.length == hashtags.length)
-          PostIdlist = [...PostIdlist, { id: posts[i].id }];
-      }
-      // console.log("########################");
-      // console.log(PostIdlist);
-      where = {};
-      const postsAllHashtags = await Post.findAll({
-        where: {
-          [Op.or]: PostIdlist,
-          // season: req.body.season,
-          // category: req.body.category,
-        },
-        limit: 100,
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Hashtag,
-          },
-          {
-            model: Image,
-          },
-        ],
-      });
-      // console.log(postsAllHashtags);
-
-      // console.log("--------------------------");
-      // console.log(Postlist)
-      res.status(200).json(postsAllHashtags);
-    } catch (err) {
-      console.log(err);
-    } // const postid = await Hashtag.findAll({
-    //   where : { name : [hashtags]}
-    // })
-
-    // const posts = await Post.findAll({
-    //   where,
-    //   // limit: 10,
-    //   order: [
-    //     ['createdAt', 'DESC'],
-    //   ],
-    //   include: [{
-    //     model: Image,
-    //   },{
-    //     model : Hashtag,
-    //   }]
-    // });
-  });
+   
+  server.use('/post', postRouter);
+  server.use('/user', userRouter);
 
   server.listen(8080, () => {
     console.log("서버 실행 중!");
   });
 });
 
-const parseCookies = (cookie = "") =>
-  cookie
-    .split(";")
-    .map((v) => v.split("="))
-    .reduce((acc, [k, v]) => {
-      acc[k.trim()] = decodeURIComponent(v);
-      return acc;
-    }, {});
+// const parseCookies = (cookie = "") =>
+//   cookie
+//     .split(";")
+//     .map((v) => v.split("="))
+//     .reduce((acc, [k, v]) => {
+//       acc[k.trim()] = decodeURIComponent(v);
+//       return acc;
+//     }, {});

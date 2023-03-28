@@ -16,13 +16,15 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import useInput from "../hooks/useInput";
 import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 import Router from "next/router";
 import { useDispatch } from "react-redux";
-import { addPost } from "@/reducers/post";
+import { addPost, ADD_POST_REQUEST, loadPost } from "@/reducers/post";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 const modalstyle = {
@@ -38,10 +40,9 @@ const modalstyle = {
 };
 type UploadProps = {
   setuploadModalOpen: any;
-  userId: string;
-  setUserId: any;
-  userName: string;
-  setUserName: any;
+  uploadModalOpen: boolean;
+  edit: boolean;
+  postId: number | null;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -65,26 +66,31 @@ interface IFileTypes {
   object: File;
 }
 export default function Upload(props: UploadProps) {
-
   const dispatch = useDispatch();
+  const [isInitialOpen, setIsInitialOpen] = useState(true);
+  const { user } = useSelector((state: any) => state.user);
+  const { postArray } = useSelector((state: any) => state.post);
   const [file, setFile] = useState({ name: "" });
-  const API = `${process.env.NEXT_PUBLIC_API}/uploads`;
+  const API = `${process.env.NEXT_PUBLIC_API}/addPost`;
   const [imageFile, setImageFile] = useState<File>();
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
-  const [reason, onChangeReason] = useInput("");
-  const [brand, onChangeBrand] = useInput("");
-  const [link, onChangeLink] = useInput("");
+  const [reason, onChangeReason, setReason] = useInput("");
+  const [brand, onChangeBrand, setBrand] = useInput("");
+  const [link, onChangeLink, setLink] = useInput("");
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
   const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
+  const { addPostLoading } = useSelector((state: any) => state.post);
+  const { addPostDone } = useSelector((state: any) => state.post);
   const [post, setPost] = useState({
     title: "",
     desc: "",
     photos: [null],
   });
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     props.setuploadModalOpen(false);
-  };
+  }, []);
+
   const { title, desc, photos } = post;
   const closehashtagsModal = () => {
     setShowHashModalOpen(false);
@@ -92,8 +98,8 @@ export default function Upload(props: UploadProps) {
   const inputRef = useRef(null);
   const [category, setCategory] = React.useState("상의");
   const [season, setSeason] = React.useState("23SS");
-
   const [text, onChangeText, setText] = useInput("");
+
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
   };
@@ -180,7 +186,7 @@ export default function Upload(props: UploadProps) {
   //       console.log(err);
   //     });
   // }, [props.userId, USERINFOAPI]);
-  
+
   const [hashTags, setHashTags] = React.useState({
     data: [{ name: "" }],
   });
@@ -195,52 +201,91 @@ export default function Upload(props: UploadProps) {
         // history.replace('/login');
       })
       .catch((error) => {
-        alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
+        alert("해시태그가 제대로 처리되지 않았습니다.");
       });
   }, [GETHASHAPI]);
 
+  const onSubmit = useCallback(
+    (e: any) => {
+      if (brand == "") {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("브랜드입력 필수");
+      } else if (imageFile == undefined) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("이미지 필수");
+      } else {
+        e.preventDefault();
+        e.stopPropagation();
+        const formData = new FormData();
+        formData.append("image", imageFile as File);
+        formData.append("userId", user.id);
+        formData.append("userName", user.userName);
+        formData.append("brand", brand);
+        formData.append("link", link);
+        formData.append("category", category);
+        formData.append("season", season);
+        formData.append("hashtag", text);
+        formData.append("reason", reason);
 
-  const onSubmit = (e: any) => {
-    console.log("!");
-    if (brand == "") {
-      e.preventDefault();
-      e.stopPropagation();
-      alert("브랜드입력 필수");
-    } else if (imageFile == undefined) {
-      e.preventDefault();
-      e.stopPropagation();
-      alert("이미지 필수");
-    } else {
-      e.preventDefault();
-      e.stopPropagation();
-      // location.reload();
-      const formData = new FormData();
-      formData.append("image", imageFile as File);
-      formData.append("userId", props.userId);
-      formData.append("userName", props.userName);
-      formData.append("brand", brand);
-      formData.append("link", link);
-      formData.append("category", category);
-      formData.append("season", season);
-      formData.append("hashtag", text);
-      formData.append("reason", reason);
-      // alert(formData)
+        // dispatch({
+        //   type: ADD_POST_REQUEST,
+        //   data : formData
+        // });
+        dispatch(addPost(formData));
 
-      axios
-        .post(API, formData)
-        .then((result) => {
-          dispatch(addPost(result));
-          console.log(result);
-          location.reload();
-          // const ele = document.getElementById('submit_bt');
-          // ele?.click();
-        })
-        .catch((err) => {
-          console.log(err);
-          location.reload();
-        });
+        // axios
+        //   .post(API, formData)
+        //   .then((result) => {
+        //     dispatch(addPost(result));
+        //     console.log(result);
+        //     location.reload();
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //     location.reload();
+        //   });
+      }
+    },
+    [brand, category, season, text, reason, link, user, dispatch, imageFile]
+  );
+
+  useEffect(() => {
+    if (addPostDone && !isInitialOpen) {
+      closeModal();
     }
-  };
+    setIsInitialOpen(false)
+  }, [addPostDone, dispatch, closeModal]);
+
+  useEffect(() => {
+    if (props.edit) {
+      const targetPost = postArray.find((post: any) => post.id === props.postId);
+      let postHashtags = "";
+      if (targetPost.Hashtags) {
+        targetPost.Hashtags.map(
+          (hashtag: any) =>
+            (postHashtags = postHashtags.concat("#" + hashtag?.name))
+        );
+      }
+      for (let i = 0; i < targetPost.Hashtags.length; i++) {
+        postHashtags.concat(`#${targetPost.Hashtags[i].name} `);
+      }
+      setCategory(targetPost.category);
+      setSeason(targetPost.season);
+      setText(postHashtags);
+      setBrand(targetPost.brand);
+      setReason(targetPost.reason);
+      setLink(targetPost.link);
+      console.log(targetPost);
+      setIsImage(true);
+      setPost({
+        ...post,
+        photos: photos.concat(targetPost.Images[0]),
+      });
+    }
+  }, [props.edit, postArray]);
+
   return (
     <>
       {showHashModalOpen && (
@@ -251,7 +296,10 @@ export default function Upload(props: UploadProps) {
           aria-describedby="modal-modal-description"
         >
           <Box component="form" noValidate autoComplete="off" sx={modalstyle}>
-            <div className="hashlistdiv" style={{ height: "300px", overflow: "overlay" }}>
+            <div
+              className="hashlistdiv"
+              style={{ height: "300px", overflow: "overlay" }}
+            >
               {hashTags.data.map((hashtag, index) => (
                 <li id="hashlist" key={index} style={{ listStyle: "none" }}>
                   {" "}
@@ -425,7 +473,9 @@ export default function Upload(props: UploadProps) {
                     id="filephotos"
                     onChange={handlefilechange}
                   />
-                  <label htmlFor="filephotos">이미지를 드래그해서 넣어주세요</label>
+                  <label htmlFor="filephotos">
+                    이미지를 드래그해서 넣어주세요
+                  </label>
                 </div>
               )}
               <div className="custom-file-preview">
@@ -448,15 +498,17 @@ export default function Upload(props: UploadProps) {
             style={{ display: "none" }}
             type="submit"
           ></button>
-          <Button
+          <LoadingButton
             type="submit"
+            loading={addPostLoading}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             size="large"
+            // loading={true}
           >
             확인
-          </Button>
+          </LoadingButton>
           {/* </form> */}
         </Box>
         {/* <Button onClick={closeModal}>닫기</Button> */}
