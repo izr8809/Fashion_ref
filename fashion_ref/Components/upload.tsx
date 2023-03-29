@@ -24,7 +24,7 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import Router from "next/router";
 import { useDispatch } from "react-redux";
-import { addPost, ADD_POST_REQUEST, loadPost } from "@/reducers/post";
+import { addPost, ADD_POST_REQUEST, GET_HASHTAGS_REQUEST, loadPost } from "@/reducers/post";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 const modalstyle = {
@@ -70,8 +70,9 @@ export default function Upload(props: UploadProps) {
   const [isInitialOpen, setIsInitialOpen] = useState(true);
   const { user } = useSelector((state: any) => state.user);
   const { postArray } = useSelector((state: any) => state.post);
+  const { hashtags } = useSelector((state : any) => state.post)
+  
   const [file, setFile] = useState({ name: "" });
-  const API = `${process.env.NEXT_PUBLIC_API}/addPost`;
   const [imageFile, setImageFile] = useState<File>();
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
@@ -79,7 +80,6 @@ export default function Upload(props: UploadProps) {
   const [brand, onChangeBrand, setBrand] = useInput("");
   const [link, onChangeLink, setLink] = useInput("");
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
-  const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
   const { addPostLoading } = useSelector((state: any) => state.post);
   const { addPostDone } = useSelector((state: any) => state.post);
   const [post, setPost] = useState({
@@ -192,18 +192,23 @@ export default function Upload(props: UploadProps) {
   });
 
   const getHashtags = useCallback(() => {
-    axios
-      .get(GETHASHAPI)
-      .then((result) => {
-        setShowHashModalOpen(true);
-        setHashTags(result);
-        // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-        // history.replace('/login');
-      })
-      .catch((error) => {
-        alert("해시태그가 제대로 처리되지 않았습니다.");
-      });
-  }, [GETHASHAPI]);
+    dispatch({
+      type: GET_HASHTAGS_REQUEST,
+    })
+    setShowHashModalOpen(true);
+    // axios
+    //   .get(GETHASHAPI)
+    //   .then((result) => {
+    //     setShowHashModalOpen(true);
+    //     setHashTags(result);
+    //     // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
+    //     // history.replace('/login');
+    //   })
+    //   .catch((error) => {
+    //     alert("해시태그가 제대로 처리되지 않았습니다.");
+    //   });
+
+  }, [dispatch]);
 
   const onSubmit = useCallback(
     (e: any) => {
@@ -218,11 +223,12 @@ export default function Upload(props: UploadProps) {
       } else {
         e.preventDefault();
         e.stopPropagation();
+        
         const formData = new FormData();
         formData.append("image", imageFile as File);
         formData.append("userId", user.id);
         formData.append("userName", user.userName);
-        formData.append("brand", brand);
+        formData.append("brand", brand.replace(" ", ""));
         formData.append("link", link);
         formData.append("category", category);
         formData.append("season", season);
@@ -300,7 +306,7 @@ export default function Upload(props: UploadProps) {
               className="hashlistdiv"
               style={{ height: "300px", overflow: "overlay" }}
             >
-              {hashTags.data.map((hashtag, index) => (
+              {hashtags && hashtags.map((hashtag :any, index :number) => (
                 <li id="hashlist" key={index} style={{ listStyle: "none" }}>
                   {" "}
                   #{hashtag.name}
