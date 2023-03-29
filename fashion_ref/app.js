@@ -68,29 +68,29 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  server.get("/dbfix", async function (req, res) {
-    //한번 수정하고 지우기
+  // server.get("/dbfix", async function (req, res) {
+  //   //한번 수정하고 지우기
     
-    const where = {};
-    const hashtags = await Hashtag.findAll({
-      where,
-      order: [["createdAt", "DESC"]],
-    });
-    // console.log(req.query.lastId)
-    for (let i = 0; i < hashtags.length; i++) {
-        hashtags.map((tag) =>
-           Hashtag.update(
-            {
-              name: tag.name.replace(" ", "")
-            },
-            {
-            where: { 
-             id: tag.id
-            },
-          })
-        )
-    }
-  });
+  //   const where = {};
+  //   const hashtags = await Hashtag.findAll({
+  //     where,
+  //     order: [["createdAt", "DESC"]],
+  //   });
+  //   // console.log(req.query.lastId)
+  //   for (let i = 0; i < hashtags.length; i++) {
+  //       hashtags.map((tag) =>
+  //          Hashtag.update(
+  //           {
+  //             name: tag.name.replace(" ", "")
+  //           },
+  //           {
+  //           where: { 
+  //            id: tag.id
+  //           },
+  //         })
+  //       )
+  //   }
+  // });
 
   server.get("/", function (req, res) {
     handle(req, res);
