@@ -14,6 +14,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import CloseIcon from '@mui/icons-material/Close';
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -349,7 +350,6 @@ export default function Upload(props: UploadProps) {
   }, [addPostDone, dispatch, closeModal, editPostDone,props.setIsEdit, editPostWithImagesDone]);
 
   useEffect(() => {
-    console.log(props.isEdit)
     if (props.isEdit) {
       const targetPost = postArray.find(
         (post: any) => post.id === props.postId
@@ -419,7 +419,7 @@ export default function Upload(props: UploadProps) {
       )}
       <Modal
         open={true}
-        onClose={closeModal}
+        // onClose={closeModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -431,6 +431,7 @@ export default function Upload(props: UploadProps) {
           sx={style}
         >
           {/* <form onSubmit={onSubmit}> */}
+          <CloseIcon style={{position:"absolute", cursor:"pointer", top:"15px", right:"15px"}} onClick={closeModal}></CloseIcon>
           <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
             업로드
           </Typography>

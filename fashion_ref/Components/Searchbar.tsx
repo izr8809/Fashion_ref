@@ -11,7 +11,7 @@ import {useEffect, useRef} from 'react';
 type SearchbarProps = {};
 
 export default function Searchbar({}: SearchbarProps) {
-  const [value, onChangeValue] = useInput("");
+  const [value, onChangeValue, setValue] = useInput("");
   const dispatch = useDispatch();
   const searchBar = useRef<HTMLInputElement>(null);
 
@@ -40,6 +40,7 @@ export default function Searchbar({}: SearchbarProps) {
             hashtags: "#" + upperCaseValue,
           }
         })
+        setValue("")
       }
     },
     [dispatch, value]
