@@ -66,6 +66,7 @@ router.post("/addPost", upload.array('image'), async (req, res) => {
       hashtags.push("#" + req.body.season); //season
       hashtags.push("#" + req.body.brand); //brand
       hashtags.push("#" + req.session.name); // userName
+      console.log(hashtags)
       const result = await Promise.all(
         hashtags.map((tag) =>
           Hashtag.findOrCreate({
