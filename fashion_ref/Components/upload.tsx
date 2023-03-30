@@ -349,6 +349,7 @@ export default function Upload(props: UploadProps) {
   }, [addPostDone, dispatch, closeModal, editPostDone,props.setIsEdit, editPostWithImagesDone]);
 
   useEffect(() => {
+    console.log(props.isEdit)
     if (props.isEdit) {
       const targetPost = postArray.find(
         (post: any) => post.id === props.postId

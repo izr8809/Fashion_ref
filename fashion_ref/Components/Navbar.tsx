@@ -138,7 +138,7 @@ export default function Navbar({
       setuploadModalOpen(true);
     } else {
       setloginModalOpen(true);
-      setIsEdit(true);
+      // setIsEdit(true);
     }
   }, [user]);
 

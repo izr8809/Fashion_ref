@@ -882,7 +882,7 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
             setuploadModalOpen(true);
         } else {
             setloginModalOpen(true);
-            setIsEdit(true);
+        // setIsEdit(true);
         }
     }, [
         user
@@ -2125,6 +2125,7 @@ function Upload(props) {
         editPostWithImagesDone
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        console.log(props.isEdit);
         if (props.isEdit) {
             const targetPost = postArray.find((post)=>post.id === props.postId);
             setCardPost(targetPost.Images);
