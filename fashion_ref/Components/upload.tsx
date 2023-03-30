@@ -24,7 +24,18 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import Router from "next/router";
 import { useDispatch } from "react-redux";
-import { addPost, ADD_POST_REQUEST, GET_HASHTAGS_REQUEST, loadPost } from "@/reducers/post";
+import {
+  addPost,
+  ADD_POST_REQUEST,
+  EDIT_POST_REQUEST,
+  EDIT_POST_WITH_IMAGES_REQUEST,
+  GET_HASHTAGS_REQUEST,
+  loadPost,
+  TOGGLE_ADD_POST_DONE_REQUEST,
+  TOGGLE_EDIT_POST_DONE_REQUEST,
+  TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST,
+} from "@/reducers/post";
+import { and } from "sequelize";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 const modalstyle = {
@@ -39,9 +50,11 @@ const modalstyle = {
   p: 4,
 };
 type UploadProps = {
+  setImageIndex : any;
   setuploadModalOpen: any;
   uploadModalOpen: boolean;
-  edit: boolean;
+  isEdit: boolean;
+  setIsEdit: any;
   postId: number | null;
 };
 const style = {
@@ -70,10 +83,10 @@ export default function Upload(props: UploadProps) {
   const [isInitialOpen, setIsInitialOpen] = useState(true);
   const { user } = useSelector((state: any) => state.user);
   const { postArray } = useSelector((state: any) => state.post);
-  const { hashtags } = useSelector((state : any) => state.post)
-  
+  const { hashtags } = useSelector((state: any) => state.post);
+
   const [file, setFile] = useState({ name: "" });
-  const [imageFile, setImageFile] = useState<File>();
+  const [imageFile, setImageFile] = useState<any>();
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
   const [reason, onChangeReason, setReason] = useInput("");
@@ -82,6 +95,8 @@ export default function Upload(props: UploadProps) {
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
   const { addPostLoading } = useSelector((state: any) => state.post);
   const { addPostDone } = useSelector((state: any) => state.post);
+  const { editPostDone } = useSelector((state: any) => state.post);
+  const { editPostWithImagesDone } = useSelector((state: any) => state.post);
   const [post, setPost] = useState({
     title: "",
     desc: "",
@@ -99,6 +114,7 @@ export default function Upload(props: UploadProps) {
   const [category, setCategory] = React.useState("상의");
   const [season, setSeason] = React.useState("23SS");
   const [text, onChangeText, setText] = useInput("");
+  const [cardPost, setCardPost] = useState([]);
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
@@ -112,31 +128,29 @@ export default function Upload(props: UploadProps) {
   };
   const handfiles = (files: FileList | null) => {
     let photosArr: any[] = [];
+    let fileArr: any[] = [];
     if (files != undefined) {
-      if (files.length > 1) {
-        alert("이미지는 1개만 넣어주세요");
-      } else {
-        setIsImage(true);
-        for (let i = 0; i < files.length; i++) {
-          let file = files[i];
-          setImageFile(files[i]);
-          let reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.addEventListener("load", () => {
-            let fileobj = {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              src: reader.result,
-            };
-            photosArr.push(fileobj);
-            setPost({
-              ...post,
-              photos: [...photos, ...photosArr],
-            });
+      setIsImage(true);
+      for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        fileArr.push(file);
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.addEventListener("load", () => {
+          let fileobj = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            src: reader.result,
+          };
+          photosArr.push(fileobj);
+          setPost({
+            ...post,
+            photos: [...photos, ...photosArr],
           });
-        }
+        });
       }
+      setImageFile(fileArr);
     }
   };
 
@@ -150,8 +164,16 @@ export default function Upload(props: UploadProps) {
         ...photos.slice(targetindex + 1),
       ],
     });
-    setIsImage(false);
+
+    // setImageFile( (prev) => prev.filter())
+
+    //이미지 다 없어지면 다시 업로드 창 뜨도록
+    if (post.photos.length == 2) {
+      //랜더링 되기 전이라 2
+      setIsImage(false);
+    }
   };
+
   const handlehighlight = useCallback((e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -173,20 +195,6 @@ export default function Upload(props: UploadProps) {
     handfiles(files);
   };
 
-  // const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
-  // const [userInfo, setUserInfo] = useState({ name: "" });
-
-  // useEffect(() => {
-  //   axios
-  //     .get(USERINFOAPI, {})
-  //     .then((result) => {
-  //       setUserInfo(result.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, [props.userId, USERINFOAPI]);
-
   const [hashTags, setHashTags] = React.useState({
     data: [{ name: "" }],
   });
@@ -194,20 +202,8 @@ export default function Upload(props: UploadProps) {
   const getHashtags = useCallback(() => {
     dispatch({
       type: GET_HASHTAGS_REQUEST,
-    })
+    });
     setShowHashModalOpen(true);
-    // axios
-    //   .get(GETHASHAPI)
-    //   .then((result) => {
-    //     setShowHashModalOpen(true);
-    //     setHashTags(result);
-    //     // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-    //     // history.replace('/login');
-    //   })
-    //   .catch((error) => {
-    //     alert("해시태그가 제대로 처리되지 않았습니다.");
-    //   });
-
   }, [dispatch]);
 
   const onSubmit = useCallback(
@@ -216,30 +212,82 @@ export default function Upload(props: UploadProps) {
         e.preventDefault();
         e.stopPropagation();
         alert("브랜드입력 필수");
-      } else if (imageFile == undefined) {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("이미지 필수");
       } else {
         e.preventDefault();
         e.stopPropagation();
-        
-        const formData = new FormData();
-        formData.append("image", imageFile as File);
-        formData.append("userId", user.id);
-        formData.append("userName", user.userName);
-        formData.append("brand", brand.replace(" ", ""));
-        formData.append("link", link);
-        formData.append("category", category);
-        formData.append("season", season);
-        formData.append("hashtag", text);
-        formData.append("reason", reason);
+
+        //수정일 때
+        if (props.isEdit) {
+          //이미지 새로 올렸을 때
+          if (imageFile) {
+            const formData = new FormData();
+            [].forEach.call(imageFile, (f) => {
+              formData.append("image", f);
+            });
+            // formData.append("image", imageFile as File);
+            formData.append("postId", props.postId?.toString() as string);
+            formData.append("brand", brand.replace(" ", ""));
+            formData.append("link", link);
+            formData.append("category", category);
+            formData.append("season", season);
+            formData.append("hashtag", text);
+            formData.append("reason", reason);
+            dispatch({
+              type: EDIT_POST_WITH_IMAGES_REQUEST,
+              data: formData,
+            });
+
+          } else {
+            if (post.photos.length == 1) {
+              alert("이미지 필수");
+              return;
+            }
+
+            const formData = new FormData();
+            [].forEach.call(post.photos, (f: any, index) => {
+              if (index != 0) formData.append("imagePath", f.src);
+            });
+            // formData.append("image", imageFile as File);
+
+            formData.append("postId", props.postId?.toString() as string);
+            formData.append("brand", brand.replace(" ", ""));
+            formData.append("link", link);
+            formData.append("category", category);
+            formData.append("season", season);
+            formData.append("hashtag", text);
+            formData.append("reason", reason);
+            dispatch({
+              type: EDIT_POST_REQUEST,
+              data: formData,
+            });
+          }
+        }
+        //수정 아닐 떄
+        else {
+          if (!imageFile) {
+            alert("이미지 필수");
+            return;
+          }
+          const formData = new FormData();
+          [].forEach.call(imageFile, (f) => {
+            formData.append("image", f);
+          });
+          // formData.append("image", imageFile as File);
+          formData.append("userId", user.id);
+          formData.append("userName", user.userName);
+          formData.append("brand", brand.replace(" ", ""));
+          formData.append("link", link);
+          formData.append("category", category);
+          formData.append("season", season);
+          formData.append("hashtag", text);
+          formData.append("reason", reason);
+          dispatch(addPost(formData));
+        }
 
         // dispatch({
         //   type: ADD_POST_REQUEST,
         //   data : formData
         // });
-        dispatch(addPost(formData));
 
         // axios
         //   .post(API, formData)
@@ -254,24 +302,63 @@ export default function Upload(props: UploadProps) {
         //   });
       }
     },
-    [brand, category, season, text, reason, link, user, dispatch, imageFile]
+    [
+      brand,
+      category,
+      season,
+      text,
+      reason,
+      link,
+      user,
+      dispatch,
+      imageFile,
+      post.photos,
+      props.isEdit,
+      props.postId,
+    ]
   );
 
   useEffect(() => {
-    if (addPostDone && !isInitialOpen) {
+
+    if (addPostDone) {
+      dispatch({
+        type:TOGGLE_ADD_POST_DONE_REQUEST,
+      });
       closeModal();
     }
-    setIsInitialOpen(false)
-  }, [addPostDone, dispatch, closeModal]);
+    if (editPostDone) {
+      dispatch({
+        type:TOGGLE_EDIT_POST_DONE_REQUEST,
+      });
+      closeModal();
+      props.setIsEdit(false);
+      if(props.setImageIndex)
+         props.setImageIndex(0);
+    }
+    if (editPostWithImagesDone) {
+      dispatch({
+        type:TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST,
+      });
+      closeModal();
+      props.setIsEdit(false);
+      if(props.setImageIndex)
+         props.setImageIndex(0);
+    }
+
+
+  }, [addPostDone, dispatch, closeModal, editPostDone,props.setIsEdit, editPostWithImagesDone]);
 
   useEffect(() => {
-    if (props.edit) {
-      const targetPost = postArray.find((post: any) => post.id === props.postId);
+    if (props.isEdit) {
+      const targetPost = postArray.find(
+        (post: any) => post.id === props.postId
+      );
+      setCardPost(targetPost.Images);
       let postHashtags = "";
       if (targetPost.Hashtags) {
         targetPost.Hashtags.map(
           (hashtag: any) =>
-            (postHashtags = postHashtags.concat("#" + hashtag?.name))
+            (postHashtags = postHashtags.concat(`#${hashtag?.name} `))
         );
       }
       for (let i = 0; i < targetPost.Hashtags.length; i++) {
@@ -283,14 +370,14 @@ export default function Upload(props: UploadProps) {
       setBrand(targetPost.brand);
       setReason(targetPost.reason);
       setLink(targetPost.link);
-      console.log(targetPost);
       setIsImage(true);
       setPost({
         ...post,
-        photos: photos.concat(targetPost.Images[0]),
+        photos: photos.concat(targetPost.Images),
       });
     }
-  }, [props.edit, postArray]);
+  }, [props.isEdit, postArray]);
+
 
   return (
     <>
@@ -306,12 +393,13 @@ export default function Upload(props: UploadProps) {
               className="hashlistdiv"
               style={{ height: "300px", overflow: "overlay" }}
             >
-              {hashtags && hashtags.map((hashtag :any, index :number) => (
-                <li id="hashlist" key={index} style={{ listStyle: "none" }}>
-                  {" "}
-                  #{hashtag.name}
-                </li>
-              ))}
+              {hashtags &&
+                hashtags.map((hashtag: any, index: number) => (
+                  <li id="hashlist" key={index} style={{ listStyle: "none" }}>
+                    {" "}
+                    #{hashtag.name}
+                  </li>
+                ))}
             </div>
 
             <Button
@@ -490,7 +578,7 @@ export default function Upload(props: UploadProps) {
                     index != 0 ? (
                       <div className="prev-img" key={index}>
                         <span onClick={handeldelete}>&times;</span>
-                        {item && <Image src={item.src} alt={item.name} />}
+                        {item && <img src={item.src} alt={item.name} />}
                       </div>
                     ) : (
                       <></>

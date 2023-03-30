@@ -9,17 +9,13 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
-// import { useNavigate  } from 'react-router-dom'; // 설치한 패키지
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import HomeIcon from "@mui/icons-material/Home";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Signup from "@/Components/Signup";
 import Upload from "@/Components/Upload";
@@ -33,9 +29,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
 import Searchbar from "./Searchbar";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 import { GET_HASHTAGS_REQUEST } from "@/reducers/post";
-
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -57,10 +52,10 @@ const modalstyle = {
 };
 
 type NavbarProps = {
-  userId : string;
-  setUserId : any;
-  userName : string;
-  setUserName : any;
+  userId: string;
+  setUserId: any;
+  userName: string;
+  setUserName: any;
 };
 
 export default function Navbar({
@@ -69,16 +64,12 @@ export default function Navbar({
   userName,
   setUserName,
 }: NavbarProps): ReactElement {
-  // const navigate = useNavigate();
-  
+
   //redux
-  const {logInDone} = useSelector((state : any) => state.user)  
-  // const {userInfo} = useSelector((state : any) => state.user)  
-  const { user } = useSelector((state : any) => state.user)
-  const { logOutLoading } = useSelector((state : any) => state.user)
-  const { hashtags } = useSelector((state : any) => state.post)
-  
-  // const isLoggedIn = false;
+  const { user } = useSelector((state: any) => state.user);
+  const { logOutLoading } = useSelector((state: any) => state.user);
+  const { hashtags } = useSelector((state: any) => state.post);
+  const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
   const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
@@ -90,17 +81,14 @@ export default function Navbar({
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
-  
-
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
+
   const closehashtagsModal = () => {
     setShowHashModalOpen(false);
   };
-
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -132,15 +120,14 @@ export default function Navbar({
     dispatch(logoutRequestAction());
 
     //왜인지 모르겠는데 로그아웃 후 모달 켜짐
-    setloginModalOpen(false)
-
+    setloginModalOpen(false);
 
     // const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
     // axios
     //   .get(LOGOUTAPI)
     //   .then((result) => {
     //     if (result.data.message == "ok")
-    //       //dispatch 
+    //       //dispatch
     //     // setloginModalOpen(false);
     //   })
     //   .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
@@ -151,6 +138,7 @@ export default function Navbar({
       setuploadModalOpen(true);
     } else {
       setloginModalOpen(true);
+      setIsEdit(true);
     }
   }, [user]);
 
@@ -158,14 +146,15 @@ export default function Navbar({
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const onReady = useCallback(()=>{alert("준비중입니다.")},[])
+  const onReady = useCallback(() => {
+    alert("준비중입니다.");
+  }, []);
 
-
-  const getHashtags = useCallback(()=>{
+  const getHashtags = useCallback(() => {
     //dispatch
     dispatch({
       type: GET_HASHTAGS_REQUEST,
-    })
+    });
     setShowHashModalOpen(true);
 
     // axios
@@ -179,7 +168,7 @@ export default function Navbar({
     // .catch((error) => {
     //   alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
     // });
-  },[dispatch])
+  }, [dispatch]);
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -257,62 +246,71 @@ export default function Navbar({
   return (
     <Box sx={{ flexGrow: 1 }}>
       {!user && isModalOpen && (
-        <Signup 
-        isModalOpen = {isModalOpen}
-        setIsModalOpen={setIsModalOpen} 
-        userId = {userId}
-        setUserId = {setUserId}
-        userName= {userName}
-        setUserName = {setUserName}/>
+        <Signup
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          userId={userId}
+          setUserId={setUserId}
+          userName={userName}
+          setUserName={setUserName}
+        />
       )}
       {user && uploadModalOpen && (
-        <Upload 
-        uploadModalOpen={uploadModalOpen} 
-        setuploadModalOpen={setuploadModalOpen} 
-        edit ={false}
-        postId ={null}
+        <Upload
+          setImageIndex={null}
+          uploadModalOpen={uploadModalOpen}
+          setuploadModalOpen={setuploadModalOpen}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          postId={null}
         />
       )}
       {!user && loginModalOpen && (
         <LoginForm
-          loginModalOpen = {loginModalOpen}
+          loginModalOpen={loginModalOpen}
           setloginModalOpen={setloginModalOpen}
         />
       )}
-      {showHashModalOpen && <Modal
-      open={true}
-      onClose={closehashtagsModal}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        sx={modalstyle}
-      >
-      <div className="hashlistdiv" style={{height:"300px", overflow : "overlay"}}>
-      {hashtags && hashtags.map((hashtag:any, index:any)=> (
-        <li id="hashlist" key={hashtag.id} style={{listStyle: "none", marginBottom:"5px"}}> #{hashtag.name}</li>
-      ))}
-      </div>
-        
-      <Button
-        fullWidth
-        variant="contained"
-        sx={{ mt: 3, mb: 2}}
-        size="large"
-        onClick={closehashtagsModal}
-      >
-        확인
-      </Button>
-        {/* </form> */}
-      </Box>
-      {/* <Button onClick={closeModal}>닫기</Button> */}
-    </Modal>
+      {showHashModalOpen && (
+        <Modal
+          open={true}
+          onClose={closehashtagsModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box component="form" noValidate autoComplete="off" sx={modalstyle}>
+            <div
+              className="hashlistdiv"
+              style={{ height: "300px", overflow: "overlay" }}
+            >
+              {hashtags &&
+                hashtags.map((hashtag: any, index: any) => (
+                  <li
+                    id="hashlist"
+                    key={hashtag.id}
+                    style={{ listStyle: "none", marginBottom: "5px" }}
+                  >
+                    {" "}
+                    #{hashtag.name}
+                  </li>
+                ))}
+            </div>
 
-      }
-      
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              size="large"
+              onClick={closehashtagsModal}
+            >
+              확인
+            </Button>
+            {/* </form> */}
+          </Box>
+          {/* <Button onClick={closeModal}>닫기</Button> */}
+        </Modal>
+      )}
+
       <AppBar
         position="static"
         style={{ backgroundColor: "#FFF", color: "#000" }}
@@ -336,90 +334,15 @@ export default function Navbar({
             noWrap
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            {/* <p>검색할 태그</p> */}
-          </Typography>
-          {/* <Search>
-            <StyledInputBase
-              onChange={(event) => {
-                setValue(event.target.value);
-              }}
-              placeholder="태그 입력"
-              inputProps={{ "aria-label": "search" }}
-              onKeyPress={(event) => {
-                if (event.which == 32) alert(value);
-              }}
-            />
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-          </Search> */}
-          {/* <FormControl
-            variant="standard"
-            sx={{
-              m: 1,
-              minWidth: 120,
-              marginBottom: "1%",
-              marginRight: "5px",
-              marginTop: "-5px",
-            }}
-          >
-            <InputLabel id="demo-simple-select-standard-label">
-              카테고리
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              sx={{ display: "inline-block" }}
-              required
-              value={category}
-              label="category"
-              onChange={onChangeCategory}
-            >
-              <MenuItem value={"상의"}>상의</MenuItem>
-              <MenuItem value={"하의"}>하의</MenuItem>
-              <MenuItem value={"아우터"}>아우터</MenuItem>
-              <MenuItem value={"디테일"}>디테일</MenuItem>
-              <MenuItem value={"이미지"}>이미지</MenuItem>
-              <MenuItem value={"악세사리"}>악세사리</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl
-            variant="standard"
-            sx={{
-              m: 1,
-              minWidth: 120,
-              marginBottom: "1%",
-              marginRight: "25px",
-              marginTop: "-5px",
-            }}
-          >
-            <InputLabel id="demo-simple-select-standard-label">시즌</InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              sx={{ display: "inline-block" }}
-              value={season}
-              label="season"
-              required
-              onChange={onChangeSeason}
-            >
-              <MenuItem value={"23SS"}>23SS</MenuItem>
-              <MenuItem value={"23FW"}>23FW</MenuItem>
-            </Select>
-          </FormControl> */}
+          ></Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+
           <Searchbar />
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {/* <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={0} color="error"></Badge>
-            </IconButton> */}
             <>
               <IconButton
                 size="large"
@@ -500,16 +423,6 @@ export default function Navbar({
                 </IconButton>
               </>
             )}
-
-            {/* <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, float: "right" }}>
             <IconButton

@@ -25,10 +25,18 @@ import {
   DUPLICATE_POST_SUCCESS,
   DUPLICATE_POST_FAILURE,
   DUPLICATE_POST_REQUEST,
+  EDIT_POST_REQUEST,
+  EDIT_POST_SUCCESS,
+  EDIT_POST_FAILURE,
+  EDIT_POST_WITH_IMAGES_SUCCESS,
+  EDIT_POST_WITH_IMAGES_FAILURE,
+  EDIT_POST_WITH_IMAGES_REQUEST,
+  TOGGLE_SCROLL_REQUEST,
 } from "@/reducers/post";
 
 //addpost
 function addPostAPI(data) {
+  console.log(data.image)
   return axios.post("/post/addPost", data);
 }
 function* addPost(action) {
@@ -118,6 +126,9 @@ function* hashtagSearch(action) {
       type: HASHTAG_SEARCH_SUCCESS,
       data: result.data,
     });
+    yield put({
+      type: TOGGLE_SCROLL_REQUEST,
+    })
   } catch (err) {
     yield put({
       type: HASHTAG_SEARCH_FAILURE,
@@ -186,6 +197,47 @@ function* duplicatePost(action) {
   }
 }
 
+
+//editpost
+function editPostAPI(data) {
+  return axios.post(`/post/editPost`,data);
+}
+function* editPost(action) {
+  try {
+    const result = yield call(editPostAPI, action.data);
+    yield put({
+      type: EDIT_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: EDIT_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+
+//editpost
+function editPostWithImagesAPI(data) {
+  return axios.post(`/post/editPostWithImages`,data);
+}
+function* editPostWithImages(action) {
+  try {
+    const result = yield call(editPostWithImagesAPI, action.data);
+    yield put({
+      type: EDIT_POST_WITH_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: EDIT_POST_WITH_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -218,6 +270,14 @@ function* watchDuplicatePost() {
   yield takeLatest(DUPLICATE_POST_REQUEST, duplicatePost);
 }
 
+function* watchEditPost() {
+  yield takeLatest(EDIT_POST_REQUEST, editPost);
+}
+
+function* watchEditPostWithImages() {
+  yield takeLatest(EDIT_POST_WITH_IMAGES_REQUEST, editPostWithImages);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -228,5 +288,7 @@ export default function* postSaga() {
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchDuplicatePost),
+    fork(watchEditPost),
+    fork(watchEditPostWithImages),
   ]);
 }

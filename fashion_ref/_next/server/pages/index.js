@@ -38,17 +38,26 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _mui_icons_material_FileCopy__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(734);
 /* harmony import */ var _mui_icons_material_FileCopy__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_FileCopy__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(7372);
-/* harmony import */ var _mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(6022);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(491);
-/* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(854);
-/* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _LoginForm__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(3589);
-/* harmony import */ var _Upload__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(4150);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_15__, _LoginForm__WEBPACK_IMPORTED_MODULE_17__, _Upload__WEBPACK_IMPORTED_MODULE_18__]);
-([_reducers_post__WEBPACK_IMPORTED_MODULE_15__, _LoginForm__WEBPACK_IMPORTED_MODULE_17__, _Upload__WEBPACK_IMPORTED_MODULE_18__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _mui_icons_material_ArrowRight__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(7902);
+/* harmony import */ var _mui_icons_material_ArrowRight__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_ArrowRight__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _mui_icons_material_ArrowLeft__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1575);
+/* harmony import */ var _mui_icons_material_ArrowLeft__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_ArrowLeft__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var _mui_icons_material_Brightness1Rounded__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(1195);
+/* harmony import */ var _mui_icons_material_Brightness1Rounded__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Brightness1Rounded__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(7372);
+/* harmony import */ var _mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(491);
+/* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(854);
+/* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var _LoginForm__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(3589);
+/* harmony import */ var _Upload__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(4150);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__]);
+([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+
+
+
 
 
 
@@ -90,16 +99,17 @@ const StyledCardAction = (0,_mui_material_styles__WEBPACK_IMPORTED_MODULE_3__.ex
   flex-wrap: wrap;
 `;
 function Cardpost(props) {
+    const { logInDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
+    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
+    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useDispatch)();
     // const isLoggedIn = false;
     const [like, setLike] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const [isEdit, setIsEdit] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [likeClick, setLikeClick] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(props.likers?.length || 0);
-    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.user);
-    const { logInDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.user);
     const [loginModalOpen, setIsLoginFormOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [isUploadFormOpen, setIsUploadFormOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useDispatch)();
-    const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
-    const DELAPI = `${process.env.NEXT_PUBLIC_API}/deletpost/${props.id}`;
+    const [imageIndex, setImageIndex] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
     const [modalOpen, setModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
     const [ImagePath, setImagePath] = react__WEBPACK_IMPORTED_MODULE_1__.useState("");
     const closeModal = ()=>{
@@ -110,13 +120,13 @@ function Cardpost(props) {
             setLike((prev)=>!prev);
             if (!like) {
                 dispatch({
-                    type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .LIKE_POST_REQUEST */ .xD,
+                    type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .LIKE_POST_REQUEST */ .xD,
                     data: props.id
                 });
                 setLikeClick((prev)=>prev + 1);
             } else {
                 dispatch({
-                    type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .UNLIKE_POST_REQUEST */ .VT,
+                    type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .UNLIKE_POST_REQUEST */ .VT,
                     data: props.id
                 });
                 setLikeClick((prev)=>prev - 1);
@@ -147,7 +157,7 @@ function Cardpost(props) {
             return alert("로그인이 필요합니다.");
         }
         return dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .DUPLICATE_POST_REQUEST */ .RR,
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .DUPLICATE_POST_REQUEST */ .RR,
             data: props.id
         });
     }, [
@@ -162,7 +172,7 @@ function Cardpost(props) {
             return alert("로그인이 필요합니다.");
         }
         return dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .DELETE_POST_REQUEST */ .sV,
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .DELETE_POST_REQUEST */ .sV,
             data: props.id
         });
     }, [
@@ -171,33 +181,54 @@ function Cardpost(props) {
         user
     ]);
     const editClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
-        // if (!user) {
-        //   return alert("로그인이 필요합니다.");
-        // }
-        // setIsUploadFormOpen(true);
-        alert("준비중입니다.");
+        if (!user) {
+            return alert("로그인이 필요합니다.");
+        }
+        setIsUploadFormOpen(true);
+        setIsEdit(true);
+    // alert("준비중입니다.");
     }, [
         props.id,
         user,
         setIsUploadFormOpen
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (props.Images[0] == undefined) {} else {
+        if (props.Images[imageIndex] == undefined) {} else {
             // console.log("props")
             // console.log(props)
-            setImagePath(`../${props.Images[0].src}`);
+            setImagePath(`../${props.Images[imageIndex].src}`);
         }
     }, [
-        props.Images
+        props.Images,
+        imageIndex
+    ]);
+    const onClickRightArrow = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        if (imageIndex < props.Images.length) {
+            setImageIndex((prev)=>prev + 1);
+        }
+    }, [
+        props.Images,
+        imageIndex
+    ]);
+    const onClickLeftArrow = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        if (imageIndex > 0) {
+            setImageIndex((prev)=>prev - 1);
+        }
+    }, [
+        imageIndex
     ]);
     const TagClick = react__WEBPACK_IMPORTED_MODULE_1__.useCallback((e, hashname)=>{
         e.preventDefault();
         e.stopPropagation();
         dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .HASHTAG_SEARCH_REQUEST */ .fS,
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .HASHTAG_SEARCH_REQUEST */ .fS,
             data: {
                 hashtags: "#" + hashname
             }
+        });
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
         });
     }, [
         dispatch,
@@ -218,13 +249,15 @@ function Cardpost(props) {
     ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
-            isUploadFormOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Upload__WEBPACK_IMPORTED_MODULE_18__/* ["default"] */ .Z, {
+            isUploadFormOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Upload__WEBPACK_IMPORTED_MODULE_21__/* ["default"] */ .Z, {
+                setImageIndex: setImageIndex,
                 setuploadModalOpen: setIsUploadFormOpen,
                 uploadModalOpen: isUploadFormOpen,
-                edit: true,
+                isEdit: isEdit,
+                setIsEdit: setIsEdit,
                 postId: props.id
             }),
-            loginModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_LoginForm__WEBPACK_IMPORTED_MODULE_17__/* ["default"] */ .Z, {
+            loginModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_LoginForm__WEBPACK_IMPORTED_MODULE_20__/* ["default"] */ .Z, {
                 loginModalOpen: loginModalOpen,
                 setloginModalOpen: setIsLoginFormOpen
             }),
@@ -282,7 +315,8 @@ function Cardpost(props) {
                     maxWidth: "15",
                     marginTop: "20px",
                     // borderRadius: "24px",
-                    boxShadow: "none"
+                    boxShadow: "none",
+                    position: "relative"
                 },
                 children: [
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_mui_material__WEBPACK_IMPORTED_MODULE_9__.CardActionArea, {
@@ -293,6 +327,48 @@ function Cardpost(props) {
                             height: "400",
                             image: ImagePath
                         })
+                    }),
+                    props.Images && props.Images.length > 1 && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+                        children: [
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_ArrowRight__WEBPACK_IMPORTED_MODULE_13___default()), {
+                                onClick: onClickRightArrow,
+                                style: {
+                                    position: "absolute",
+                                    top: "30%",
+                                    right: "0%",
+                                    zIndex: 100,
+                                    color: "#3D3D3D",
+                                    cursor: "pointer"
+                                }
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Brightness1Rounded__WEBPACK_IMPORTED_MODULE_15___default()), {
+                                style: {
+                                    position: "absolute",
+                                    top: "30%",
+                                    right: "0%",
+                                    color: "#B5B5B7"
+                                }
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_ArrowLeft__WEBPACK_IMPORTED_MODULE_14___default()), {
+                                onClick: onClickLeftArrow,
+                                style: {
+                                    position: "absolute",
+                                    top: "30%",
+                                    left: "0%",
+                                    zIndex: 100,
+                                    color: "#3D3D3D",
+                                    cursor: "pointer"
+                                }
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Brightness1Rounded__WEBPACK_IMPORTED_MODULE_15___default()), {
+                                style: {
+                                    position: "absolute",
+                                    top: "30%",
+                                    left: "0%",
+                                    color: "#B5B5B7"
+                                }
+                            })
+                        ]
                     }),
                     /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_CardContent__WEBPACK_IMPORTED_MODULE_4___default()), {
                         children: [
@@ -389,14 +465,14 @@ function Cardpost(props) {
                                         float: "left"
                                     },
                                     children: [
-                                        like ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_13___default()), {
+                                        like ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16___default()), {
                                             onClick: onToggleLike,
                                             sx: {
                                                 cursor: "pointer",
                                                 opacity: "80%",
                                                 color: "#FF3040"
                                             }
-                                        }) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_16___default()), {
+                                        }) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19___default()), {
                                             onClick: onToggleLike,
                                             sx: {
                                                 cursor: "pointer",
@@ -584,7 +660,6 @@ function LoginForm({ setloginModalOpen , loginModalOpen  }) {
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
         if (!logInLoading && !isInitialOpen) {
-            console.log("change");
             setloginModalOpen(false);
         }
         setIsInitialOpen(false);
@@ -746,14 +821,11 @@ const modalstyle = {
     p: 4
 };
 function Navbar({ userId , setUserId , userName , setUserName  }) {
-    // const navigate = useNavigate();
     //redux
-    const { logInDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
-    // const {userInfo} = useSelector((state : any) => state.user)  
     const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
     const { logOutLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
     const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
-    // const isLoggedIn = false;
+    const [isEdit, setIsEdit] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useDispatch)();
     const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
     const [uploadModalOpen, setuploadModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
@@ -798,7 +870,7 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
     //   .get(LOGOUTAPI)
     //   .then((result) => {
     //     if (result.data.message == "ok")
-    //       //dispatch 
+    //       //dispatch
     //     // setloginModalOpen(false);
     //   })
     //   .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
@@ -810,6 +882,7 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
             setuploadModalOpen(true);
         } else {
             setloginModalOpen(true);
+            setIsEdit(true);
         }
     }, [
         user
@@ -901,9 +974,11 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
                 setUserName: setUserName
             }),
             user && uploadModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Upload__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {
+                setImageIndex: null,
                 uploadModalOpen: uploadModalOpen,
                 setuploadModalOpen: setuploadModalOpen,
-                edit: false,
+                isEdit: isEdit,
+                setIsEdit: setIsEdit,
                 postId: null
             }),
             !user && loginModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__/* ["default"] */ .Z, {
@@ -934,7 +1009,8 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
                                         marginBottom: "5px"
                                     },
                                     children: [
-                                        " #",
+                                        " ",
+                                        "#",
                                         hashtag.name
                                     ]
                                 }, hashtag.id))
@@ -1122,6 +1198,144 @@ __webpack_async_result__();
 
 /***/ }),
 
+/***/ 6811:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ NoticeModal)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1557);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9564);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3819);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
+
+
+
+
+
+const modalstyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4
+};
+function NoticeModal({}) {
+    const [value, onChangeValue] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_3__.useDispatch)();
+    const searchBar = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+    const [isModalOpen, setIsModalOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const closeNoticeModal = ()=>{
+        setIsModalOpen(false);
+    };
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        var now = new Date();
+        var date = now.getDate(); // 일
+        if (date - 30 == 0) setIsModalOpen(true);
+    }, []);
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_4___default()), {
+            open: true,
+            onClose: closeNoticeModal,
+            "aria-labelledby": "modal-modal-title",
+            "aria-describedby": "modal-modal-description",
+            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_6___default()), {
+                component: "form",
+                noValidate: true,
+                autoComplete: "off",
+                sx: modalstyle,
+                children: [
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
+                        children: " 3.30 업데이트 안내 \uD83D\uDC07"
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
+                        style: {
+                            marginTop: "-20px",
+                            marginBottom: "20px",
+                            color: "#7F7F7F"
+                        },
+                        children: " *하루동안 떠요"
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h2", {
+                        style: {
+                            marginBottom: "10px"
+                        },
+                        children: " 기능 추가 목록 (5가지) "
+                    }),
+                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("ol", {
+                        type: "1",
+                        children: [
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                style: {
+                                    marginBottom: "10px"
+                                },
+                                children: " 게시글 복제 "
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                style: {
+                                    marginBottom: "10px"
+                                },
+                                children: "  게시글 수정 \uD83D\uDCCC "
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                style: {
+                                    marginBottom: "10px"
+                                },
+                                children: "  좋아요  "
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                style: {
+                                    marginBottom: "10px"
+                                },
+                                children: "  사진 업로드 여러장 가능 \uD83D\uDCCC "
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                style: {
+                                    marginBottom: "10px"
+                                },
+                                children: "  작성자 이름 & 브랜드 이름으로 게시물 검색 "
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("br", {}),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("br", {}),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("br", {}),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_5___default()), {
+                        fullWidth: true,
+                        variant: "contained",
+                        sx: {
+                            mt: 3,
+                            mb: 2
+                        },
+                        size: "large",
+                        onClick: closeNoticeModal,
+                        children: "확인"
+                    })
+                ]
+            })
+        })
+    });
+}
+
+
+/***/ }),
+
 /***/ 2385:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
@@ -1164,10 +1378,7 @@ const Item = (0,_mui_material_styles__WEBPACK_IMPORTED_MODULE_2__.experimentalSt
     }));
 function ResponsiveGrid({}) {
     const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
-    const [Imagesrc, setImagesrc] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
-    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        console.log(postArray);
-    }, [
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{}, [
         postArray
     ]);
     //check if I like
@@ -1203,7 +1414,7 @@ function ResponsiveGrid({}) {
                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Cardpost__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z, {
                                         index: index,
                                         name: post.name,
-                                        posts: postArray,
+                                        // posts={postArray}
                                         id: post.id,
                                         likers: post.Likers,
                                         category: post.category,
@@ -1604,14 +1815,11 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3819);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1557);
-/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(5675);
-/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(next_image__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(6022);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(491);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_15__]);
-_reducers_post__WEBPACK_IMPORTED_MODULE_15__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
-
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(491);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_14__]);
+_reducers_post__WEBPACK_IMPORTED_MODULE_14__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
 
 
@@ -1657,11 +1865,11 @@ const style = {
     p: 4
 };
 function Upload(props) {
-    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useDispatch)();
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useDispatch)();
     const [isInitialOpen, setIsInitialOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
-    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.user);
-    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
+    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.user);
+    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
+    const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
     const [file, setFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
         name: ""
     });
@@ -1672,8 +1880,10 @@ function Upload(props) {
     const [brand, onChangeBrand, setBrand] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z)("");
     const [link, onChangeLink, setLink] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z)("");
     const [showHashModalOpen, setShowHashModalOpen] = react__WEBPACK_IMPORTED_MODULE_1___default().useState(false);
-    const { addPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { addPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
+    const { addPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
+    const { addPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
+    const { editPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
+    const { editPostWithImagesDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_13__.useSelector)((state)=>state.post);
     const [post, setPost] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
         title: "",
         desc: "",
@@ -1692,6 +1902,7 @@ function Upload(props) {
     const [category, setCategory] = react__WEBPACK_IMPORTED_MODULE_1___default().useState("상의");
     const [season, setSeason] = react__WEBPACK_IMPORTED_MODULE_1___default().useState("23SS");
     const [text, onChangeText, setText] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z)("");
+    const [cardPost, setCardPost] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
     const handleCategoryChange = (event)=>{
         setCategory(event.target.value);
     };
@@ -1704,34 +1915,32 @@ function Upload(props) {
     };
     const handfiles = (files)=>{
         let photosArr = [];
+        let fileArr = [];
         if (files != undefined) {
-            if (files.length > 1) {
-                alert("이미지는 1개만 넣어주세요");
-            } else {
-                setIsImage(true);
-                for(let i = 0; i < files.length; i++){
-                    let file = files[i];
-                    setImageFile(files[i]);
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.addEventListener("load", ()=>{
-                        let fileobj = {
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
-                            src: reader.result
-                        };
-                        photosArr.push(fileobj);
-                        setPost({
-                            ...post,
-                            photos: [
-                                ...photos,
-                                ...photosArr
-                            ]
-                        });
+            setIsImage(true);
+            for(let i = 0; i < files.length; i++){
+                let file = files[i];
+                fileArr.push(file);
+                let reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.addEventListener("load", ()=>{
+                    let fileobj = {
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        src: reader.result
+                    };
+                    photosArr.push(fileobj);
+                    setPost({
+                        ...post,
+                        photos: [
+                            ...photos,
+                            ...photosArr
+                        ]
                     });
-                }
+                });
             }
+            setImageFile(fileArr);
         }
     };
     const handeldelete = (e)=>{
@@ -1744,7 +1953,12 @@ function Upload(props) {
                 ...photos.slice(targetindex + 1)
             ]
         });
-        setIsImage(false);
+        // setImageFile( (prev) => prev.filter())
+        //이미지 다 없어지면 다시 업로드 창 뜨도록
+        if (post.photos.length == 2) {
+            //랜더링 되기 전이라 2
+            setIsImage(false);
+        }
     };
     const handlehighlight = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
@@ -1764,18 +1978,6 @@ function Upload(props) {
         setHighlight(false);
         handfiles(files);
     };
-    // const USERINFOAPI = `${process.env.NEXT_PUBLIC_API}/USERINFO`;
-    // const [userInfo, setUserInfo] = useState({ name: "" });
-    // useEffect(() => {
-    //   axios
-    //     .get(USERINFOAPI, {})
-    //     .then((result) => {
-    //       setUserInfo(result.data);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // }, [props.userId, USERINFOAPI]);
     const [hashTags, setHashTags] = react__WEBPACK_IMPORTED_MODULE_1___default().useState({
         data: [
             {
@@ -1785,20 +1987,9 @@ function Upload(props) {
     });
     const getHashtags = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .GET_HASHTAGS_REQUEST */ .tG
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .GET_HASHTAGS_REQUEST */ .tG
         });
         setShowHashModalOpen(true);
-    // axios
-    //   .get(GETHASHAPI)
-    //   .then((result) => {
-    //     setShowHashModalOpen(true);
-    //     setHashTags(result);
-    //     // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-    //     // history.replace('/login');
-    //   })
-    //   .catch((error) => {
-    //     alert("해시태그가 제대로 처리되지 않았습니다.");
-    //   });
     }, [
         dispatch
     ]);
@@ -1807,28 +1998,75 @@ function Upload(props) {
             e.preventDefault();
             e.stopPropagation();
             alert("브랜드입력 필수");
-        } else if (imageFile == undefined) {
-            e.preventDefault();
-            e.stopPropagation();
-            alert("이미지 필수");
         } else {
             e.preventDefault();
             e.stopPropagation();
-            const formData = new FormData();
-            formData.append("image", imageFile);
-            formData.append("userId", user.id);
-            formData.append("userName", user.userName);
-            formData.append("brand", brand.replace(" ", ""));
-            formData.append("link", link);
-            formData.append("category", category);
-            formData.append("season", season);
-            formData.append("hashtag", text);
-            formData.append("reason", reason);
-            // dispatch({
-            //   type: ADD_POST_REQUEST,
-            //   data : formData
-            // });
-            dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .addPost */ .q2)(formData));
+            //수정일 때
+            if (props.isEdit) {
+                //이미지 새로 올렸을 때
+                if (imageFile) {
+                    const formData = new FormData();
+                    [].forEach.call(imageFile, (f)=>{
+                        formData.append("image", f);
+                    });
+                    // formData.append("image", imageFile as File);
+                    formData.append("postId", props.postId?.toString());
+                    formData.append("brand", brand.replace(" ", ""));
+                    formData.append("link", link);
+                    formData.append("category", category);
+                    formData.append("season", season);
+                    formData.append("hashtag", text);
+                    formData.append("reason", reason);
+                    dispatch({
+                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .EDIT_POST_WITH_IMAGES_REQUEST */ .yz,
+                        data: formData
+                    });
+                } else {
+                    if (post.photos.length == 1) {
+                        alert("이미지 필수");
+                        return;
+                    }
+                    const formData = new FormData();
+                    [].forEach.call(post.photos, (f, index)=>{
+                        if (index != 0) formData.append("imagePath", f.src);
+                    });
+                    // formData.append("image", imageFile as File);
+                    formData.append("postId", props.postId?.toString());
+                    formData.append("brand", brand.replace(" ", ""));
+                    formData.append("link", link);
+                    formData.append("category", category);
+                    formData.append("season", season);
+                    formData.append("hashtag", text);
+                    formData.append("reason", reason);
+                    dispatch({
+                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .EDIT_POST_REQUEST */ .s4,
+                        data: formData
+                    });
+                }
+            } else {
+                if (!imageFile) {
+                    alert("이미지 필수");
+                    return;
+                }
+                const formData = new FormData();
+                [].forEach.call(imageFile, (f)=>{
+                    formData.append("image", f);
+                });
+                // formData.append("image", imageFile as File);
+                formData.append("userId", user.id);
+                formData.append("userName", user.userName);
+                formData.append("brand", brand.replace(" ", ""));
+                formData.append("link", link);
+                formData.append("category", category);
+                formData.append("season", season);
+                formData.append("hashtag", text);
+                formData.append("reason", reason);
+                dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .addPost */ .q2)(formData));
+            }
+        // dispatch({
+        //   type: ADD_POST_REQUEST,
+        //   data : formData
+        // });
         // axios
         //   .post(API, formData)
         //   .then((result) => {
@@ -1850,24 +2088,49 @@ function Upload(props) {
         link,
         user,
         dispatch,
-        imageFile
+        imageFile,
+        post.photos,
+        props.isEdit,
+        props.postId
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (addPostDone && !isInitialOpen) {
+        if (addPostDone) {
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .TOGGLE_ADD_POST_DONE_REQUEST */ .mN
+            });
             closeModal();
         }
-        setIsInitialOpen(false);
+        if (editPostDone) {
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .TOGGLE_EDIT_POST_DONE_REQUEST */ .qb
+            });
+            closeModal();
+            props.setIsEdit(false);
+            if (props.setImageIndex) props.setImageIndex(0);
+        }
+        if (editPostWithImagesDone) {
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_14__/* .TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST */ .gP
+            });
+            closeModal();
+            props.setIsEdit(false);
+            if (props.setImageIndex) props.setImageIndex(0);
+        }
     }, [
         addPostDone,
         dispatch,
-        closeModal
+        closeModal,
+        editPostDone,
+        props.setIsEdit,
+        editPostWithImagesDone
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (props.edit) {
+        if (props.isEdit) {
             const targetPost = postArray.find((post)=>post.id === props.postId);
+            setCardPost(targetPost.Images);
             let postHashtags = "";
             if (targetPost.Hashtags) {
-                targetPost.Hashtags.map((hashtag)=>postHashtags = postHashtags.concat("#" + hashtag?.name));
+                targetPost.Hashtags.map((hashtag)=>postHashtags = postHashtags.concat(`#${hashtag?.name} `));
             }
             for(let i = 0; i < targetPost.Hashtags.length; i++){
                 postHashtags.concat(`#${targetPost.Hashtags[i].name} `);
@@ -1878,15 +2141,14 @@ function Upload(props) {
             setBrand(targetPost.brand);
             setReason(targetPost.reason);
             setLink(targetPost.link);
-            console.log(targetPost);
             setIsImage(true);
             setPost({
                 ...post,
-                photos: photos.concat(targetPost.Images[0])
+                photos: photos.concat(targetPost.Images)
             });
         }
     }, [
-        props.edit,
+        props.isEdit,
         postArray
     ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
@@ -2135,7 +2397,7 @@ function Upload(props) {
                                                         onClick: handeldelete,
                                                         children: "\xd7"
                                                     }),
-                                                    item && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_image__WEBPACK_IMPORTED_MODULE_13___default()), {
+                                                    item && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
                                                         src: item.src,
                                                         alt: item.name
                                                     })
@@ -2225,8 +2487,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6572);
 /* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9959);
 /* harmony import */ var redux_saga__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5998);
+/* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6811);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__]);
 ([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+
 
 
 
@@ -2255,17 +2519,17 @@ function Home() {
     // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
     const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.user);
     const { loadPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
+    const { onInfiniteScroll  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
     const { hasMorePost  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
     const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useDispatch)();
     const [userId, setUserId] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)("");
     const [userName, setUserName] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)("");
     const [resultStore, setResultStore] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([]);
-    var sliceCount = 24;
     (0,react__WEBPACK_IMPORTED_MODULE_7__.useEffect)(()=>{
         function onScroll() {
             if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 350) {
-                if (hasMorePost && !loadPostLoading) {
+                if (hasMorePost && !loadPostLoading && onInfiniteScroll) {
                     const lastId = postArray[postArray.length - 1].id;
                     dispatch({
                         type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .LOAD_POST_REQUEST */ .EG,
@@ -2282,9 +2546,13 @@ function Home() {
         hasMorePost,
         loadPostLoading,
         dispatch,
-        postArray
+        postArray,
+        onInfiniteScroll
     ]);
     const loadPosts = (0,react__WEBPACK_IMPORTED_MODULE_7__.useCallback)(()=>{
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .RELOAD_POST_REQUEST */ .kT
+        });
         dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .loadPost */ .HV)());
     }, [
         dispatch
@@ -2306,6 +2574,7 @@ function Home() {
                     })
                 ]
             }),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_NoticeModal__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z, {}),
             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                 style: {
                     margin: "auto",
@@ -2365,6 +2634,27 @@ module.exports = require("@mui/icons-material/AccountCircle");
 /***/ ((module) => {
 
 module.exports = require("@mui/icons-material/Add");
+
+/***/ }),
+
+/***/ 1575:
+/***/ ((module) => {
+
+module.exports = require("@mui/icons-material/ArrowLeft");
+
+/***/ }),
+
+/***/ 7902:
+/***/ ((module) => {
+
+module.exports = require("@mui/icons-material/ArrowRight");
+
+/***/ }),
+
+/***/ 1195:
+/***/ ((module) => {
+
+module.exports = require("@mui/icons-material/Brightness1Rounded");
 
 /***/ }),
 
@@ -2578,69 +2868,6 @@ module.exports = require("next-redux-wrapper");
 
 /***/ }),
 
-/***/ 3918:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/amp-context.js");
-
-/***/ }),
-
-/***/ 5732:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/amp-mode.js");
-
-/***/ }),
-
-/***/ 2796:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/head-manager-context.js");
-
-/***/ }),
-
-/***/ 4486:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/image-blur-svg.js");
-
-/***/ }),
-
-/***/ 744:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/image-config-context.js");
-
-/***/ }),
-
-/***/ 5843:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/image-config.js");
-
-/***/ }),
-
-/***/ 9552:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/image-loader");
-
-/***/ }),
-
-/***/ 2470:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/side-effect.js");
-
-/***/ }),
-
-/***/ 618:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/utils/warn-once.js");
-
-/***/ }),
-
 /***/ 968:
 /***/ ((module) => {
 
@@ -2725,7 +2952,7 @@ module.exports = import("redux-saga");;
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [121,675,959], () => (__webpack_exec__(4186)));
+var __webpack_exports__ = __webpack_require__.X(0, [959], () => (__webpack_exec__(4186)));
 module.exports = __webpack_exports__;
 
 })();

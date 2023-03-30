@@ -50,9 +50,25 @@ export const initialState = {
   duplicatePostLoading: false,
   duplicatePostDone: false,
   duplicatePostError: null,
+  editPostLoading: false,
+  editPostDone: false,
+  editPostError: null,
+  editPostWithImagesLoading: false,
+  editPostWithImagesDone: false,
+  editPostWithImagesError: null,
+  onInfiniteScroll: true,
   hashtags: [],
   hasMorePost: true,
 };
+
+export const RELOAD_POST_REQUEST = "RELOAD_POST_REQUEST";
+
+export const TOGGLE_SCROLL_REQUEST = "TOGGLE_SCROLL_REQUEST";
+
+export const TOGGLE_ADD_POST_DONE_REQUEST = "TOGGLE_ADD_POST_DONE_REQUEST";
+export const TOGGLE_EDIT_POST_DONE_REQUEST = "TOGGLE_EDIT_POST_DONE_REQUEST";
+export const TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST =
+  "TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -85,6 +101,14 @@ export const HASHTAG_SEARCH_FAILURE = "HASHTAG_SEARCH_FAILURE";
 export const DUPLICATE_POST_REQUEST = "DUPLICATE_POST_REQUEST";
 export const DUPLICATE_POST_SUCCESS = "DUPLICATE_POST_SUCCESS";
 export const DUPLICATE_POST_FAILURE = "DUPLICATE_POST_FAILURE";
+
+export const EDIT_POST_REQUEST = "EDIT_POST_REQUEST";
+export const EDIT_POST_SUCCESS = "EDIT_POST_SUCCESS";
+export const EDIT_POST_FAILURE = "EDIT_POST_FAILURE";
+
+export const EDIT_POST_WITH_IMAGES_REQUEST = "EDIT_POST_WITH_IMAGES_REQUEST";
+export const EDIT_POST_WITH_IMAGES_SUCCESS = "EDIT_POST_WITH_IMAGES_SUCCESS";
+export const EDIT_POST_WITH_IMAGES_FAILURE = "EDIT_POST_WITH_IMAGES_FAILURE";
 
 export const addPost = (data) => {
   return {
@@ -134,6 +158,7 @@ const reducer = (state = initialState, action) => {
         draft.loadPostDone = true;
         draft.loadPostLoading = false;
         draft.hasMorePost = action.data.length === 24; //나중에 바꿔줘야함.
+        draft.onInfiniteScroll = true;
         break;
 
       case LOAD_POST_FAILURE:
@@ -202,6 +227,7 @@ const reducer = (state = initialState, action) => {
         draft.postArray = action.data;
         draft.hashtagSearchDone = true;
         draft.hashtagSearchLoading = false;
+        draft.onInfiniteScroll = true;
         break;
 
       case HASHTAG_SEARCH_FAILURE:
@@ -242,8 +268,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case DUPLICATE_POST_REQUEST:
-        console.log(draft.postArray)
-        draft.duplicatePostLoading = true;  
+        draft.duplicatePostLoading = true;
         draft.duplicatePostDone = false;
         draft.duplicatePostError = null;
         break;
@@ -258,6 +283,74 @@ const reducer = (state = initialState, action) => {
         draft.duplicatePostLoading = false;
         draft.duplicatePostError = action.error;
         break;
+
+      case EDIT_POST_REQUEST:
+        draft.editPostLoading = true;
+        draft.editPostDone = false;
+        draft.editPostError = null;
+        break;
+
+      case EDIT_POST_SUCCESS:
+        //바뀐 포스팅 인덱스 찾아서 그것만 바꿔서 postArray 다시 업뎃
+        const editedPost = state.postArray.find(
+          (v) => v.id === action.data.postId
+        );
+        const editedPostindex = state.postArray.indexOf(editedPost);
+
+        draft.postArray[editedPostindex] = action.data.postInfo;
+        draft.editPostLoading = false;
+        draft.editPostDone = true;
+        break;
+
+      case EDIT_POST_FAILURE:
+        draft.editPostLoading = false;
+        draft.editPostError = action.error;
+        break;
+
+      case EDIT_POST_WITH_IMAGES_REQUEST:
+        draft.editPostWithImagesLoading = true;
+        draft.editPostWithImagesDone = false;
+        draft.editPostWithImagesError = null;
+        break;
+
+      case EDIT_POST_WITH_IMAGES_SUCCESS:
+        //바뀐 포스팅 인덱스 찾아서 그것만 바꿔서 postArray 다시 업뎃
+        const editedPostWithImages = state.postArray.find(
+          (v) => v.id === action.data.postId
+        );
+        const editedPostWithImagesindex =
+          state.postArray.indexOf(editedPostWithImages);
+
+        draft.postArray[editedPostWithImagesindex] = action.data.postInfo;
+        draft.editPostWithImagesLoading = false;
+        draft.editPostWithImagesDone = true;
+        break;
+
+      case EDIT_POST_WITH_IMAGES_FAILURE:
+        draft.editPostWithImagesLoading = false;
+        draft.editPostWithImagesError = action.error;
+        break;
+
+      case RELOAD_POST_REQUEST:
+        draft.postArray = [];
+        break;
+
+      case TOGGLE_SCROLL_REQUEST:
+        draft.onInfiniteScroll = false;
+        break;
+
+      case TOGGLE_ADD_POST_DONE_REQUEST:
+        draft.addPostDone = false;
+        break;
+
+      case TOGGLE_EDIT_POST_DONE_REQUEST:
+        draft.editPostDone = false;
+        break;
+
+      case TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST:
+        draft.editPostWithImagesDone = false;
+        break;
+
       default:
         return state;
     }

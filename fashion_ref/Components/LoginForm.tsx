@@ -93,7 +93,6 @@ export default function LoginForm({
 
   useEffect(()=>{
     if(!logInLoading && !isInitialOpen){
-      console.log("change")
       setloginModalOpen(false);
     }
     setIsInitialOpen(false);

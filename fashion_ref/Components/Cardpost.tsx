@@ -12,6 +12,9 @@ import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import Brightness1RoundedIcon from '@mui/icons-material/Brightness1Rounded';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -29,7 +32,7 @@ import Upload from "./Upload";
 
 type CardpostProps = {
   index: number;
-  posts: any[];
+  // posts: any[];
   category: string;
   id: number;
   brand: string;
@@ -46,7 +49,7 @@ type CardpostProps = {
     };
     name: string;
   }[];
-  likers : any[];
+  likers: any[];
 };
 const style = {
   position: "absolute" as "absolute",
@@ -70,18 +73,18 @@ const StyledCardAction = styled(CardActions)`
 `;
 
 export default function Cardpost(props: CardpostProps) {
+  const { logInDone } = useSelector((state: any) => state.user);
+  const { user } = useSelector((state: any) => state.user);
+  const { postArray } = useSelector((state: any) => state.post);
+  const dispatch = useDispatch();
   // const isLoggedIn = false;
   const [like, setLike] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [likeClick, setLikeClick] = useState(props.likers?.length || 0);
-  const { user } = useSelector((state: any) => state.user);
-  const {logInDone}= useSelector((state: any) => state.user);
   const [loginModalOpen, setIsLoginFormOpen] = useState(false);
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
 
-  const dispatch = useDispatch();
-
-  const HASHAPI = `${process.env.NEXT_PUBLIC_API}/hashtagsearch`;
-  const DELAPI = `${process.env.NEXT_PUBLIC_API}/deletpost/${props.id}`;
   const [modalOpen, setModalOpen] = React.useState(false);
   const [ImagePath, setImagePath] = React.useState("");
 
@@ -98,13 +101,13 @@ export default function Cardpost(props: CardpostProps) {
           type: LIKE_POST_REQUEST,
           data: props.id,
         });
-        setLikeClick((prev) => prev+1)
+        setLikeClick((prev) => prev + 1);
       } else {
         dispatch({
           type: UNLIKE_POST_REQUEST,
           data: props.id,
         });
-        setLikeClick((prev) => prev-1)
+        setLikeClick((prev) => prev - 1);
       }
     } else {
       alert("로그인 해주세요");
@@ -124,7 +127,6 @@ export default function Cardpost(props: CardpostProps) {
   }, [user]);
 
   const duplicateClick = useCallback(() => {
-
     if (!user) {
       return alert("로그인이 필요합니다.");
     }
@@ -153,22 +155,36 @@ export default function Cardpost(props: CardpostProps) {
   );
 
   const editClick = useCallback(() => {
-    // if (!user) {
-    //   return alert("로그인이 필요합니다.");
-    // }
-    // setIsUploadFormOpen(true);
-    
-    alert("준비중입니다.");
+    if (!user) {
+      return alert("로그인이 필요합니다.");
+    }
+    setIsUploadFormOpen(true);
+    setIsEdit(true);
+
+    // alert("준비중입니다.");
   }, [props.id, user, setIsUploadFormOpen]);
 
   useEffect(() => {
-    if (props.Images[0] == undefined) {
+    if (props.Images[imageIndex] == undefined) {
     } else {
       // console.log("props")
       // console.log(props)
-      setImagePath(`../${props.Images[0].src}`);
+      setImagePath(`../${props.Images[imageIndex].src}`);
     }
-  }, [props.Images]);
+  }, [props.Images,imageIndex]);
+
+  const onClickRightArrow = useCallback(()=>{
+    if(imageIndex < props.Images.length){
+      setImageIndex((prev)=> prev+1)
+    }
+  },[props.Images, imageIndex])
+  
+  const onClickLeftArrow = useCallback(()=>{
+    if(imageIndex > 0){
+      setImageIndex((prev)=> prev-1)
+    }
+  },[imageIndex])
+
 
   const TagClick = React.useCallback(
     (e: any, hashname: string) => {
@@ -181,32 +197,40 @@ export default function Cardpost(props: CardpostProps) {
           hashtags: "#" + hashname,
         },
       });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [ dispatch, props]
+    [dispatch, props]
   );
 
-    useEffect(()=>{
-      //like 눌렀는지
-      if(user?.data && props.likers ){
-        const isUserLiked = props.likers.find( (v) => v.id === user?.data.id)
-        if(isUserLiked)
-          setLike(true)
-        else 
-          setLike(false)
-      }
-    },[props.likers, user, props.id, logInDone])
+  useEffect(() => {
+    //like 눌렀는지
+    if (user?.data && props.likers) {
+      const isUserLiked = props.likers.find((v) => v.id === user?.data.id);
+      if (isUserLiked) setLike(true);
+      else setLike(false);
+    }
+  }, [props.likers, user, props.id, logInDone]);
+
+
 
   return (
     <>
       {isUploadFormOpen && (
         <Upload
+          setImageIndex ={setImageIndex}
           setuploadModalOpen={setIsUploadFormOpen}
           uploadModalOpen={isUploadFormOpen}
-          edit={true}
+          isEdit={isEdit}
+          setIsEdit ={setIsEdit}
           postId={props.id}
         />
       )}
-      {loginModalOpen && <LoginForm loginModalOpen={loginModalOpen} setloginModalOpen={setIsLoginFormOpen} />}
+      {loginModalOpen && (
+        <LoginForm
+          loginModalOpen={loginModalOpen}
+          setloginModalOpen={setIsLoginFormOpen}
+        />
+      )}
       {modalOpen && (
         <Modal
           open={true}
@@ -264,6 +288,7 @@ export default function Cardpost(props: CardpostProps) {
           marginTop: "20px",
           // borderRadius: "24px",
           boxShadow: "none",
+          position: "relative",
         }}
       >
         {/* <Typography>
@@ -279,7 +304,24 @@ export default function Cardpost(props: CardpostProps) {
             // alt="이미지 오류, 삭제 후 다시 등록해주세요"
           />
         </CardActionArea>
-        {/* <button style={{position: "absolute", top:"40%", left:"0%"}}> <span>s</span></button> */}
+        {props.Images && props.Images.length > 1 && (
+          <>
+            <ArrowRightIcon
+              onClick={onClickRightArrow}
+              style={{ position: "absolute", top: "30%", right: "0%", zIndex: 100, color:"#3D3D3D", cursor:"pointer"}}
+            />
+            <Brightness1RoundedIcon 
+              style={{ position: "absolute", top: "30%", right: "0%", color:"#B5B5B7" }}
+            />
+            <ArrowLeftIcon
+              onClick={onClickLeftArrow}
+              style={{ position: "absolute", top: "30%", left: "0%", zIndex: 100, color:"#3D3D3D",cursor:"pointer" }}
+            />
+            <Brightness1RoundedIcon 
+              style={{ position: "absolute", top: "30%", left: "0%", color:"#B5B5B7" }}
+            />
+          </>
+        )}
 
         <CardContent>
           <div

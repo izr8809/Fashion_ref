@@ -4,6 +4,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   distDir: '_next',
+  images: {
+    domains: ["localhost", "*"],
+  },
   compress: true,
   webpack(config, { webpack }) {
     const prod = process.env.NODE_ENV === 'production';

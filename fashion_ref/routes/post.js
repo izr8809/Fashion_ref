@@ -42,12 +42,10 @@ router.get("/getHashtags", async function (req, res) {
     console.error(error);
   }
 });
-router.post("/addPost", upload.single("image"), async (req, res) => {
+router.post("/addPost", upload.array('image'), async (req, res) => {
   try {
-    // console.log(req)
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
-
-    if (req.file) {
+    if (req.files) {
       const post = await Post.create({
         link: req.body.link,
         brand: req.body.brand,
@@ -76,15 +74,16 @@ router.post("/addPost", upload.single("image"), async (req, res) => {
         )
       ); // [[노드, true], [리액트, true]]
       await post.addHashtags(result.map((v) => v[0]));
-
-      if (req.file) {
-        const image = await Image.create({ src: req.file.path });
-        await post.addImages(image);
-        // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-        //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-        //   await post.addImages(images);
-        // } else { // 이미지를 하나만 올리면 image: 제로초.png
-        // }
+      if (req.files) {
+        // const image = await Image.create({ src: req.file.path });
+        // await post.addImages(image);
+        if (Array.isArray(req.files)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+          const images = await Promise.all(req.files.map((image) => Image.create({ src: image.path })));
+          await post.addImages(images);
+        } else { // 이미지를 하나만 올리면 image: 제로초.png
+          const image = await Image.create({ src: req.files[0].path});
+          await post.addImages(image);
+        }
       }
 
       const madePost = await Post.findOne({
@@ -302,7 +301,7 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
     if (!post) {
       return res.status(403).send("게시글이 존재하지 않습니다.");
     }
-    let hashtags = post.Hashtags;
+    
 
     const newPost = await Post.create({
       link: post.link,
@@ -316,6 +315,7 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
       UserId: post.UserId,
     });
 
+    let hashtags = post.Hashtags;
     const result = await Promise.all(
       hashtags.map((tag) =>
         Hashtag.findOrCreate({
@@ -325,13 +325,15 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
     ); // [[노드, true], [리액트, true]]
     await newPost.addHashtags(result.map((v) => v[0]));
 
-    const image = await Image.create({ src: post.Images[0].src }); //이미지 여러장일 떄 이거 바꿔야
-    await newPost.addImages(image);
-    // if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-    //   const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-    //   await post.addImages(images);
-    // } else { // 이미지를 하나만 올리면 image: 제로초.png
-    //
+    //이미지 복사
+    if (Array.isArray(post.Images)) { // 이미지를 여러 개
+      console.log(post.Images[0])
+      const images = await Promise.all(post.Images.map((image) => Image.create({ src: image.src })));
+      await newPost.addImages(images);
+    } else { // 이미지를 하나
+      const image = await Image.create({ src: post.Images[0].src});
+      await newPost.addImages(image);
+    }
 
     const madePost = await Post.findOne({
       where: { id: newPost.id },
@@ -356,4 +358,160 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
   }
 });
 
+
+router.post("/editPost", upload.none(), async (req, res) => {
+  // PATCH /post/1/like
+  try {
+    
+    const updatePost = await Post.update(
+      {
+        link: req.body.link,
+        brand: req.body.brand,
+        category: req.body.category,
+        season: req.body.season,
+        reason: req.body.reason,
+      },
+      {
+        where: { id: parseInt(req.body.postId, 10) },
+      }
+    );
+    const post = await Post.findOne({
+      where :{id: parseInt(req.body.postId, 10)},
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Hashtag,
+        },
+      ],
+    })
+
+    //remove and add hashtags
+    let hashtags = await post.getHashtags();
+    await post.removeHashtags(hashtags.map((v) => v));
+
+    //add hashtags again
+    hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
+    const result = await Promise.all(
+      hashtags.map((tag) =>
+        Hashtag.findOrCreate({
+          where: { name: tag.slice(1).toUpperCase() },
+        })
+      )
+    ); // [[노드, true], [리액트, true]]
+    hashtags = await post.getHashtags();
+    await post.addHashtags(result.map((v) => v[0]));
+
+    //remove imagespath
+    let images = await post.getImages();
+    await post.removeImages(images.map((v) => v));
+
+    //add imagepath
+    if (Array.isArray(req.body.imagePath)) { // 이미지를 여러 개
+      const images = await Promise.all(req.body.imagePath.map((image) => Image.create({ src: image })));
+      await post.addImages(images);
+    } else { // 이미지를 하나
+      const image = await Image.create({ src: req.body.imagePath});
+      await post.addImages(image);
+    }
+
+    //다시 한번 가져오기
+    const newPost = await Post.findOne({
+      where :{id: parseInt(req.body.postId, 10)},
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Hashtag,
+        },
+      ],
+    })
+
+
+    res.json({postInfo : newPost, postId : post.id});
+
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.post("/editPostWithImages", upload.array('image'), async (req, res) => {
+  // PATCH /post/1/like
+  try {
+    
+    const updatePost = await Post.update(
+      {
+        link: req.body.link,
+        brand: req.body.brand,
+        category: req.body.category,
+        season: req.body.season,
+        reason: req.body.reason,
+      },
+      {
+        where: { id: parseInt(req.body.postId, 10) },
+      }
+    );
+    const post = await Post.findOne({
+      where :{id: parseInt(req.body.postId, 10)},
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Hashtag,
+        },
+      ],
+    })
+
+
+    //remove and add hashtags
+    let hashtags = await post.getHashtags();
+    await post.removeHashtags(hashtags.map((v) => v));
+    
+    //add hashtags again
+    hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
+    const result = await Promise.all(
+      hashtags.map((tag) =>
+        Hashtag.findOrCreate({
+          where: { name: tag.slice(1).toUpperCase() },
+        })
+      )
+    ); // [[노드, true], [리액트, true]]
+    hashtags = await post.getHashtags();
+    await post.addHashtags(result.map((v) => v[0]));
+
+    //remove imagespath
+    let images = await post.getImages();
+    await post.removeImages(images.map((v) => v));
+
+    //add imagepath
+    if (Array.isArray(req.files)) { // 이미지를 여러 개 
+      const images = await Promise.all(req.files.map((image) => Image.create({ src: image.path })));
+      await post.addImages(images);
+    } else { // 이미지를 하나
+      const image = await Image.create({ src: req.files[0].path});
+      await post.addImages(image);
+    }
+    
+    //다시 한번 가져오기
+    const newPost = await Post.findOne({
+      where :{id: parseInt(req.body.postId, 10)},
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Hashtag,
+        },
+      ],
+    })
+
+    res.json({postInfo : newPost, postId : post.id});
+
+  } catch (error) {
+    console.error(error);
+  }
+});
 module.exports = router;

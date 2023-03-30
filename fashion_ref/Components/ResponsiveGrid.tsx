@@ -24,11 +24,10 @@ type ResponsiveGridProps = {
 export default function ResponsiveGrid({}: ResponsiveGridProps) {
   const { postArray } = useSelector((state: any) => state.post);
 
-  const [Imagesrc, setImagesrc] = useState("");
-
   useEffect(() => {
-    console.log(postArray)
   }, [postArray]);
+
+
 
   //check if I like
   return (
@@ -55,7 +54,7 @@ export default function ResponsiveGrid({}: ResponsiveGridProps) {
                     <Cardpost
                       index={index}
                       name={post.name}
-                      posts={postArray}
+                      // posts={postArray}
                       id={post.id}
                       likers={post.Likers}
                       category={post.category}
