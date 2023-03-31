@@ -57,6 +57,7 @@ type UploadProps = {
   isEdit: boolean;
   setIsEdit: any;
   postId: number | null;
+  clipboardFile : any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -105,7 +106,13 @@ export default function Upload(props: UploadProps) {
   });
   const closeModal = useCallback(() => {
     props.setuploadModalOpen(false);
-  }, []);
+    setPost({
+      title: "",
+      desc: "",
+      photos: [null],
+    });
+    //저장하시겠습니까?
+  }, [props]);
 
   const { title, desc, photos } = post;
   const closehashtagsModal = () => {
@@ -178,17 +185,22 @@ export default function Upload(props: UploadProps) {
   
   //clipboard
   useEffect(()=>{
-    const handlePaste = (event : any)  => {
-      if(event.clipboardData.files.length >0){
-        handfiles(event.clipboardData.files)
-      }
-    };
-    window.addEventListener('paste', handlePaste);
-
-    return () => {
-      window.removeEventListener('paste', handlePaste);
-    };
-  },[])
+    if(!props.clipboardFile){
+      const handlePaste = (event : any)  => {
+        if(event.clipboardData.files.length >0){
+          handfiles(event.clipboardData.files)
+        }
+      };
+      window.addEventListener('paste', handlePaste);
+  
+      return () => {
+        window.removeEventListener('paste', handlePaste);
+      };
+    }
+    else{
+      handfiles(props.clipboardFile)
+    }
+  },[props.clipboardFile])
 
 
 
@@ -302,22 +314,6 @@ export default function Upload(props: UploadProps) {
           dispatch(addPost(formData));
         }
 
-        // dispatch({
-        //   type: ADD_POST_REQUEST,
-        //   data : formData
-        // });
-
-        // axios
-        //   .post(API, formData)
-        //   .then((result) => {
-        //     dispatch(addPost(result));
-        //     console.log(result);
-        //     location.reload();
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //     location.reload();
-        //   });
       }
     },
     [

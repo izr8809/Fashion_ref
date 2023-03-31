@@ -255,7 +255,8 @@ function Cardpost(props) {
                 uploadModalOpen: isUploadFormOpen,
                 isEdit: isEdit,
                 setIsEdit: setIsEdit,
-                postId: props.id
+                postId: props.id,
+                clipboardFile: null
             }),
             loginModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_LoginForm__WEBPACK_IMPORTED_MODULE_20__/* ["default"] */ .Z, {
                 loginModalOpen: loginModalOpen,
@@ -826,6 +827,7 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
     const { logOutLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
     const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
     const [isEdit, setIsEdit] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const [clipboardFile, setClipboardFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useDispatch)();
     const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
     const [uploadModalOpen, setuploadModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
@@ -834,9 +836,6 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = react__WEBPACK_IMPORTED_MODULE_1__.useState(null);
     const [isModalOpen, setIsModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
     const [showHashModalOpen, setShowHashModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
-    const closeModal = ()=>{
-        setIsModalOpen(false);
-    };
     const closehashtagsModal = ()=>{
         setShowHashModalOpen(false);
     };
@@ -845,9 +844,6 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
     };
     const showLoginModal = ()=>{
         setloginModalOpen(true);
-    };
-    const showUploadModal = ()=>{
-        setuploadModalOpen(true);
     };
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -865,15 +861,6 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
         dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_18__/* .logoutRequestAction */ .vR)());
         //왜인지 모르겠는데 로그아웃 후 모달 켜짐
         setloginModalOpen(false);
-    // const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
-    // axios
-    //   .get(LOGOUTAPI)
-    //   .then((result) => {
-    //     if (result.data.message == "ok")
-    //       //dispatch
-    //     // setloginModalOpen(false);
-    //   })
-    //   .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
     }, [
         dispatch
     ]);
@@ -899,17 +886,6 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
             type: _reducers_post__WEBPACK_IMPORTED_MODULE_21__/* .GET_HASHTAGS_REQUEST */ .tG
         });
         setShowHashModalOpen(true);
-    // axios
-    // .get(GETHASHAPI)
-    // .then((result) => {
-    //   setShowHashModalOpen(true);
-    //   setHashTags(result)
-    //   // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-    //   // history.replace('/login');
-    // })
-    // .catch((error) => {
-    //   alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
-    // });
     }, [
         dispatch
     ]);
@@ -960,6 +936,23 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
             })
         })
     });
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        if (!uploadModalOpen && user) {
+            const handlePaste = (event)=>{
+                if (event.clipboardData.files.length > 0) {
+                    setuploadModalOpen(true);
+                    setClipboardFile(event.clipboardData.files);
+                }
+            };
+            window.addEventListener("paste", handlePaste);
+            return ()=>{
+                window.removeEventListener("paste", handlePaste);
+            };
+        }
+    }, [
+        uploadModalOpen,
+        user
+    ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_15___default()), {
         sx: {
             flexGrow: 1
@@ -979,7 +972,8 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
                 setuploadModalOpen: setuploadModalOpen,
                 isEdit: isEdit,
                 setIsEdit: setIsEdit,
-                postId: null
+                postId: null,
+                clipboardFile: clipboardFile
             }),
             !user && loginModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__/* ["default"] */ .Z, {
                 loginModalOpen: loginModalOpen,
@@ -1247,7 +1241,7 @@ function NoticeModal({}) {
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
         var now = new Date();
         var date = now.getDate(); // 일
-        if (date - 30 == 0) setIsModalOpen(true);
+        if (date - 31 == 0) setIsModalOpen(true);
     }, []);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_4___default()), {
@@ -1262,7 +1256,7 @@ function NoticeModal({}) {
                 sx: modalstyle,
                 children: [
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
-                        children: " 3.30 업데이트 안내 \uD83D\uDC07"
+                        children: " 3.31 업데이트 안내 \uD83D\uDC07"
                     }),
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
                         style: {
@@ -1276,7 +1270,7 @@ function NoticeModal({}) {
                         style: {
                             marginBottom: "10px"
                         },
-                        children: " 기능 추가 목록 (5가지) "
+                        children: " 기능 추가 목록 "
                     }),
                     /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("ol", {
                         type: "1",
@@ -1285,31 +1279,19 @@ function NoticeModal({}) {
                                 style: {
                                     marginBottom: "10px"
                                 },
-                                children: " 게시글 복제 "
+                                children: " 이미지 복사 후 (클립보드 복사 or PrintScreen) "
                             }),
                             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
                                 style: {
                                     marginBottom: "10px"
                                 },
-                                children: "  게시글 수정 \uD83D\uDCCC "
+                                children: " 바탕화면에서 Ctrl + v 누르면 자동으로 이미지 등록 "
                             }),
                             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
                                 style: {
                                     marginBottom: "10px"
                                 },
-                                children: "  좋아요  "
-                            }),
-                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                style: {
-                                    marginBottom: "10px"
-                                },
-                                children: "  사진 업로드 여러장 가능 \uD83D\uDCCC "
-                            }),
-                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                style: {
-                                    marginBottom: "10px"
-                                },
-                                children: "  작성자 이름 & 브랜드 이름으로 게시물 검색 "
+                                children: " 업로드 화면에서도 마찬가지 "
                             })
                         ]
                     }),
@@ -1897,7 +1879,17 @@ function Upload(props) {
     });
     const closeModal = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         props.setuploadModalOpen(false);
-    }, []);
+        setPost({
+            title: "",
+            desc: "",
+            photos: [
+                null
+            ]
+        });
+    //저장하시겠습니까?
+    }, [
+        props
+    ]);
     const { title , desc , photos  } = post;
     const closehashtagsModal = ()=>{
         setShowHashModalOpen(false);
@@ -1966,16 +1958,22 @@ function Upload(props) {
     };
     //clipboard
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        const handlePaste = (event)=>{
-            if (event.clipboardData.files.length > 0) {
-                handfiles(event.clipboardData.files);
-            }
-        };
-        window.addEventListener("paste", handlePaste);
-        return ()=>{
-            window.removeEventListener("paste", handlePaste);
-        };
-    }, []);
+        if (!props.clipboardFile) {
+            const handlePaste = (event)=>{
+                if (event.clipboardData.files.length > 0) {
+                    handfiles(event.clipboardData.files);
+                }
+            };
+            window.addEventListener("paste", handlePaste);
+            return ()=>{
+                window.removeEventListener("paste", handlePaste);
+            };
+        } else {
+            handfiles(props.clipboardFile);
+        }
+    }, [
+        props.clipboardFile
+    ]);
     const handlehighlight = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
         e.stopPropagation();
@@ -2079,21 +2077,6 @@ function Upload(props) {
                 formData.append("reason", reason);
                 dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .addPost */ .q2)(formData));
             }
-        // dispatch({
-        //   type: ADD_POST_REQUEST,
-        //   data : formData
-        // });
-        // axios
-        //   .post(API, formData)
-        //   .then((result) => {
-        //     dispatch(addPost(result));
-        //     console.log(result);
-        //     location.reload();
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //     location.reload();
-        //   });
         }
     }, [
         brand,

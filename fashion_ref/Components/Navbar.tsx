@@ -70,6 +70,7 @@ export default function Navbar({
   const { logOutLoading } = useSelector((state: any) => state.user);
   const { hashtags } = useSelector((state: any) => state.post);
   const [isEdit, setIsEdit] = useState(false);
+  const [clipboardFile, setClipboardFile] = useState(null);
   const dispatch = useDispatch();
 
   const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
@@ -82,9 +83,6 @@ export default function Navbar({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const closehashtagsModal = () => {
     setShowHashModalOpen(false);
@@ -98,9 +96,6 @@ export default function Navbar({
     setloginModalOpen(true);
   };
 
-  const showUploadModal = () => {
-    setuploadModalOpen(true);
-  };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -121,16 +116,6 @@ export default function Navbar({
 
     //왜인지 모르겠는데 로그아웃 후 모달 켜짐
     setloginModalOpen(false);
-
-    // const LOGOUTAPI = `${process.env.NEXT_PUBLIC_API}/logout`;
-    // axios
-    //   .get(LOGOUTAPI)
-    //   .then((result) => {
-    //     if (result.data.message == "ok")
-    //       //dispatch
-    //     // setloginModalOpen(false);
-    //   })
-    //   .catch((err) => {alert("서버와 연결 끊겼네요. 새로고침.!")});
   }, [dispatch]);
 
   const uploadClick = useCallback(() => {
@@ -156,18 +141,6 @@ export default function Navbar({
       type: GET_HASHTAGS_REQUEST,
     });
     setShowHashModalOpen(true);
-
-    // axios
-    // .get(GETHASHAPI)
-    // .then((result) => {
-    //   setShowHashModalOpen(true);
-    //   setHashTags(result)
-    //   // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-    //   // history.replace('/login');
-    // })
-    // .catch((error) => {
-    //   alert("포스팅 불러오기 정상적으로 되지 않았습니다.");
-    // });
   }, [dispatch]);
 
   const menuId = "primary-search-account-menu";
@@ -243,6 +216,24 @@ export default function Navbar({
     </Menu>
   );
 
+  useEffect(()=>{
+
+    if(!uploadModalOpen && user){
+      const handlePaste = (event : any)  => {
+        if(event.clipboardData.files.length >0){
+          setuploadModalOpen(true);
+          setClipboardFile(event.clipboardData.files)
+        }
+      };
+      window.addEventListener('paste', handlePaste);
+  
+      return () => {
+        window.removeEventListener('paste', handlePaste);
+      };
+    }
+
+  },[uploadModalOpen,user])
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       {!user && isModalOpen && (
@@ -263,6 +254,7 @@ export default function Navbar({
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           postId={null}
+          clipboardFile={clipboardFile}
         />
       )}
       {!user && loginModalOpen && (

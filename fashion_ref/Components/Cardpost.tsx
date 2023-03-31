@@ -211,8 +211,6 @@ export default function Cardpost(props: CardpostProps) {
     }
   }, [props.likers, user, props.id, logInDone]);
 
-
-
   return (
     <>
       {isUploadFormOpen && (
@@ -223,6 +221,7 @@ export default function Cardpost(props: CardpostProps) {
           isEdit={isEdit}
           setIsEdit ={setIsEdit}
           postId={props.id}
+          clipboardFile={null}
         />
       )}
       {loginModalOpen && (
