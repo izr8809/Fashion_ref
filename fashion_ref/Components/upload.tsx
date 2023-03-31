@@ -175,6 +175,23 @@ export default function Upload(props: UploadProps) {
     }
   };
 
+  
+  //clipboard
+  useEffect(()=>{
+    const handlePaste = (event : any)  => {
+      if(event.clipboardData.files.length >0){
+        handfiles(event.clipboardData.files)
+      }
+    };
+    window.addEventListener('paste', handlePaste);
+
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+    };
+  },[])
+
+
+
   const handlehighlight = useCallback((e: any) => {
     e.preventDefault();
     e.stopPropagation();

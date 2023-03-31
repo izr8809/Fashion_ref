@@ -1964,6 +1964,18 @@ function Upload(props) {
             setIsImage(false);
         }
     };
+    //clipboard
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        const handlePaste = (event)=>{
+            if (event.clipboardData.files.length > 0) {
+                handfiles(event.clipboardData.files);
+            }
+        };
+        window.addEventListener("paste", handlePaste);
+        return ()=>{
+            window.removeEventListener("paste", handlePaste);
+        };
+    }, []);
     const handlehighlight = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
         e.stopPropagation();

@@ -70,7 +70,6 @@ export default function Home() {
   }, [hasMorePost, loadPostLoading, dispatch, postArray, onInfiniteScroll]);
 
 
-
   const loadPosts = useCallback(() => {
     dispatch({
       type: RELOAD_POST_REQUEST,
@@ -88,7 +87,6 @@ export default function Home() {
       </Head>
 
       <NoticeModal />
-      
       <div style={{ margin: "auto", width: "80%" }}>
         <a onClick={loadPosts}>
           <h1 id="title" style={{ cursor: "pointer" }}>
