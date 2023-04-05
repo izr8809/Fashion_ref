@@ -1,18 +1,17 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
 import axios, { AxiosHeaders } from "axios";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import {
   initialState as postinitialState,
   LOAD_POST_REQUEST,
   RELOAD_POST_REQUEST,
-  GET_USER_POST_REQUEST,
 } from "@/reducers/post";
-import { initialState as userinitialState } from "@/reducers/user";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { loadPost } from "@/reducers/post";
 import { loadUser } from "@/reducers/user";
@@ -76,6 +75,11 @@ export default function Home() {
     dispatch(loadPost());
     setIsUserpage(false);
   }, [dispatch]);
+
+  const onReady = () => {
+    alert("준비중!")
+  };
+
   return (
     <>
       <Head>
@@ -94,10 +98,29 @@ export default function Home() {
         <div style={{ marginBottom: "40px" }}>
           <Navbar setIsUserpage={setIsUserpage} />
         </div>
-        <div style={{marginBottom :"10px"}}>
-          {isUserpage && <UserPage/>}
-        </div>
-        <ResponsiveGrid setIsUserpage={setIsUserpage}/>
+        <div style={{ marginBottom: "10px" }}>{isUserpage && <UserPage />}</div>
+
+        <Stack spacing={2} direction="row" sx={{marginBottom:"42px", marginTop :"-20px"}}>
+          <Button
+            variant="outlined"
+            size="small"
+            style={{ position: "absolute", left: "11%", fontWeight: 900 }}
+            onClick={loadPost}
+          >
+            {" "}
+            최신 순
+          </Button>
+          {/* <Button
+            variant="outlined"
+            size="small"
+            style={{ position: "absolute", left: "17%", fontWeight: 900 }}
+            onClick={onReady}
+          >
+            {" "}
+            좋아요 순{" "}
+          </Button> */}
+        </Stack>
+        <ResponsiveGrid setIsUserpage={setIsUserpage} />
         {/* <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>

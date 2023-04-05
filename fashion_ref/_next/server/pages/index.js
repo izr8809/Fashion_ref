@@ -2707,18 +2707,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6871);
 /* harmony import */ var _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5723);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9648);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6022);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1062);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(3011);
-/* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5107);
-/* harmony import */ var redux_saga__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5998);
-/* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6708);
-/* harmony import */ var _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3901);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__]);
-([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8742);
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3819);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1062);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(3011);
+/* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5107);
+/* harmony import */ var redux_saga__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5998);
+/* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6708);
+/* harmony import */ var _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3901);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_8__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__, _store_configureStore__WEBPACK_IMPORTED_MODULE_11__, redux_saga__WEBPACK_IMPORTED_MODULE_12__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__]);
+([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_8__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__, _store_configureStore__WEBPACK_IMPORTED_MODULE_11__, redux_saga__WEBPACK_IMPORTED_MODULE_12__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
 
 
@@ -2734,33 +2738,35 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Com
 
 
 
-const getServerSideProps = _store_configureStore__WEBPACK_IMPORTED_MODULE_9__/* ["default"].getServerSideProps */ .Z.getServerSideProps(async (context)=>{
+
+
+const getServerSideProps = _store_configureStore__WEBPACK_IMPORTED_MODULE_11__/* ["default"].getServerSideProps */ .Z.getServerSideProps(async (context)=>{
     const cookie = context.req ? context.req.headers.cookie : "";
     axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.Cookie = "";
     if (context.req && cookie) {
         axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.Cookie = cookie;
     }
-    context.store.dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .loadPost */ .HV)());
-    context.store.dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_8__/* .loadUser */ .II)());
-    context.store.dispatch(redux_saga__WEBPACK_IMPORTED_MODULE_10__.END);
+    context.store.dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .loadPost */ .HV)());
+    context.store.dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_10__/* .loadUser */ .II)());
+    context.store.dispatch(redux_saga__WEBPACK_IMPORTED_MODULE_12__.END);
     await context.store.sagaTask.toPromise();
 });
 function Home() {
     // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.user);
-    const { loadPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
-    const { onInfiniteScroll  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
-    const { hasMorePost  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
-    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
-    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useDispatch)();
-    const [isUserpage, setIsUserpage] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)(false);
-    (0,react__WEBPACK_IMPORTED_MODULE_7__.useEffect)(()=>{
+    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.user);
+    const { loadPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
+    const { onInfiniteScroll  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
+    const { hasMorePost  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
+    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useDispatch)();
+    const [isUserpage, setIsUserpage] = (0,react__WEBPACK_IMPORTED_MODULE_9__.useState)(false);
+    (0,react__WEBPACK_IMPORTED_MODULE_9__.useEffect)(()=>{
         function onScroll() {
             if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 350) {
                 if (hasMorePost && !loadPostLoading && onInfiniteScroll) {
                     const lastId = postArray[postArray.length - 1].id;
                     dispatch({
-                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .LOAD_POST_REQUEST */ .EG,
+                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .LOAD_POST_REQUEST */ .EG,
                         data: lastId
                     });
                 }
@@ -2777,15 +2783,18 @@ function Home() {
         postArray,
         onInfiniteScroll
     ]);
-    const loadPosts = (0,react__WEBPACK_IMPORTED_MODULE_7__.useCallback)(()=>{
+    const loadPosts = (0,react__WEBPACK_IMPORTED_MODULE_9__.useCallback)(()=>{
         dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .RELOAD_POST_REQUEST */ .kT
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .RELOAD_POST_REQUEST */ .kT
         });
-        dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .loadPost */ .HV)());
+        dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .loadPost */ .HV)());
         setIsUserpage(false);
     }, [
         dispatch
     ]);
+    const onReady = ()=>{
+        alert("준비중!");
+    };
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((next_head__WEBPACK_IMPORTED_MODULE_1___default()), {
@@ -2803,7 +2812,7 @@ function Home() {
                     })
                 ]
             }),
-            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_NoticeModal__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z, {}),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_NoticeModal__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {}),
             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                 style: {
                     margin: "auto",
@@ -2832,7 +2841,29 @@ function Home() {
                         style: {
                             marginBottom: "10px"
                         },
-                        children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_UserPage__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {})
+                        children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_UserPage__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z, {})
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Stack__WEBPACK_IMPORTED_MODULE_5___default()), {
+                        spacing: 2,
+                        direction: "row",
+                        sx: {
+                            marginBottom: "42px",
+                            marginTop: "-20px"
+                        },
+                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Button__WEBPACK_IMPORTED_MODULE_6___default()), {
+                            variant: "outlined",
+                            size: "small",
+                            style: {
+                                position: "absolute",
+                                left: "11%",
+                                fontWeight: 900
+                            },
+                            onClick: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .loadPost */ .HV,
+                            children: [
+                                " ",
+                                "최신 순"
+                            ]
+                        })
                     }),
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {
                         setIsUserpage: setIsUserpage
