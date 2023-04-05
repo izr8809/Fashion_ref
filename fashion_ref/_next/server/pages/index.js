@@ -1486,7 +1486,10 @@ function Searchbar({ setIsUserpage  }) {
                     className: "text",
                     sx: {
                         display: "inline-block",
-                        width: "80%"
+                        width: "80%",
+                        "> div": {
+                            width: "100%"
+                        }
                     },
                     value: value,
                     onChange: onChangeValue,

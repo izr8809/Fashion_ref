@@ -65,7 +65,7 @@ export default function Searchbar({setIsUserpage}: SearchbarProps) {
         <TextField
           id="search-bar"
           className="text"
-          sx={{ display: "inline-block", width: "80%" }}
+          sx={{ display: "inline-block", width: "80%", '> div' : {width :"100%"}}}
           value={value}
           onChange={onChangeValue}
           label="#상의 #검정"

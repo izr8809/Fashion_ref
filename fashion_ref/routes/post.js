@@ -74,7 +74,13 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
           })
         )
       ); // [[노드, true], [리액트, true]]
-      await post.addHashtags(result.map((v) => v[0]));
+
+
+      //hash 중복제거
+      const editedResult = result.filter((v,i) => result.findIndex(x => x[0].name ===v[0].name) === i);
+
+
+      await post.addHashtags(editedResult.map((v) => v[0]));
       if (req.files) {
         // const image = await Image.create({ src: req.file.path });
         // await post.addImages(image);
@@ -418,7 +424,6 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
     hashtags.push("#" + req.body.season); //season
     hashtags.push("#" + req.body.brand); //brand
     hashtags.push("#" + req.body.name); // userName
-    console.log(hashtags)
     const result = await Promise.all(
       hashtags.map((tag) =>
         Hashtag.findOrCreate({
@@ -426,7 +431,11 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
         })
       )
     ); // [[노드, true], [리액트, true]]
-    await post.addHashtags(result.map((v) => v[0]));
+
+    //hash 중복제거
+    const editedResult = result.filter((v,i) => result.findIndex(x => x[0].name ===v[0].name) === i);
+
+    await post.addHashtags(editedResult.map((v) => v[0]));
 
     //remove imagespath
     let images = await post.getImages();
