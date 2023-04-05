@@ -587,8 +587,8 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_pos
 
 
 
-axios__WEBPACK_IMPORTED_MODULE_3__["default"].defaults.baseURL = "http://15.164.224.172:8080/";
-// axios.defaults.baseURL = 'http://localhost:8080/';
+// axios.defaults.baseURL = 'http://15.164.224.172:8080/';
+axios__WEBPACK_IMPORTED_MODULE_3__["default"].defaults.baseURL = "http://localhost:8080/";
 axios__WEBPACK_IMPORTED_MODULE_3__["default"].defaults.withCredentials = true;
 function* rootSaga() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.all)([

@@ -29,7 +29,7 @@ import {
 } from "@/reducers/post";
 import FavoriteBorderTwoToneIcon from "@mui/icons-material/FavoriteBorderTwoTone";
 import LoginForm from "./LoginForm";
-import Upload from "./Upload";
+import Upload from "./upload";
 
 type CardpostProps = {
   index: number;
