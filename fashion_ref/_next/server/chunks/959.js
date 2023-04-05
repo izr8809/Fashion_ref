@@ -54,7 +54,6 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   "Gz": () => (/* binding */ DUPLICATE_POST_SUCCESS),
 /* harmony export */   "HR": () => (/* binding */ DELETE_POST_FAILURE),
 /* harmony export */   "HV": () => (/* binding */ loadPost),
-/* harmony export */   "JD": () => (/* binding */ EDIT_POST_WITH_IMAGES_FAILURE),
 /* harmony export */   "NY": () => (/* binding */ EDIT_POST_FAILURE),
 /* harmony export */   "Nr": () => (/* binding */ DELETE_POST_SUCCESS),
 /* harmony export */   "PS": () => (/* binding */ TOGGLE_SCROLL_REQUEST),
@@ -68,24 +67,25 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   "ZP": () => (__WEBPACK_DEFAULT_EXPORT__),
 /* harmony export */   "_s": () => (/* binding */ ADD_POST_SUCCESS),
 /* harmony export */   "cT": () => (/* binding */ LIKE_POST_FAILURE),
+/* harmony export */   "ey": () => (/* binding */ GET_USER_POST_SUCCESS),
 /* harmony export */   "fS": () => (/* binding */ HASHTAG_SEARCH_REQUEST),
-/* harmony export */   "gP": () => (/* binding */ TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST),
 /* harmony export */   "gq": () => (/* binding */ UNLIKE_POST_FAILURE),
 /* harmony export */   "ir": () => (/* binding */ HASHTAG_SEARCH_FAILURE),
 /* harmony export */   "j0": () => (/* binding */ HASHTAG_SEARCH_SUCCESS),
 /* harmony export */   "kT": () => (/* binding */ RELOAD_POST_REQUEST),
 /* harmony export */   "mN": () => (/* binding */ TOGGLE_ADD_POST_DONE_REQUEST),
 /* harmony export */   "q2": () => (/* binding */ addPost),
+/* harmony export */   "qN": () => (/* binding */ GET_USER_POST_REQUEST),
 /* harmony export */   "qb": () => (/* binding */ TOGGLE_EDIT_POST_DONE_REQUEST),
 /* harmony export */   "rl": () => (/* binding */ LOAD_POST_FAILURE),
 /* harmony export */   "s4": () => (/* binding */ EDIT_POST_REQUEST),
+/* harmony export */   "sT": () => (/* binding */ GET_USER_POST_FAILURE),
 /* harmony export */   "sV": () => (/* binding */ DELETE_POST_REQUEST),
 /* harmony export */   "sg": () => (/* binding */ GET_HASHTAGS_SUCCESS),
 /* harmony export */   "tG": () => (/* binding */ GET_HASHTAGS_REQUEST),
 /* harmony export */   "tP": () => (/* binding */ ADD_POST_FAILURE),
-/* harmony export */   "vo": () => (/* binding */ EDIT_POST_WITH_IMAGES_SUCCESS),
 /* harmony export */   "xD": () => (/* binding */ LIKE_POST_REQUEST),
-/* harmony export */   "yz": () => (/* binding */ EDIT_POST_WITH_IMAGES_REQUEST),
+/* harmony export */   "xM": () => (/* binding */ TOGGLE_ISEDIT_REQUEST),
 /* harmony export */   "z9": () => (/* binding */ ADD_POST_REQUEST)
 /* harmony export */ });
 /* unused harmony exports initialState, gethashtagsRequestAction, gethashtagsSuccessAction, gethashtagsFailureAction */
@@ -122,18 +122,19 @@ const initialState = {
     editPostLoading: false,
     editPostDone: false,
     editPostError: null,
-    editPostWithImagesLoading: false,
-    editPostWithImagesDone: false,
-    editPostWithImagesError: null,
+    getUserPostLoading: false,
+    getUserPostDone: false,
+    getUserPostError: null,
     onInfiniteScroll: true,
+    isEdit: false,
     hashtags: [],
     hasMorePost: true
 };
 const RELOAD_POST_REQUEST = "RELOAD_POST_REQUEST";
 const TOGGLE_SCROLL_REQUEST = "TOGGLE_SCROLL_REQUEST";
+const TOGGLE_ISEDIT_REQUEST = "TOGGLE_ISEDIT_REQUEST";
 const TOGGLE_ADD_POST_DONE_REQUEST = "TOGGLE_ADD_POST_DONE_REQUEST";
 const TOGGLE_EDIT_POST_DONE_REQUEST = "TOGGLE_EDIT_POST_DONE_REQUEST";
-const TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST = "TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST";
 const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 const ADD_POST_FAILURE = "ADD_POST_FAILURE";
@@ -161,9 +162,9 @@ const DUPLICATE_POST_FAILURE = "DUPLICATE_POST_FAILURE";
 const EDIT_POST_REQUEST = "EDIT_POST_REQUEST";
 const EDIT_POST_SUCCESS = "EDIT_POST_SUCCESS";
 const EDIT_POST_FAILURE = "EDIT_POST_FAILURE";
-const EDIT_POST_WITH_IMAGES_REQUEST = "EDIT_POST_WITH_IMAGES_REQUEST";
-const EDIT_POST_WITH_IMAGES_SUCCESS = "EDIT_POST_WITH_IMAGES_SUCCESS";
-const EDIT_POST_WITH_IMAGES_FAILURE = "EDIT_POST_WITH_IMAGES_FAILURE";
+const GET_USER_POST_REQUEST = "GET_USER_POST_REQUEST";
+const GET_USER_POST_SUCCESS = "GET_USER_POST_SUCCESS";
+const GET_USER_POST_FAILURE = "GET_USER_POST_FAILURE";
 const addPost = (data)=>{
     return {
         type: ADD_POST_REQUEST,
@@ -327,22 +328,20 @@ const reducer = (state = initialState, action)=>{
                 draft.editPostLoading = false;
                 draft.editPostError = action.error;
                 break;
-            case EDIT_POST_WITH_IMAGES_REQUEST:
-                draft.editPostWithImagesLoading = true;
-                draft.editPostWithImagesDone = false;
-                draft.editPostWithImagesError = null;
+            case GET_USER_POST_REQUEST:
+                draft.getUserPostLoading = true;
+                draft.getUserPostDone = false;
+                draft.getUserPostError = null;
                 break;
-            case EDIT_POST_WITH_IMAGES_SUCCESS:
-                //바뀐 포스팅 인덱스 찾아서 그것만 바꿔서 postArray 다시 업뎃
-                const editedPostWithImages = state.postArray.find((v)=>v.id === action.data.postId);
-                const editedPostWithImagesindex = state.postArray.indexOf(editedPostWithImages);
-                draft.postArray[editedPostWithImagesindex] = action.data.postInfo;
-                draft.editPostWithImagesLoading = false;
-                draft.editPostWithImagesDone = true;
+            case GET_USER_POST_SUCCESS:
+                console.log(action.data);
+                draft.postArray = action.data;
+                draft.getUserPostLoading = false;
+                draft.getUserPostDone = true;
                 break;
-            case EDIT_POST_WITH_IMAGES_FAILURE:
-                draft.editPostWithImagesLoading = false;
-                draft.editPostWithImagesError = action.error;
+            case GET_USER_POST_FAILURE:
+                draft.getUserPostLoading = false;
+                draft.getUserPostError = action.error;
                 break;
             case RELOAD_POST_REQUEST:
                 draft.postArray = [];
@@ -356,8 +355,8 @@ const reducer = (state = initialState, action)=>{
             case TOGGLE_EDIT_POST_DONE_REQUEST:
                 draft.editPostDone = false;
                 break;
-            case TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST:
-                draft.editPostWithImagesDone = false;
+            case TOGGLE_ISEDIT_REQUEST:
+                draft.isEdit = action.data;
                 break;
             default:
                 return state;
@@ -376,6 +375,7 @@ __webpack_async_result__();
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$Q": () => (/* binding */ TOGGLE_SIGNUP_DONE),
 /* harmony export */   "DU": () => (/* binding */ LOAD_USER_SUCCESS),
 /* harmony export */   "I": () => (/* binding */ SIGN_UP_SUCCESS),
 /* harmony export */   "II": () => (/* binding */ loadUser),
@@ -385,15 +385,17 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   "ZP": () => (__WEBPACK_DEFAULT_EXPORT__),
 /* harmony export */   "bP": () => (/* binding */ SIGN_UP_FAILURE),
 /* harmony export */   "dQ": () => (/* binding */ LOAD_USER_REQUEST),
+/* harmony export */   "dy": () => (/* binding */ TOGGLE_LOGIN_DONE),
 /* harmony export */   "kV": () => (/* binding */ LOG_OUT_SUCCESS),
 /* harmony export */   "mD": () => (/* binding */ LOG_OUT_FAILURE),
 /* harmony export */   "pK": () => (/* binding */ SIGN_UP_REQUEST),
 /* harmony export */   "tP": () => (/* binding */ loginRequestAction),
 /* harmony export */   "uF": () => (/* binding */ LOG_IN_REQUEST),
 /* harmony export */   "vR": () => (/* binding */ logoutRequestAction),
+/* harmony export */   "y1": () => (/* binding */ signupRequestAction),
 /* harmony export */   "yK": () => (/* binding */ LOG_IN_FAILURE)
 /* harmony export */ });
-/* unused harmony exports initialState, loginSuccessAction, loginFailureAction, logoutSuccessAction, logoutFailureAction, signupRequestAction, signupSuccessAction, signupFailureAction */
+/* unused harmony exports initialState, loginSuccessAction, loginFailureAction, logoutSuccessAction, logoutFailureAction, signupSuccessAction, signupFailureAction */
 /* harmony import */ var immer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9810);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([immer__WEBPACK_IMPORTED_MODULE_0__]);
 immer__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
@@ -410,7 +412,7 @@ const initialState = {
     logOutError: null,
     signUpLoading: false,
     signUpDone: false,
-    signUpFailure: null,
+    signUpError: null,
     user: null,
     signUpData: {},
     loginData: {},
@@ -428,6 +430,8 @@ const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+const TOGGLE_SIGNUP_DONE = "TOGGLE_SIGNUP_DONE";
+const TOGGLE_LOGIN_DONE = "TOGGLE_LOGIN_DONE";
 const loadUser = (data)=>{
     return {
         type: LOAD_USER_REQUEST,
@@ -539,13 +543,19 @@ const reducer = (state = initialState, action)=>{
                 draft.signUpDone = false;
                 break;
             case SIGN_UP_SUCCESS:
-                draft.signUpLoading = true;
+                draft.signUpLoading = false;
                 draft.user = action.data;
                 draft.signUpDone = true;
                 break;
             case SIGN_UP_FAILURE:
                 draft.signUpLoading = false;
                 draft.signUpError = action.error;
+                break;
+            case TOGGLE_SIGNUP_DONE:
+                draft.signUpDone = false;
+                break;
+            case TOGGLE_LOGIN_DONE:
+                draft.logInDone = false;
                 break;
             default:
                 return state;
@@ -776,20 +786,20 @@ function* editPost(action) {
         });
     }
 }
-//editpost
-function editPostWithImagesAPI(data) {
-    return axios__WEBPACK_IMPORTED_MODULE_1__["default"].post(`/post/editPostWithImages`, data);
+//getuserpost
+function getUserPostAPI(data) {
+    return axios__WEBPACK_IMPORTED_MODULE_1__["default"].post(`/post/user`, data);
 }
-function* editPostWithImages(action) {
+function* getUserPost(action) {
     try {
-        const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(editPostWithImagesAPI, action.data);
+        const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(getUserPostAPI, action.data);
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .EDIT_POST_WITH_IMAGES_SUCCESS */ .vo,
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_POST_SUCCESS */ .ey,
             data: result.data
         });
     } catch (err) {
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .EDIT_POST_WITH_IMAGES_FAILURE */ .JD,
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_POST_FAILURE */ .sT,
             error: err.response.data
         });
     }
@@ -821,8 +831,8 @@ function* watchDuplicatePost() {
 function* watchEditPost() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .EDIT_POST_REQUEST */ .s4, editPost);
 }
-function* watchEditPostWithImages() {
-    yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .EDIT_POST_WITH_IMAGES_REQUEST */ .yz, editPostWithImages);
+function* watchGetUserPost() {
+    yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_POST_REQUEST */ .qN, getUserPost);
 }
 function* postSaga() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.all)([
@@ -835,7 +845,7 @@ function* postSaga() {
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchUnLikePost),
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchDuplicatePost),
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchEditPost),
-        (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchEditPostWithImages)
+        (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchGetUserPost)
     ]);
 }
 
@@ -917,17 +927,19 @@ function* logOut() {
     }
 }
 //signup
-function signupAPI() {
-    return axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/user/signup");
+function signupAPI(data) {
+    console.log("data", data);
+    return axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/user/signup", data);
 }
-function* signUp() {
+function* signUp(action) {
     try {
-        const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(signupAPI);
+        const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(signupAPI, action.data);
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
             type: _reducers_user__WEBPACK_IMPORTED_MODULE_2__/* .SIGN_UP_SUCCESS */ .I,
             data: result.data
         });
     } catch (err) {
+        console.log(err);
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
             type: _reducers_user__WEBPACK_IMPORTED_MODULE_2__/* .SIGN_UP_FAILURE */ .bP,
             error: err.response.data

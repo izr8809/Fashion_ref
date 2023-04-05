@@ -24,6 +24,7 @@ import {
   HASHTAG_SEARCH_REQUEST,
   LIKE_POST_REQUEST,
   loadPost,
+  TOGGLE_ISEDIT_REQUEST,
   UNLIKE_POST_REQUEST,
 } from "@/reducers/post";
 import FavoriteBorderTwoToneIcon from "@mui/icons-material/FavoriteBorderTwoTone";
@@ -78,8 +79,9 @@ export default function Cardpost(props: CardpostProps) {
   const { postArray } = useSelector((state: any) => state.post);
   const dispatch = useDispatch();
   // const isLoggedIn = false;
+  const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const [like, setLike] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const {isEdit} = useSelector((state: any) => state.post);
   const [likeClick, setLikeClick] = useState(props.likers?.length || 0);
   const [loginModalOpen, setIsLoginFormOpen] = useState(false);
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
@@ -154,15 +156,20 @@ export default function Cardpost(props: CardpostProps) {
     [dispatch, props.id, user]
   );
 
-  const editClick = useCallback(() => {
+  const editClick = () => {
     if (!user) {
       return alert("로그인이 필요합니다.");
     }
     setIsUploadFormOpen(true);
-    setIsEdit(true);
+    if(!isEdit){
+      dispatch({
+        type: TOGGLE_ISEDIT_REQUEST,
+        data : true,
+      })
+    }
 
     // alert("준비중입니다.");
-  }, [props.id, user, setIsUploadFormOpen]);
+  };
 
   useEffect(() => {
     if (props.Images[imageIndex] == undefined) {
@@ -213,13 +220,13 @@ export default function Cardpost(props: CardpostProps) {
 
   return (
     <>
-      {isUploadFormOpen && (
+      {isUploadFormOpen && isEdit && (
         <Upload
+          setUploadModalClicked ={setUploadModalClicked}
+          uploadModalClicked={uploadModalClicked}
           setImageIndex ={setImageIndex}
           setuploadModalOpen={setIsUploadFormOpen}
           uploadModalOpen={isUploadFormOpen}
-          isEdit={isEdit}
-          setIsEdit ={setIsEdit}
           postId={props.id}
           clipboardFile={null}
         />
@@ -290,11 +297,6 @@ export default function Cardpost(props: CardpostProps) {
           position: "relative",
         }}
       >
-        {/* <Typography>
-          <span style={{ float: "left", color: "#A6A6A6", fontSize: "80%" }}>
-            {props.name}문병욱
-          </span>
-        </Typography> */}
         <CardActionArea href={`${props.link}`} target="_blank">
           <CardMedia
             component="img"

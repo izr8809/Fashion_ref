@@ -51,29 +51,23 @@ const modalstyle = {
   p: 4,
 };
 
+
 type NavbarProps = {
-  userId: string;
-  setUserId: any;
-  userName: string;
-  setUserName: any;
+  setIsUserpage :any;
 };
 
 export default function Navbar({
-  userId,
-  setUserId,
-  userName,
-  setUserName,
+  setIsUserpage
 }: NavbarProps): ReactElement {
 
   //redux
   const { user } = useSelector((state: any) => state.user);
   const { logOutLoading } = useSelector((state: any) => state.user);
   const { hashtags } = useSelector((state: any) => state.post);
-  const [isEdit, setIsEdit] = useState(false);
+  const { isEdit } = useSelector((state: any) => state.post);
   const [clipboardFile, setClipboardFile] = useState(null);
+  const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const dispatch = useDispatch();
-
-  const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -113,14 +107,14 @@ export default function Navbar({
   };
   const Logout = useCallback(() => {
     dispatch(logoutRequestAction());
-
     //왜인지 모르겠는데 로그아웃 후 모달 켜짐
     setloginModalOpen(false);
-  }, [dispatch]);
+  }, []);
 
   const uploadClick = useCallback(() => {
     if (user) {
       setuploadModalOpen(true);
+      setUploadModalClicked(true)
     } else {
       setloginModalOpen(true);
       // setIsEdit(true);
@@ -143,6 +137,16 @@ export default function Navbar({
     setShowHashModalOpen(true);
   }, [dispatch]);
 
+  const profileClick = useCallback(()=>{
+    if(user){
+      setIsUserpage(true);
+    }else{
+      alert("준비중입니다.");
+    }
+  },[user])
+
+
+  //Render Menu
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -216,43 +220,21 @@ export default function Navbar({
     </Menu>
   );
 
-  useEffect(()=>{
-
-    if(!uploadModalOpen && user){
-      const handlePaste = (event : any)  => {
-        if(event.clipboardData.files.length >0){
-          setuploadModalOpen(true);
-          setClipboardFile(event.clipboardData.files)
-        }
-      };
-      window.addEventListener('paste', handlePaste);
-  
-      return () => {
-        window.removeEventListener('paste', handlePaste);
-      };
-    }
-
-  },[uploadModalOpen,user])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {!user && isModalOpen && (
+      {isModalOpen && (
         <Signup
-          isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
-          userId={userId}
-          setUserId={setUserId}
-          userName={userName}
-          setUserName={setUserName}
         />
       )}
-      {user && uploadModalOpen && (
+      {user && uploadModalOpen && !isEdit && (
         <Upload
+          uploadModalClicked={uploadModalClicked}
+          setUploadModalClicked={setUploadModalClicked}
           setImageIndex={null}
           uploadModalOpen={uploadModalOpen}
           setuploadModalOpen={setuploadModalOpen}
-          isEdit={isEdit}
-          setIsEdit={setIsEdit}
           postId={null}
           clipboardFile={clipboardFile}
         />
@@ -409,7 +391,7 @@ export default function Navbar({
                   aria-controls={menuId}
                   aria-haspopup="true"
                   color="primary"
-                  onClick={onReady}
+                  onClick={profileClick}
                 >
                   <AccountCircle />
                 </IconButton>

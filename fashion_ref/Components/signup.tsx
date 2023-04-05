@@ -12,16 +12,13 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch } from "react-redux";
-import { loginRequestAction } from "@/reducers/user";
+import { useSelector } from "react-redux";
+import { TOGGLE_SIGNUP_DONE, loginRequestAction, signupRequestAction } from "@/reducers/user";
 
 type SignupProps = {
-  isModalOpen: boolean;
   setIsModalOpen: any;
-  userId : string;
-  setUserId : any;
-  userName : string;
-  setUserName : any;
 };
 
 const style = {
@@ -37,20 +34,19 @@ const style = {
 };
 export default function Signup({
   setIsModalOpen,
-  isModalOpen,
-  userId,
-  setUserId,
-  userName,
-  setUserName,
 }: SignupProps): ReactElement {
   const dispatch = useDispatch();
-  const API = `${process.env.NEXT_PUBLIC_API}/signups`;
+  const [isInitialOpen, setIsInitialOpen]= useState(true);
   const [email, onChangeEmail] = useInput("");
+  const { signUpLoading } = useSelector((state: any) => state.user);
+  const { signUpDone } = useSelector((state: any) => state.user);
+  const { signUpError } = useSelector((state: any) => state.user);
   const [emailError, setEmailError] = useState(false);
-  const [nickname, onChangeNickname] = useInput("");
+  const [name, onChangeName] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [passwordCheck, setPasswordCheck] = useInput("");
   const [passwordError, setPasswordError] = useState(false);
+  const [nameError, setNameError] = useState(false);
   const onChangePasswordCheck = useCallback(
     (e: any) => {
       setPasswordCheck(e.target.value);
@@ -71,7 +67,6 @@ export default function Signup({
         );
       check ? (res = true) : (res = false);
     }
-
     return res;
   };
 
@@ -82,56 +77,36 @@ export default function Signup({
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      e.stopPropagation();
+      // e.stopPropagation();
       if (password !== passwordCheck) {
         setPasswordError(true);
-      } else if (!checkEmail(email)) {
+      } else if (!checkEmail(email) || email.replace(" ","") =="") {
         setEmailError(true);
-      } else {
-        axios
-          .post(
-            API,
-            // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-            // 회원가입창에서 클라이언트가 입력하는 데이터
-            {
-              email: email,
-              name: nickname,
-              password: password, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                // 'Accept': 'application/json',
-              },
-            }
-          )
-          // 그러면 서버에서 클라이언트로 response(응답)으로
-          // {ok: true} 아니면 {ok: false}가 온다.
-          // .then((response) => {
-          //   console.log(response); // response.data로 해야?
-          // })
-          .then((result) => {
-            dispatch(loginRequestAction())
-            setUserId(result.data.userId);
-            setUserName(result.data.userName);
-            closeModal();
-            // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-            // history.replace('/login');
-          })
-          .catch((error) => {
-            if (error.response.data.message == "already exist") {
-              alert("이미 존재하는 이메일입니다.");
-            } else {
-              alert("회원가입이 정상적으로 되지 않았습니다.");
-            }
-          });
+      } else if(name.replace(" ","") ==""){
+        setNameError(true);
       }
-      // if (!term) {
-      //   return setTermError(true);
-      // }
-    },
-    [API, dispatch, setUserId, setUserName, email, password, passwordCheck, nickname]
-  );
+      else {
+        dispatch(
+          signupRequestAction({
+            email,
+            name,
+            password,
+          })
+        );
+      }
+    },[email, password, passwordCheck, name]);
+
+    useEffect(()=>{
+      console.log("signupDone",signUpDone)
+      if(signUpDone && !isInitialOpen){
+        console.log("modal")
+        setIsModalOpen(false);
+        dispatch({
+          type: TOGGLE_SIGNUP_DONE,
+        })
+      }
+      setIsInitialOpen(false);
+    },[signUpDone])
 
   return (
     <Modal
@@ -170,10 +145,13 @@ export default function Signup({
           name="user-nick"
           sx={{ marginTop: 3 }}
           fullWidth
-          value={nickname}
+          value={name}
           required
-          onChange={onChangeNickname}
+          onChange={onChangeName}
         />
+        {nameError && (
+          <span style={{ color: "red" }}>이름을 입력해주세요</span>
+        )}
         <TextField
           label="비밀번호"
           fullWidth
@@ -197,15 +175,19 @@ export default function Signup({
         {passwordError && (
           <span style={{ color: "red" }}>비밀번호가 일치하지 않습니다</span>
         )}
-        <Button
+        {signUpError && (
+          <span style={{ color: "red" }}>회원가입 실패했습니다</span>
+        )}
+        <LoadingButton
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           size="large"
+          loading={signUpLoading}
         >
           확인
-        </Button>
+        </LoadingButton>
         {/* </form> */}
       </Box>
       {/* <Button onClick={closeModal}>닫기</Button> */}

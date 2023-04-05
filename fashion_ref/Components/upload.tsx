@@ -9,12 +9,13 @@ import React, {
 } from "react";
 import axios from "axios";
 import FormControl from "@mui/material/FormControl";
+import AddIcon from "@mui/icons-material/Add";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -29,12 +30,11 @@ import {
   addPost,
   ADD_POST_REQUEST,
   EDIT_POST_REQUEST,
-  EDIT_POST_WITH_IMAGES_REQUEST,
   GET_HASHTAGS_REQUEST,
   loadPost,
   TOGGLE_ADD_POST_DONE_REQUEST,
   TOGGLE_EDIT_POST_DONE_REQUEST,
-  TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST,
+  TOGGLE_ISEDIT_REQUEST,
 } from "@/reducers/post";
 import { and } from "sequelize";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
@@ -51,13 +51,13 @@ const modalstyle = {
   p: 4,
 };
 type UploadProps = {
-  setImageIndex : any;
+  setImageIndex: any;
   setuploadModalOpen: any;
   uploadModalOpen: boolean;
-  isEdit: boolean;
-  setIsEdit: any;
   postId: number | null;
-  clipboardFile : any;
+  clipboardFile: any;
+  uploadModalClicked: boolean;
+  setUploadModalClicked: any;
 };
 const style = {
   position: "absolute" as "absolute",
@@ -82,13 +82,17 @@ interface IFileTypes {
 }
 export default function Upload(props: UploadProps) {
   const dispatch = useDispatch();
-  const [isInitialOpen, setIsInitialOpen] = useState(true);
   const { user } = useSelector((state: any) => state.user);
   const { postArray } = useSelector((state: any) => state.post);
   const { hashtags } = useSelector((state: any) => state.post);
+  const { isEdit } = useSelector((state: any) => state.post);
+  const { editPostWithImagesDone } = useSelector((state: any) => state.post);
+  const { addPostError } = useSelector((state: any) => state.post);
+  const { editPostError } = useSelector((state: any) => state.post);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState({ name: "" });
-  const [imageFile, setImageFile] = useState<any>();
+  const postInfoArray = [];
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
   const [reason, onChangeReason, setReason] = useInput("");
@@ -98,18 +102,23 @@ export default function Upload(props: UploadProps) {
   const { addPostLoading } = useSelector((state: any) => state.post);
   const { addPostDone } = useSelector((state: any) => state.post);
   const { editPostDone } = useSelector((state: any) => state.post);
-  const { editPostWithImagesDone } = useSelector((state: any) => state.post);
   const [post, setPost] = useState({
     title: "",
     desc: "",
     photos: [null],
   });
+  const [imageFile, setImageFile] = useState<any>(post.photos || []);
   const closeModal = useCallback(() => {
     props.setuploadModalOpen(false);
+    props.setUploadModalClicked(false);
     setPost({
       title: "",
       desc: "",
       photos: [null],
+    });
+    dispatch({
+      type: TOGGLE_ISEDIT_REQUEST,
+      data: false,
     });
     //저장하시겠습니까?
   }, [props]);
@@ -123,6 +132,7 @@ export default function Upload(props: UploadProps) {
   const [season, setSeason] = React.useState("23SS");
   const [text, onChangeText, setText] = useInput("");
   const [cardPost, setCardPost] = useState([]);
+  const [prevBrandName, setPrevBrandName] = useState("");
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setCategory(event.target.value as string);
@@ -134,75 +144,90 @@ export default function Upload(props: UploadProps) {
     let files = e.target.files;
     handfiles(files);
   };
-  const handfiles = (files: FileList | null) => {
-    let photosArr: any[] = [];
-    let fileArr: any[] = [];
-    if (files != undefined) {
-      setIsImage(true);
-      for (let i = 0; i < files.length; i++) {
-        let file = files[i];
-        fileArr.push(file);
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.addEventListener("load", () => {
-          let fileobj = {
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            src: reader.result,
-          };
-          photosArr.push(fileobj);
-          setPost({
-            ...post,
-            photos: [...photos, ...photosArr],
+  const handfiles = useCallback(
+    (files: FileList | null) => {
+      let photosArr: any[] = [];
+      let fileArr: any[] = [];
+      if (files != undefined) {
+        setIsImage(true);
+        for (let i = 0; i < files.length; i++) {
+          let file = files[i];
+          fileArr.push(file);
+          let reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.addEventListener("load", () => {
+            let fileobj = {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              src: reader.result,
+            };
+            photosArr.push(fileobj);
+            setPost({
+              ...post,
+              // photos: [...photos, ...photosArr],
+              photos: photos.concat(photosArr),
+            });
           });
-        });
-      }
-      setImageFile(fileArr);
-    }
-  };
-
-  const handeldelete = (e: React.MouseEvent<HTMLSpanElement>) => {
-    let target = (e.target as HTMLSpanElement).parentElement;
-    let targetindex = 1;
-    setPost({
-      ...post,
-      photos: [
-        ...photos.slice(0, targetindex),
-        ...photos.slice(targetindex + 1),
-      ],
-    });
-
-    // setImageFile( (prev) => prev.filter())
-
-    //이미지 다 없어지면 다시 업로드 창 뜨도록
-    if (post.photos.length == 2) {
-      //랜더링 되기 전이라 2
-      setIsImage(false);
-    }
-  };
-
-  
-  //clipboard
-  useEffect(()=>{
-    if(!props.clipboardFile){
-      const handlePaste = (event : any)  => {
-        if(event.clipboardData.files.length >0){
-          handfiles(event.clipboardData.files)
         }
-      };
-      window.addEventListener('paste', handlePaste);
-  
-      return () => {
-        window.removeEventListener('paste', handlePaste);
-      };
-    }
-    else{
-      handfiles(props.clipboardFile)
-    }
-  },[props.clipboardFile])
 
+        setImageFile(imageFile.concat(fileArr));
+      }
+    },
+    [post, photos, imageFile]
+  );
 
+  const addIconClick = useCallback(() => {
+    if (fileInput.current) {
+      (fileInput.current as any).click();
+    }
+  }, [fileInput]);
+
+  const handeldelete = useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      let target = (e.target as HTMLSpanElement).parentElement;
+      var index = Array.from(
+        ((target as HTMLDivElement).parentElement as HTMLDivElement).children
+      ).indexOf(target as HTMLDivElement);
+      let targetindex = index;
+      setPost({
+        ...post,
+        photos: [...photos.slice(0, index + 1), ...photos.slice(index + 2)],
+      });
+      setImageFile([...photos.slice(0, index + 1), ...photos.slice(index + 2)]);
+
+      // setImageFile( (prev) => prev.filter())
+
+      //이미지 다 없어지면 다시 업로드 창 뜨도록
+      if (post.photos.length == 2) {
+        //랜더링 되기 전이라 2
+        setIsImage(false);
+      }
+    },
+    [post, photos]
+  );
+
+  //clipboard
+  useEffect(() => {
+    if (!props.uploadModalClicked) {
+      if (props.clipboardFile) {
+        handfiles(props.clipboardFile);
+      }
+    }
+  }, [props.clipboardFile, props.uploadModalClicked, props.uploadModalOpen]);
+
+  useEffect(() => {
+    const handlePaste = (event: any) => {
+      if (event.clipboardData.files.length > 0) {
+        handfiles(event.clipboardData.files);
+      }
+    };
+    window.addEventListener("paste", handlePaste);
+
+    return () => {
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, [post]);
 
   const handlehighlight = useCallback((e: any) => {
     e.preventDefault();
@@ -215,15 +240,18 @@ export default function Upload(props: UploadProps) {
     e.stopPropagation();
     setHighlight(false);
   }, []);
-  const handledrop = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
 
-    let dt = e.dataTransfer;
-    let files = dt?.files;
-    setHighlight(false);
-    handfiles(files);
-  };
+  const handledrop = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      let dt = e.dataTransfer;
+      let files = dt?.files;
+      setHighlight(false);
+      handfiles(files);
+    },
+    [post]
+  );
 
   const [hashTags, setHashTags] = React.useState({
     data: [{ name: "" }],
@@ -247,50 +275,37 @@ export default function Upload(props: UploadProps) {
         e.stopPropagation();
 
         //수정일 때
-        if (props.isEdit) {
+        if (isEdit) {
           //이미지 새로 올렸을 때
-          if (imageFile) {
-            const formData = new FormData();
-            [].forEach.call(imageFile, (f) => {
-              formData.append("image", f);
-            });
-            // formData.append("image", imageFile as File);
-            formData.append("postId", props.postId?.toString() as string);
-            formData.append("brand", brand.replace(" ", ""));
-            formData.append("link", link);
-            formData.append("category", category);
-            formData.append("season", season);
-            formData.append("hashtag", text);
-            formData.append("reason", reason);
-            dispatch({
-              type: EDIT_POST_WITH_IMAGES_REQUEST,
-              data: formData,
-            });
-
-          } else {
-            if (post.photos.length == 1) {
-              alert("이미지 필수");
-              return;
-            }
-
-            const formData = new FormData();
-            [].forEach.call(post.photos, (f: any, index) => {
-              if (index != 0) formData.append("imagePath", f.src);
-            });
-            // formData.append("image", imageFile as File);
-
-            formData.append("postId", props.postId?.toString() as string);
-            formData.append("brand", brand.replace(" ", ""));
-            formData.append("link", link);
-            formData.append("category", category);
-            formData.append("season", season);
-            formData.append("hashtag", text);
-            formData.append("reason", reason);
-            dispatch({
-              type: EDIT_POST_REQUEST,
-              data: formData,
-            });
+          if (post.photos.length == 1) {
+            alert("이미지 필수");
+            return;
           }
+          const formData = new FormData();
+          //if first element is null
+          if (!imageFile[0]) imageFile.shift();
+
+          [].forEach.call(imageFile, (f) => {
+            //file check
+            const isFile = (f as any).name || null;
+            if (isFile) {
+              formData.append("image", f);
+            } else {
+              formData.append("imagePath", (f as any).src);
+            }
+          });
+
+          formData.append("postId", props.postId?.toString() as string);
+          formData.append("brand", brand.replaceAll(" ", ""));
+          formData.append("link", link);
+          formData.append("category", category);
+          formData.append("season", season);
+          formData.append("hashtag", text);
+          formData.append("reason", reason);
+          dispatch({
+            type: EDIT_POST_REQUEST,
+            data: formData,
+          });
         }
         //수정 아닐 떄
         else {
@@ -302,10 +317,9 @@ export default function Upload(props: UploadProps) {
           [].forEach.call(imageFile, (f) => {
             formData.append("image", f);
           });
-          // formData.append("image", imageFile as File);
           formData.append("userId", user.id);
           formData.append("userName", user.userName);
-          formData.append("brand", brand.replace(" ", ""));
+          formData.append("brand", brand.replaceAll(" ", ""));
           formData.append("link", link);
           formData.append("category", category);
           formData.append("season", season);
@@ -313,7 +327,6 @@ export default function Upload(props: UploadProps) {
           formData.append("reason", reason);
           dispatch(addPost(formData));
         }
-
       }
     },
     [
@@ -327,61 +340,84 @@ export default function Upload(props: UploadProps) {
       dispatch,
       imageFile,
       post.photos,
-      props.isEdit,
+      isEdit,
       props.postId,
     ]
   );
 
   useEffect(() => {
-
     if (addPostDone) {
       dispatch({
-        type:TOGGLE_ADD_POST_DONE_REQUEST,
+        type: TOGGLE_ADD_POST_DONE_REQUEST,
       });
       closeModal();
     }
     if (editPostDone) {
       dispatch({
-        type:TOGGLE_EDIT_POST_DONE_REQUEST,
+        type: TOGGLE_EDIT_POST_DONE_REQUEST,
       });
       closeModal();
-      props.setIsEdit(false);
-      if(props.setImageIndex)
-         props.setImageIndex(0);
-    }
-    if (editPostWithImagesDone) {
+      // props.setIsEdit(false);
       dispatch({
-        type:TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST,
+        type: TOGGLE_ISEDIT_REQUEST,
+        data: false,
       });
-      closeModal();
-      props.setIsEdit(false);
-      if(props.setImageIndex)
-         props.setImageIndex(0);
+      if (props.setImageIndex) props.setImageIndex(0);
     }
+    if (editPostWithImagesDone && isEdit) {
+      dispatch({
+        type: TOGGLE_EDIT_POST_DONE_REQUEST,
+      });
+      // closeModal();
+      // props.setIsEdit(false);
 
+      dispatch({
+        type: TOGGLE_ISEDIT_REQUEST,
+        data: false,
+      });
 
-  }, [addPostDone, dispatch, closeModal, editPostDone,props.setIsEdit, editPostWithImagesDone]);
+      if (props.setImageIndex) props.setImageIndex(0);
+    }
+  }, [
+    addPostDone,
+    dispatch,
+    closeModal,
+    editPostDone,
+    isEdit,
+    props,
+    editPostWithImagesDone,
+  ]);
 
   useEffect(() => {
-    if (props.isEdit) {
+    if (isEdit) {
       const targetPost = postArray.find(
         (post: any) => post.id === props.postId
       );
-      setCardPost(targetPost.Images);
+
+      //카테고리, 시즌, 이름, 브랜드명 제외
       let postHashtags = "";
-      if (targetPost.Hashtags) {
-        targetPost.Hashtags.map(
-          (hashtag: any) =>
-            (postHashtags = postHashtags.concat(`#${hashtag?.name} `))
-        );
+      if (targetPost.Hashtags.length > 4) {
+        for (let i = 0; i < targetPost.Hashtags.length; i++) {
+          const hashname = targetPost.Hashtags[i]?.name;
+          if(hashname != targetPost.category.toUpperCase() && 
+             hashname != targetPost.season.toUpperCase() &&
+             hashname != targetPost.brand.toUpperCase() && 
+             hashname != targetPost.name.toUpperCase())
+             {
+             postHashtags = postHashtags.concat(
+              `#${hashname} `
+            );
+          }
+        }
       }
-      for (let i = 0; i < targetPost.Hashtags.length; i++) {
-        postHashtags.concat(`#${targetPost.Hashtags[i].name} `);
-      }
+
+      setCardPost(targetPost.Images);
+      setImageFile(targetPost.Images);
       setCategory(targetPost.category);
       setSeason(targetPost.season);
       setText(postHashtags);
       setBrand(targetPost.brand);
+      setPrevBrandName(targetPost.brand);
       setReason(targetPost.reason);
       setLink(targetPost.link);
       setIsImage(true);
@@ -389,9 +425,20 @@ export default function Upload(props: UploadProps) {
         ...post,
         photos: photos.concat(targetPost.Images),
       });
-    }
-  }, [props.isEdit, postArray]);
 
+    }
+  }, [isEdit, postArray]);
+
+  const addDrop = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      let dt = e.dataTransfer;
+      let files = dt?.files;
+      handfiles(files);
+    },
+    [post]
+  );
 
   return (
     <>
@@ -444,7 +491,15 @@ export default function Upload(props: UploadProps) {
           sx={style}
         >
           {/* <form onSubmit={onSubmit}> */}
-          <CloseIcon style={{position:"absolute", cursor:"pointer", top:"15px", right:"15px"}} onClick={closeModal}></CloseIcon>
+          <CloseIcon
+            style={{
+              position: "absolute",
+              cursor: "pointer",
+              top: "15px",
+              right: "15px",
+            }}
+            onClick={closeModal}
+          ></CloseIcon>
           <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
             업로드
           </Typography>
@@ -587,7 +642,13 @@ export default function Upload(props: UploadProps) {
                   </label>
                 </div>
               )}
-              <div className="custom-file-preview">
+              <div
+                className="custom-file-preview"
+                onDragEnter={handlehighlight}
+                onDragOver={handlehighlight}
+                onDragLeave={handleunhighlight}
+                onDrop={addDrop}
+              >
                 {photos.length > 0 &&
                   photos.map((item: any, index) =>
                     index != 0 ? (
@@ -599,9 +660,36 @@ export default function Upload(props: UploadProps) {
                       <></>
                     )
                   )}
+                {isImage ? (
+                  <>
+                    <AddIcon
+                      onClick={addIconClick}
+                      sx={{ marginLeft: "54px", marginTop: "39px" }}
+                    />
+                    <input
+                      type="file"
+                      style={{ visibility: "hidden" }}
+                      name="photos"
+                      placeholder="Enter photos"
+                      multiple={false}
+                      id="filephotos"
+                      onChange={handlefilechange}
+                      ref={fileInput}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>
+
+          {addPostError && (
+            <span style={{ color: "red" }}>업로드 실패했습니다</span>
+          )}
+          {editPostDone && (
+            <span style={{ color: "red" }}>업로드 실패했습니다</span>
+          )}
           <button
             id="submit_bt"
             style={{ display: "none" }}

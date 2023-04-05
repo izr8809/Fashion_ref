@@ -71,7 +71,7 @@ router.get("/logout", (req, res) => {
   }
 });
 
-router.post("/signups", async function (req, res) {
+router.post("/signup", async function (req, res) {
   const hashedPassword = await bcrypt.hash(req.body.password, 12);
   try {
     const userInfo = await User.findOne({

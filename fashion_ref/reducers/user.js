@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce from "immer";
 
 export const initialState = {
   loadUserLoading: false, // 유저 정보 가져오기 시도중
@@ -12,16 +12,16 @@ export const initialState = {
   logOutError: null,
   signUpLoading: false,
   signUpDone: false,
-  signUpFailure: null,
+  signUpError: null,
   user: null,
   signUpData: {},
   loginData: {},
-  posts:[],
+  posts: [],
 };
 
-export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
-export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
-export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -34,6 +34,9 @@ export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+export const TOGGLE_SIGNUP_DONE = "TOGGLE_SIGNUP_DONE";
+export const TOGGLE_LOGIN_DONE = "TOGGLE_LOGIN_DONE";
 
 
 export const loadUser = (data) => {
@@ -85,7 +88,6 @@ export const logoutFailureAction = (data) => {
   };
 };
 
-
 export const signupRequestAction = (data) => {
   return {
     type: SIGN_UP_REQUEST,
@@ -107,11 +109,9 @@ export const signupFailureAction = (data) => {
   };
 };
 
-
 const reducer = (state = initialState, action) => {
-  return produce (state, (draft)=>{
+  return produce(state, (draft) => {
     switch (action.type) {
-    
       case LOAD_USER_REQUEST:
         draft.loadUserLoading = true;
         draft.loadUserError = null;
@@ -123,12 +123,12 @@ const reducer = (state = initialState, action) => {
         draft.user = action.data;
         draft.loadUserDone = true;
         break;
-        
+
       case LOAD_USER_FAILURE:
         draft.loadUserLoading = false;
         draft.loadUserError = action.error;
         break;
-  
+
       case LOG_IN_REQUEST:
         draft.logInLoading = false;
         draft.logInError = null;
@@ -146,24 +146,23 @@ const reducer = (state = initialState, action) => {
         draft.logInError = action.error;
         draft.user = null;
         break;
-  
+
       case LOG_OUT_REQUEST:
         draft.logOutLoading = true;
         break;
-  
+
       case LOG_OUT_SUCCESS:
         draft.logOutDone = false;
         draft.logOutLoading = false;
-        draft.logOutError = null; 
+        draft.logOutError = null;
         draft.user = null;
         break;
-  
+
       case LOG_OUT_FAILURE:
         draft.logOutLoading = false;
-        draft.logOutError = action.error; 
+        draft.logOutError = action.error;
         break;
 
-        
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
         draft.signUpError = null;
@@ -171,22 +170,28 @@ const reducer = (state = initialState, action) => {
         break;
 
       case SIGN_UP_SUCCESS:
-        draft.signUpLoading = true;
+        draft.signUpLoading = false;
         draft.user = action.data;
         draft.signUpDone = true;
         break;
-        
+
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
         break;
-  
-        
+
+      case TOGGLE_SIGNUP_DONE:
+        draft.signUpDone = false;
+        break;
+
+      case TOGGLE_LOGIN_DONE:
+        draft.logInDone = false;
+        break;
+
       default:
         return state;
     }
   });
-  
 };
 
 export default reducer;

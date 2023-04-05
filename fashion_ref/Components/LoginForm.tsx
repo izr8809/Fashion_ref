@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useDispatch } from "react-redux";
-import { loginRequestAction } from "@/reducers/user";
+import { TOGGLE_LOGIN_DONE, loginRequestAction } from "@/reducers/user";
 import { useSelector } from "react-redux";
 
 const style = {
@@ -35,6 +35,7 @@ export default function LoginForm({
   
   const dispatch = useDispatch();
   const [isInitialOpen, setIsInitialOpen]= useState(true);
+  const {logInDone} = useSelector((state : any) => state.user)
   const {logInLoading} = useSelector((state : any) => state.user)
   const {logInError} = useSelector((state : any) => state.user)
   const [email, onChangeEmail] = useInput("");
@@ -52,52 +53,21 @@ export default function LoginForm({
         alert("비밀번호를 입력해주세요");
       } else {
         dispatch(loginRequestAction({email,password}))
-        // setloginModalOpen(false);
-        // axios
-        //   .post(
-        //     LOGINAPI,
-        //     // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-        //     // 회원가입창에서 클라이언트가 입력하는 데이터
-        //     {
-        //       email: email,
-        //       password: password, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
-        //     },
-        //     {
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //         // 'Accept': 'application/json',
-        //       },
-        //     }
-        //   )
-        //   .then((result) => {
-        //     setUser(result.data.data);
-        //     console.log("dispatch");
-        //     dispatch(loginRequestAction("usersample"));
-        //     // setIsLoggedIn(true);
-        //     setUserId(result.data.data.id);
-        //     setUserName(result.data.data.name);
-        //     setloginModalOpen(false);
-        //     console.log(result.data.data);
-        //     // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-        //     // history.replace('/login');
-        //   })
-        //   .catch((error) => {
-        //     alert("로그인 정보가 일치하지 않습니다.");
-        //     setloginModalOpen(false);
-        //     console.log(error);
-        //   });
       }
     },
     [email, password, dispatch]
   );
 
   useEffect(()=>{
-    if(!logInLoading && !isInitialOpen){
+    if(logInDone && !isInitialOpen){
       setloginModalOpen(false);
+      dispatch({
+        type: TOGGLE_LOGIN_DONE,
+      })
     }
     setIsInitialOpen(false);
 
-  },[logInLoading])
+  },[logInDone])
 
 
   return (

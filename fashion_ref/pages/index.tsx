@@ -10,6 +10,7 @@ import {
   initialState as postinitialState,
   LOAD_POST_REQUEST,
   RELOAD_POST_REQUEST,
+  GET_USER_POST_REQUEST,
 } from "@/reducers/post";
 import { initialState as userinitialState } from "@/reducers/user";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
@@ -18,6 +19,7 @@ import { loadUser } from "@/reducers/user";
 import { useDispatch } from "react-redux";
 import wrapper from "@/store/configureStore";
 import { END } from "redux-saga";
+import userpage from "./userpage";
 import NoticeModal from "@/Components/NoticeModal";
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -43,10 +45,7 @@ export default function Home() {
   const { hasMorePost } = useSelector((state: any) => state.post);
   const { postArray } = useSelector((state: any) => state.post);
   const dispatch = useDispatch();
-
-  const [userId, setUserId] = useState("");
-  const [userName, setUserName] = useState("");
-  const [resultStore, setResultStore] = useState([]);
+  const [isUserpage, setIsUserpage] = useState(false);
 
   useEffect(() => {
     function onScroll() {
@@ -69,14 +68,19 @@ export default function Home() {
     };
   }, [hasMorePost, loadPostLoading, dispatch, postArray, onInfiniteScroll]);
 
-
   const loadPosts = useCallback(() => {
     dispatch({
       type: RELOAD_POST_REQUEST,
-    })
+    });
     dispatch(loadPost());
   }, [dispatch]);
 
+  const loadUserPost = useCallback(() => {
+    dispatch({
+      type: GET_USER_POST_REQUEST,
+      data: null,
+    });
+  }, []);
 
   return (
     <>
@@ -94,12 +98,12 @@ export default function Home() {
           </h1>
         </a>
         <div style={{ marginBottom: "40px" }}>
-          <Navbar
-            userId={userId}
-            setUserId={setUserId}
-            userName={userName}
-            setUserName={setUserName}
-          />
+          <Navbar setIsUserpage={setIsUserpage} />
+        </div>
+        <div style={{marginBottom :"10px"}}>
+          {isUserpage && (
+            <button onClick={loadUserPost}> 내가 작성한 순 </button>
+          )}
         </div>
         <ResponsiveGrid />
         {/* <div>
@@ -107,7 +111,11 @@ export default function Home() {
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
           </Stack>
         </div> */}
-        {loadPostLoading && <div id="bottomloading" ><span style={{fontSize : "240%"}}> 로딩중...</span></div>}
+        {loadPostLoading && (
+          <div id="bottomloading">
+            <span style={{ fontSize: "240%" }}> 로딩중...</span>
+          </div>
+        )}
       </div>
     </>
   );

@@ -71,17 +71,19 @@ function* logOut() {
   }
 }
 //signup
-function signupAPI() { // is not gnerator
-  return axios.post("/user/signup");
+function signupAPI(data) { // is not gnerator
+  console.log("data", data)
+  return axios.post("/user/signup", data);
 }
-function* signUp() {
+function* signUp(action) {
   try {
-    const result = yield call(signupAPI);
+    const result = yield call(signupAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.log(err)
     yield put({
       type: SIGN_UP_FAILURE,
       error: err.response.data,

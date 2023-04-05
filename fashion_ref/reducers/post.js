@@ -1,31 +1,7 @@
 import produce from "immer";
 
 export const initialState = {
-  postArray: [
-    // {
-    //   id: 0,
-    //   name: "",
-    //   category: "",
-    //   brand: "",
-    //   Images: [
-    //     {
-    //       src: "",
-    //     },
-    //   ],
-    //   Hashtags: [
-    //     {
-    //       //어떻게 오는지 모르겠네
-    //       PostHashtag: {
-    //         HashtagId: 1,
-    //       },
-    //       name: "",
-    //     },
-    //   ],
-    //   reason: "",
-    //   season: "",
-    //   link: "",
-    // },
-  ],
+  postArray: [],
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -53,10 +29,11 @@ export const initialState = {
   editPostLoading: false,
   editPostDone: false,
   editPostError: null,
-  editPostWithImagesLoading: false,
-  editPostWithImagesDone: false,
-  editPostWithImagesError: null,
+  getUserPostLoading: false,
+  getUserPostDone : false,
+  getUserPostError : null,
   onInfiniteScroll: true,
+  isEdit: false,
   hashtags: [],
   hasMorePost: true,
 };
@@ -64,11 +41,10 @@ export const initialState = {
 export const RELOAD_POST_REQUEST = "RELOAD_POST_REQUEST";
 
 export const TOGGLE_SCROLL_REQUEST = "TOGGLE_SCROLL_REQUEST";
+export const TOGGLE_ISEDIT_REQUEST = "TOGGLE_ISEDIT_REQUEST";
 
 export const TOGGLE_ADD_POST_DONE_REQUEST = "TOGGLE_ADD_POST_DONE_REQUEST";
 export const TOGGLE_EDIT_POST_DONE_REQUEST = "TOGGLE_EDIT_POST_DONE_REQUEST";
-export const TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST =
-  "TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -106,9 +82,10 @@ export const EDIT_POST_REQUEST = "EDIT_POST_REQUEST";
 export const EDIT_POST_SUCCESS = "EDIT_POST_SUCCESS";
 export const EDIT_POST_FAILURE = "EDIT_POST_FAILURE";
 
-export const EDIT_POST_WITH_IMAGES_REQUEST = "EDIT_POST_WITH_IMAGES_REQUEST";
-export const EDIT_POST_WITH_IMAGES_SUCCESS = "EDIT_POST_WITH_IMAGES_SUCCESS";
-export const EDIT_POST_WITH_IMAGES_FAILURE = "EDIT_POST_WITH_IMAGES_FAILURE";
+
+export const GET_USER_POST_REQUEST = "GET_USER_POST_REQUEST";
+export const GET_USER_POST_SUCCESS = "GET_USER_POST_SUCCESS";
+export const GET_USER_POST_FAILURE = "GET_USER_POST_FAILURE";
 
 export const addPost = (data) => {
   return {
@@ -148,11 +125,13 @@ export const gethashtagsFailureAction = (data) => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
         draft.loadPostError = null;
         break;
+
       case LOAD_POST_SUCCESS:
         draft.postArray = draft.postArray.concat(action.data);
         draft.loadPostDone = true;
@@ -223,6 +202,7 @@ const reducer = (state = initialState, action) => {
         draft.hashtagSearchDone = false;
         draft.hashtagSearchError = null;
         break;
+
       case HASHTAG_SEARCH_SUCCESS:
         draft.postArray = action.data;
         draft.hashtagSearchDone = true;
@@ -306,29 +286,23 @@ const reducer = (state = initialState, action) => {
         draft.editPostLoading = false;
         draft.editPostError = action.error;
         break;
-
-      case EDIT_POST_WITH_IMAGES_REQUEST:
-        draft.editPostWithImagesLoading = true;
-        draft.editPostWithImagesDone = false;
-        draft.editPostWithImagesError = null;
+        
+      case GET_USER_POST_REQUEST:
+        draft.getUserPostLoading = true;
+        draft.getUserPostDone = false;
+        draft.getUserPostError = null;
         break;
 
-      case EDIT_POST_WITH_IMAGES_SUCCESS:
-        //바뀐 포스팅 인덱스 찾아서 그것만 바꿔서 postArray 다시 업뎃
-        const editedPostWithImages = state.postArray.find(
-          (v) => v.id === action.data.postId
-        );
-        const editedPostWithImagesindex =
-          state.postArray.indexOf(editedPostWithImages);
-
-        draft.postArray[editedPostWithImagesindex] = action.data.postInfo;
-        draft.editPostWithImagesLoading = false;
-        draft.editPostWithImagesDone = true;
+      case GET_USER_POST_SUCCESS:
+        console.log(action.data);
+        draft.postArray = action.data;
+        draft.getUserPostLoading = false;
+        draft.getUserPostDone = true;
         break;
 
-      case EDIT_POST_WITH_IMAGES_FAILURE:
-        draft.editPostWithImagesLoading = false;
-        draft.editPostWithImagesError = action.error;
+      case GET_USER_POST_FAILURE:
+        draft.getUserPostLoading = false;
+        draft.getUserPostError = action.error;
         break;
 
       case RELOAD_POST_REQUEST:
@@ -347,8 +321,8 @@ const reducer = (state = initialState, action) => {
         draft.editPostDone = false;
         break;
 
-      case TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST:
-        draft.editPostWithImagesDone = false;
+      case TOGGLE_ISEDIT_REQUEST:
+        draft.isEdit = action.data;
         break;
 
       default:

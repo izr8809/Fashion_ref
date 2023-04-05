@@ -104,8 +104,9 @@ function Cardpost(props) {
     const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useDispatch)();
     // const isLoggedIn = false;
+    const [uploadModalClicked, setUploadModalClicked] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [like, setLike] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-    const [isEdit, setIsEdit] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const { isEdit  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
     const [likeClick, setLikeClick] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(props.likers?.length || 0);
     const [loginModalOpen, setIsLoginFormOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [isUploadFormOpen, setIsUploadFormOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
@@ -180,18 +181,19 @@ function Cardpost(props) {
         props.id,
         user
     ]);
-    const editClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+    const editClick = ()=>{
         if (!user) {
             return alert("로그인이 필요합니다.");
         }
         setIsUploadFormOpen(true);
-        setIsEdit(true);
+        if (!isEdit) {
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_18__/* .TOGGLE_ISEDIT_REQUEST */ .xM,
+                data: true
+            });
+        }
     // alert("준비중입니다.");
-    }, [
-        props.id,
-        user,
-        setIsUploadFormOpen
-    ]);
+    };
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
         if (props.Images[imageIndex] == undefined) {} else {
             // console.log("props")
@@ -249,12 +251,12 @@ function Cardpost(props) {
     ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
-            isUploadFormOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Upload__WEBPACK_IMPORTED_MODULE_21__/* ["default"] */ .Z, {
+            isUploadFormOpen && isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Upload__WEBPACK_IMPORTED_MODULE_21__/* ["default"] */ .Z, {
+                setUploadModalClicked: setUploadModalClicked,
+                uploadModalClicked: uploadModalClicked,
                 setImageIndex: setImageIndex,
                 setuploadModalOpen: setIsUploadFormOpen,
                 uploadModalOpen: isUploadFormOpen,
-                isEdit: isEdit,
-                setIsEdit: setIsEdit,
                 postId: props.id,
                 clipboardFile: null
             }),
@@ -601,6 +603,7 @@ const style = {
 function LoginForm({ setloginModalOpen , loginModalOpen  }) {
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useDispatch)();
     const [isInitialOpen, setIsInitialOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+    const { logInDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
     const { logInLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
     const { logInError  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
     const [email, onChangeEmail] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
@@ -619,40 +622,6 @@ function LoginForm({ setloginModalOpen , loginModalOpen  }) {
                 email,
                 password
             }));
-        // setloginModalOpen(false);
-        // axios
-        //   .post(
-        //     LOGINAPI,
-        //     // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-        //     // 회원가입창에서 클라이언트가 입력하는 데이터
-        //     {
-        //       email: email,
-        //       password: password, // 숫자, 영어 대문자, 소문자, 특수기호, 8-20자  1234567#Aaa
-        //     },
-        //     {
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //         // 'Accept': 'application/json',
-        //       },
-        //     }
-        //   )
-        //   .then((result) => {
-        //     setUser(result.data.data);
-        //     console.log("dispatch");
-        //     dispatch(loginRequestAction("usersample"));
-        //     // setIsLoggedIn(true);
-        //     setUserId(result.data.data.id);
-        //     setUserName(result.data.data.name);
-        //     setloginModalOpen(false);
-        //     console.log(result.data.data);
-        //     // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-        //     // history.replace('/login');
-        //   })
-        //   .catch((error) => {
-        //     alert("로그인 정보가 일치하지 않습니다.");
-        //     setloginModalOpen(false);
-        //     console.log(error);
-        //   });
         }
     }, [
         email,
@@ -660,12 +629,15 @@ function LoginForm({ setloginModalOpen , loginModalOpen  }) {
         dispatch
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (!logInLoading && !isInitialOpen) {
+        if (logInDone && !isInitialOpen) {
             setloginModalOpen(false);
+            dispatch({
+                type: _reducers_user__WEBPACK_IMPORTED_MODULE_9__/* .TOGGLE_LOGIN_DONE */ .dy
+            });
         }
         setIsInitialOpen(false);
     }, [
-        logInLoading
+        logInDone
     ]);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_3___default()), {
         open: true,
@@ -821,15 +793,15 @@ const modalstyle = {
     boxShadow: 24,
     p: 4
 };
-function Navbar({ userId , setUserId , userName , setUserName  }) {
+function Navbar({ setIsUserpage  }) {
     //redux
     const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
     const { logOutLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.user);
     const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
-    const [isEdit, setIsEdit] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const { isEdit  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useSelector)((state)=>state.post);
     const [clipboardFile, setClipboardFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+    const [uploadModalClicked, setUploadModalClicked] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_17__.useDispatch)();
-    const GETHASHAPI = `${process.env.NEXT_PUBLIC_API}/getHash`;
     const [uploadModalOpen, setuploadModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
     const [loginModalOpen, setloginModalOpen] = react__WEBPACK_IMPORTED_MODULE_1__.useState(false);
     const [anchorEl, setAnchorEl] = react__WEBPACK_IMPORTED_MODULE_1__.useState(null);
@@ -861,12 +833,11 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
         dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_18__/* .logoutRequestAction */ .vR)());
         //왜인지 모르겠는데 로그아웃 후 모달 켜짐
         setloginModalOpen(false);
-    }, [
-        dispatch
-    ]);
+    }, []);
     const uploadClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         if (user) {
             setuploadModalOpen(true);
+            setUploadModalClicked(true);
         } else {
             setloginModalOpen(true);
         // setIsEdit(true);
@@ -889,6 +860,16 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
     }, [
         dispatch
     ]);
+    const profileClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        if (user) {
+            setIsUserpage(true);
+        } else {
+            alert("준비중입니다.");
+        }
+    }, [
+        user
+    ]);
+    //Render Menu
     const menuId = "primary-search-account-menu";
     const renderMenu = /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Menu__WEBPACK_IMPORTED_MODULE_7___default()), {
         anchorEl: anchorEl,
@@ -936,42 +917,20 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
             })
         })
     });
-    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (!uploadModalOpen && user) {
-            const handlePaste = (event)=>{
-                if (event.clipboardData.files.length > 0) {
-                    setuploadModalOpen(true);
-                    setClipboardFile(event.clipboardData.files);
-                }
-            };
-            window.addEventListener("paste", handlePaste);
-            return ()=>{
-                window.removeEventListener("paste", handlePaste);
-            };
-        }
-    }, [
-        uploadModalOpen,
-        user
-    ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_15___default()), {
         sx: {
             flexGrow: 1
         },
         children: [
-            !user && isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Signup__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {
-                isModalOpen: isModalOpen,
-                setIsModalOpen: setIsModalOpen,
-                userId: userId,
-                setUserId: setUserId,
-                userName: userName,
-                setUserName: setUserName
+            isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Signup__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {
+                setIsModalOpen: setIsModalOpen
             }),
-            user && uploadModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Upload__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {
+            user && uploadModalOpen && !isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Upload__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {
+                uploadModalClicked: uploadModalClicked,
+                setUploadModalClicked: setUploadModalClicked,
                 setImageIndex: null,
                 uploadModalOpen: uploadModalOpen,
                 setuploadModalOpen: setuploadModalOpen,
-                isEdit: isEdit,
-                setIsEdit: setIsEdit,
                 postId: null,
                 clipboardFile: clipboardFile
             }),
@@ -1153,7 +1112,7 @@ function Navbar({ userId , setUserId , userName , setUserName  }) {
                                             "aria-controls": menuId,
                                             "aria-haspopup": "true",
                                             color: "primary",
-                                            onClick: onReady,
+                                            onClick: profileClick,
                                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_AccountCircle__WEBPACK_IMPORTED_MODULE_10___default()), {})
                                         })
                                     ]
@@ -1547,22 +1506,21 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1557);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9648);
-/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6042);
-/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7163);
-/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Typography__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9564);
-/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(19);
-/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(3819);
-/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6022);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6572);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([axios__WEBPACK_IMPORTED_MODULE_3__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__]);
-([axios__WEBPACK_IMPORTED_MODULE_3__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6042);
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7163);
+/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Typography__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9564);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6829);
+/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6572);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_user__WEBPACK_IMPORTED_MODULE_9__]);
+_reducers_user__WEBPACK_IMPORTED_MODULE_9__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
 
 
@@ -1585,15 +1543,19 @@ const style = {
     boxShadow: 24,
     p: 4
 };
-function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName , setUserName  }) {
-    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_9__.useDispatch)();
-    const API = `${process.env.NEXT_PUBLIC_API}/signups`;
+function Signup({ setIsModalOpen  }) {
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useDispatch)();
+    const [isInitialOpen, setIsInitialOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
     const [email, onChangeEmail] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
+    const { signUpLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
+    const { signUpDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
+    const { signUpError  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_8__.useSelector)((state)=>state.user);
     const [emailError, setEmailError] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-    const [nickname, onChangeNickname] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
+    const [name, onChangeName] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
     const [password, onChangePassword] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
     const [passwordCheck, setPasswordCheck] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)("");
     const [passwordError, setPasswordError] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const [nameError, setNameError] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const onChangePasswordCheck = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         setPasswordCheck(e.target.value);
         setPasswordError(e.target.value !== password);
@@ -1616,68 +1578,52 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
     };
     const onSubmit = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
-        e.stopPropagation();
+        // e.stopPropagation();
         if (password !== passwordCheck) {
             setPasswordError(true);
-        } else if (!checkEmail(email)) {
+        } else if (!checkEmail(email) || email.replace(" ", "") == "") {
             setEmailError(true);
+        } else if (name.replace(" ", "") == "") {
+            setNameError(true);
         } else {
-            axios__WEBPACK_IMPORTED_MODULE_3__["default"].post(API, // 클라이언트에서 서버로 request(요청)하며 보내주는 데이터
-            // 회원가입창에서 클라이언트가 입력하는 데이터
-            {
-                email: email,
-                name: nickname,
-                password: password
-            }, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })// 그러면 서버에서 클라이언트로 response(응답)으로
-            // {ok: true} 아니면 {ok: false}가 온다.
-            // .then((response) => {
-            //   console.log(response); // response.data로 해야?
-            // })
-            .then((result)=>{
-                dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_10__/* .loginRequestAction */ .tP)());
-                setUserId(result.data.userId);
-                setUserName(result.data.userName);
-                closeModal();
-            // window.alert('회원가입이 되었습니다! 로그인 해주세요.');
-            // history.replace('/login');
-            }).catch((error)=>{
-                if (error.response.data.message == "already exist") {
-                    alert("이미 존재하는 이메일입니다.");
-                } else {
-                    alert("회원가입이 정상적으로 되지 않았습니다.");
-                }
-            });
+            dispatch((0,_reducers_user__WEBPACK_IMPORTED_MODULE_9__/* .signupRequestAction */ .y1)({
+                email,
+                name,
+                password
+            }));
         }
-    // if (!term) {
-    //   return setTermError(true);
-    // }
     }, [
-        API,
-        dispatch,
-        setUserId,
-        setUserName,
         email,
         password,
         passwordCheck,
-        nickname
+        name
     ]);
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_6___default()), {
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        console.log("signupDone", signUpDone);
+        if (signUpDone && !isInitialOpen) {
+            console.log("modal");
+            setIsModalOpen(false);
+            dispatch({
+                type: _reducers_user__WEBPACK_IMPORTED_MODULE_9__/* .TOGGLE_SIGNUP_DONE */ .$Q
+            });
+        }
+        setIsInitialOpen(false);
+    }, [
+        signUpDone
+    ]);
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_5___default()), {
         open: true,
         onClose: closeModal,
         "aria-labelledby": "modal-modal-title",
         "aria-describedby": "modal-modal-description",
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_7___default()), {
+        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_6___default()), {
             component: "form",
             noValidate: true,
             autoComplete: "off",
             onSubmit: onSubmit,
             sx: style,
             children: [
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Typography__WEBPACK_IMPORTED_MODULE_5___default()), {
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Typography__WEBPACK_IMPORTED_MODULE_4___default()), {
                     component: "h1",
                     variant: "h5",
                     sx: {
@@ -1685,7 +1631,7 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
                     },
                     children: "회원가입"
                 }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default()), {
                     label: "이메일",
                     name: "user-email",
                     sx: {
@@ -1704,18 +1650,24 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
                     },
                     children: "Email 형식이 잘못되었습니다"
                 }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default()), {
                     label: "이름",
                     name: "user-nick",
                     sx: {
                         marginTop: 3
                     },
                     fullWidth: true,
-                    value: nickname,
+                    value: name,
                     required: true,
-                    onChange: onChangeNickname
+                    onChange: onChangeName
                 }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                nameError && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                    style: {
+                        color: "red"
+                    },
+                    children: "이름을 입력해주세요"
+                }),
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default()), {
                     label: "비밀번호",
                     fullWidth: true,
                     name: "user-password",
@@ -1727,7 +1679,7 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
                     required: true,
                     onChange: onChangePassword
                 }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default()), {
                     label: "비밀번호체크",
                     fullWidth: true,
                     name: "user-password-check",
@@ -1745,7 +1697,13 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
                     },
                     children: "비밀번호가 일치하지 않습니다"
                 }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_8___default()), {
+                signUpError && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                    style: {
+                        color: "red"
+                    },
+                    children: "회원가입 실패했습니다"
+                }),
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7___default()), {
                     type: "submit",
                     fullWidth: true,
                     variant: "contained",
@@ -1754,6 +1712,7 @@ function Signup({ setIsModalOpen , isModalOpen , userId , setUserId , userName ,
                         mb: 2
                     },
                     size: "large",
+                    loading: signUpLoading,
                     children: "확인"
                 })
             ]
@@ -1779,32 +1738,35 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _mui_material_FormControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8891);
 /* harmony import */ var _mui_material_FormControl__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_mui_material_FormControl__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(911);
-/* harmony import */ var _mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6042);
-/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7163);
-/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Typography__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9564);
-/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(19);
-/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4173);
-/* harmony import */ var _mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _mui_material_Select__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(2651);
-/* harmony import */ var _mui_material_Select__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Select__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9271);
-/* harmony import */ var _mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6829);
-/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3819);
-/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1557);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(6022);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(491);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_15__]);
-_reducers_post__WEBPACK_IMPORTED_MODULE_15__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+/* harmony import */ var _mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6146);
+/* harmony import */ var _mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(911);
+/* harmony import */ var _mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6042);
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7163);
+/* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Typography__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9564);
+/* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(19);
+/* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4173);
+/* harmony import */ var _mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _mui_material_Select__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(2651);
+/* harmony import */ var _mui_material_Select__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Select__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9271);
+/* harmony import */ var _mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6829);
+/* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3819);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1557);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(491);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_16__]);
+_reducers_post__WEBPACK_IMPORTED_MODULE_16__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+
 
 
 
@@ -1851,25 +1813,28 @@ const style = {
     p: 4
 };
 function Upload(props) {
-    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useDispatch)();
-    const [isInitialOpen, setIsInitialOpen] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
-    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.user);
-    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useDispatch)();
+    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.user);
+    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { hashtags  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { isEdit  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { editPostWithImagesDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { addPostError  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { editPostError  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const fileInput = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
     const [file, setFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
         name: ""
     });
-    const [imageFile, setImageFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
+    const postInfoArray = [];
     const [isImage, setIsImage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [highlight, setHighlight] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-    const [reason, onChangeReason, setReason] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z)("");
-    const [brand, onChangeBrand, setBrand] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z)("");
-    const [link, onChangeLink, setLink] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z)("");
+    const [reason, onChangeReason, setReason] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
+    const [brand, onChangeBrand, setBrand] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
+    const [link, onChangeLink, setLink] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
     const [showHashModalOpen, setShowHashModalOpen] = react__WEBPACK_IMPORTED_MODULE_1___default().useState(false);
-    const { addPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { addPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { editPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
-    const { editPostWithImagesDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_14__.useSelector)((state)=>state.post);
+    const { addPostLoading  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { addPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
+    const { editPostDone  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_15__.useSelector)((state)=>state.post);
     const [post, setPost] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
         title: "",
         desc: "",
@@ -1877,14 +1842,20 @@ function Upload(props) {
             null
         ]
     });
+    const [imageFile, setImageFile] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(post.photos || []);
     const closeModal = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         props.setuploadModalOpen(false);
+        props.setUploadModalClicked(false);
         setPost({
             title: "",
             desc: "",
             photos: [
                 null
             ]
+        });
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_ISEDIT_REQUEST */ .xM,
+            data: false
         });
     //저장하시겠습니까?
     }, [
@@ -1897,8 +1868,9 @@ function Upload(props) {
     const inputRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
     const [category, setCategory] = react__WEBPACK_IMPORTED_MODULE_1___default().useState("상의");
     const [season, setSeason] = react__WEBPACK_IMPORTED_MODULE_1___default().useState("23SS");
-    const [text, onChangeText, setText] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z)("");
+    const [text, onChangeText, setText] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
     const [cardPost, setCardPost] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+    const [prevBrandName, setPrevBrandName] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
     const handleCategoryChange = (event)=>{
         setCategory(event.target.value);
     };
@@ -1909,7 +1881,7 @@ function Upload(props) {
         let files = e.target.files;
         handfiles(files);
     };
-    const handfiles = (files)=>{
+    const handfiles = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((files)=>{
         let photosArr = [];
         let fileArr = [];
         if (files != undefined) {
@@ -1929,50 +1901,74 @@ function Upload(props) {
                     photosArr.push(fileobj);
                     setPost({
                         ...post,
-                        photos: [
-                            ...photos,
-                            ...photosArr
-                        ]
+                        // photos: [...photos, ...photosArr],
+                        photos: photos.concat(photosArr)
                     });
                 });
             }
-            setImageFile(fileArr);
+            setImageFile(imageFile.concat(fileArr));
         }
-    };
-    const handeldelete = (e)=>{
+    }, [
+        post,
+        photos,
+        imageFile
+    ]);
+    const addIconClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        if (fileInput.current) {
+            fileInput.current.click();
+        }
+    }, [
+        fileInput
+    ]);
+    const handeldelete = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         let target = e.target.parentElement;
-        let targetindex = 1;
+        var index = Array.from(target.parentElement.children).indexOf(target);
+        let targetindex = index;
         setPost({
             ...post,
             photos: [
-                ...photos.slice(0, targetindex),
-                ...photos.slice(targetindex + 1)
+                ...photos.slice(0, index + 1),
+                ...photos.slice(index + 2)
             ]
         });
+        setImageFile([
+            ...photos.slice(0, index + 1),
+            ...photos.slice(index + 2)
+        ]);
         // setImageFile( (prev) => prev.filter())
         //이미지 다 없어지면 다시 업로드 창 뜨도록
         if (post.photos.length == 2) {
             //랜더링 되기 전이라 2
             setIsImage(false);
         }
-    };
+    }, [
+        post,
+        photos
+    ]);
     //clipboard
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (!props.clipboardFile) {
-            const handlePaste = (event)=>{
-                if (event.clipboardData.files.length > 0) {
-                    handfiles(event.clipboardData.files);
-                }
-            };
-            window.addEventListener("paste", handlePaste);
-            return ()=>{
-                window.removeEventListener("paste", handlePaste);
-            };
-        } else {
-            handfiles(props.clipboardFile);
+        if (!props.uploadModalClicked) {
+            if (props.clipboardFile) {
+                handfiles(props.clipboardFile);
+            }
         }
     }, [
-        props.clipboardFile
+        props.clipboardFile,
+        props.uploadModalClicked,
+        props.uploadModalOpen
+    ]);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        const handlePaste = (event)=>{
+            if (event.clipboardData.files.length > 0) {
+                handfiles(event.clipboardData.files);
+            }
+        };
+        window.addEventListener("paste", handlePaste);
+        return ()=>{
+            window.removeEventListener("paste", handlePaste);
+        };
+    }, [
+        post
     ]);
     const handlehighlight = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
@@ -1984,14 +1980,16 @@ function Upload(props) {
         e.stopPropagation();
         setHighlight(false);
     }, []);
-    const handledrop = (e)=>{
+    const handledrop = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
         e.preventDefault();
         e.stopPropagation();
         let dt = e.dataTransfer;
         let files = dt?.files;
         setHighlight(false);
         handfiles(files);
-    };
+    }, [
+        post
+    ]);
     const [hashTags, setHashTags] = react__WEBPACK_IMPORTED_MODULE_1___default().useState({
         data: [
             {
@@ -2001,7 +1999,7 @@ function Upload(props) {
     });
     const getHashtags = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .GET_HASHTAGS_REQUEST */ .tG
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .GET_HASHTAGS_REQUEST */ .tG
         });
         setShowHashModalOpen(true);
     }, [
@@ -2016,47 +2014,35 @@ function Upload(props) {
             e.preventDefault();
             e.stopPropagation();
             //수정일 때
-            if (props.isEdit) {
+            if (isEdit) {
                 //이미지 새로 올렸을 때
-                if (imageFile) {
-                    const formData = new FormData();
-                    [].forEach.call(imageFile, (f)=>{
-                        formData.append("image", f);
-                    });
-                    // formData.append("image", imageFile as File);
-                    formData.append("postId", props.postId?.toString());
-                    formData.append("brand", brand.replace(" ", ""));
-                    formData.append("link", link);
-                    formData.append("category", category);
-                    formData.append("season", season);
-                    formData.append("hashtag", text);
-                    formData.append("reason", reason);
-                    dispatch({
-                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .EDIT_POST_WITH_IMAGES_REQUEST */ .yz,
-                        data: formData
-                    });
-                } else {
-                    if (post.photos.length == 1) {
-                        alert("이미지 필수");
-                        return;
-                    }
-                    const formData = new FormData();
-                    [].forEach.call(post.photos, (f, index)=>{
-                        if (index != 0) formData.append("imagePath", f.src);
-                    });
-                    // formData.append("image", imageFile as File);
-                    formData.append("postId", props.postId?.toString());
-                    formData.append("brand", brand.replace(" ", ""));
-                    formData.append("link", link);
-                    formData.append("category", category);
-                    formData.append("season", season);
-                    formData.append("hashtag", text);
-                    formData.append("reason", reason);
-                    dispatch({
-                        type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .EDIT_POST_REQUEST */ .s4,
-                        data: formData
-                    });
+                if (post.photos.length == 1) {
+                    alert("이미지 필수");
+                    return;
                 }
+                const formData = new FormData();
+                //if first element is null
+                if (!imageFile[0]) imageFile.shift();
+                [].forEach.call(imageFile, (f)=>{
+                    //file check
+                    const isFile = f.name || null;
+                    if (isFile) {
+                        formData.append("image", f);
+                    } else {
+                        formData.append("imagePath", f.src);
+                    }
+                });
+                formData.append("postId", props.postId?.toString());
+                formData.append("brand", brand.replaceAll(" ", ""));
+                formData.append("link", link);
+                formData.append("category", category);
+                formData.append("season", season);
+                formData.append("hashtag", text);
+                formData.append("reason", reason);
+                dispatch({
+                    type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .EDIT_POST_REQUEST */ .s4,
+                    data: formData
+                });
             } else {
                 if (!imageFile) {
                     alert("이미지 필수");
@@ -2066,16 +2052,15 @@ function Upload(props) {
                 [].forEach.call(imageFile, (f)=>{
                     formData.append("image", f);
                 });
-                // formData.append("image", imageFile as File);
                 formData.append("userId", user.id);
                 formData.append("userName", user.userName);
-                formData.append("brand", brand.replace(" ", ""));
+                formData.append("brand", brand.replaceAll(" ", ""));
                 formData.append("link", link);
                 formData.append("category", category);
                 formData.append("season", season);
                 formData.append("hashtag", text);
                 formData.append("reason", reason);
-                dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .addPost */ .q2)(formData));
+                dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .addPost */ .q2)(formData));
             }
         }
     }, [
@@ -2089,30 +2074,38 @@ function Upload(props) {
         dispatch,
         imageFile,
         post.photos,
-        props.isEdit,
+        isEdit,
         props.postId
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
         if (addPostDone) {
             dispatch({
-                type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .TOGGLE_ADD_POST_DONE_REQUEST */ .mN
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_ADD_POST_DONE_REQUEST */ .mN
             });
             closeModal();
         }
         if (editPostDone) {
             dispatch({
-                type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .TOGGLE_EDIT_POST_DONE_REQUEST */ .qb
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_EDIT_POST_DONE_REQUEST */ .qb
             });
             closeModal();
-            props.setIsEdit(false);
+            // props.setIsEdit(false);
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_ISEDIT_REQUEST */ .xM,
+                data: false
+            });
             if (props.setImageIndex) props.setImageIndex(0);
         }
-        if (editPostWithImagesDone) {
+        if (editPostWithImagesDone && isEdit) {
             dispatch({
-                type: _reducers_post__WEBPACK_IMPORTED_MODULE_15__/* .TOGGLE_EDIT_POST_WITH_IMAGES_DONE_REQUEST */ .gP
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_EDIT_POST_DONE_REQUEST */ .qb
             });
-            closeModal();
-            props.setIsEdit(false);
+            // closeModal();
+            // props.setIsEdit(false);
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .TOGGLE_ISEDIT_REQUEST */ .xM,
+                data: false
+            });
             if (props.setImageIndex) props.setImageIndex(0);
         }
     }, [
@@ -2120,24 +2113,30 @@ function Upload(props) {
         dispatch,
         closeModal,
         editPostDone,
-        props.setIsEdit,
+        isEdit,
+        props,
         editPostWithImagesDone
     ]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (props.isEdit) {
+        if (isEdit) {
             const targetPost = postArray.find((post)=>post.id === props.postId);
-            setCardPost(targetPost.Images);
+            //카테고리, 시즌, 이름, 브랜드명 제외
             let postHashtags = "";
-            if (targetPost.Hashtags) {
-                targetPost.Hashtags.map((hashtag)=>postHashtags = postHashtags.concat(`#${hashtag?.name} `));
+            if (targetPost.Hashtags.length > 4) {
+                for(let i = 0; i < targetPost.Hashtags.length; i++){
+                    const hashname = targetPost.Hashtags[i]?.name;
+                    if (hashname != targetPost.category.toUpperCase() && hashname != targetPost.season.toUpperCase() && hashname != targetPost.brand.toUpperCase() && hashname != targetPost.name.toUpperCase()) {
+                        postHashtags = postHashtags.concat(`#${hashname} `);
+                    }
+                }
             }
-            for(let i = 0; i < targetPost.Hashtags.length; i++){
-                postHashtags.concat(`#${targetPost.Hashtags[i].name} `);
-            }
+            setCardPost(targetPost.Images);
+            setImageFile(targetPost.Images);
             setCategory(targetPost.category);
             setSeason(targetPost.season);
             setText(postHashtags);
             setBrand(targetPost.brand);
+            setPrevBrandName(targetPost.brand);
             setReason(targetPost.reason);
             setLink(targetPost.link);
             setIsImage(true);
@@ -2147,17 +2146,26 @@ function Upload(props) {
             });
         }
     }, [
-        props.isEdit,
+        isEdit,
         postArray
+    ]);
+    const addDrop = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        let dt = e.dataTransfer;
+        let files = dt?.files;
+        handfiles(files);
+    }, [
+        post
     ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
-            showHashModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_6___default()), {
+            showHashModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_7___default()), {
                 open: true,
                 onClose: closehashtagsModal,
                 "aria-labelledby": "modal-modal-title",
                 "aria-describedby": "modal-modal-description",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_7___default()), {
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_8___default()), {
                     component: "form",
                     noValidate: true,
                     autoComplete: "off",
@@ -2181,7 +2189,7 @@ function Upload(props) {
                                     ]
                                 }, index))
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_12___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_13___default()), {
                             fullWidth: true,
                             variant: "contained",
                             sx: {
@@ -2195,19 +2203,19 @@ function Upload(props) {
                     ]
                 })
             }),
-            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_6___default()), {
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Modal__WEBPACK_IMPORTED_MODULE_7___default()), {
                 open: true,
                 // onClose={closeModal}
                 "aria-labelledby": "modal-modal-title",
                 "aria-describedby": "modal-modal-description",
-                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_7___default()), {
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Box__WEBPACK_IMPORTED_MODULE_8___default()), {
                     component: "form",
                     noValidate: true,
                     autoComplete: "off",
                     onSubmit: onSubmit,
                     sx: style,
                     children: [
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_8___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Close__WEBPACK_IMPORTED_MODULE_9___default()), {
                             style: {
                                 position: "absolute",
                                 cursor: "pointer",
@@ -2216,7 +2224,7 @@ function Upload(props) {
                             },
                             onClick: closeModal
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Typography__WEBPACK_IMPORTED_MODULE_5___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Typography__WEBPACK_IMPORTED_MODULE_6___default()), {
                             sx: {
                                 textAlign: "center"
                             },
@@ -2224,7 +2232,7 @@ function Upload(props) {
                             variant: "h5",
                             children: "업로드"
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_5___default()), {
                             required: true,
                             label: "브랜드",
                             fullWidth: true,
@@ -2237,7 +2245,7 @@ function Upload(props) {
                             variant: "standard",
                             onChange: onChangeBrand
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_5___default()), {
                             label: "Link",
                             fullWidth: true,
                             sx: {
@@ -2250,7 +2258,7 @@ function Upload(props) {
                             variant: "standard",
                             onChange: onChangeLink
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_5___default()), {
                             label: "선정이유",
                             fullWidth: true,
                             sx: {
@@ -2270,11 +2278,11 @@ function Upload(props) {
                                 marginTop: "25px"
                             },
                             children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_3___default()), {
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_4___default()), {
                                     id: "demo-simple-select-label",
                                     children: "상의"
                                 }),
-                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Select__WEBPACK_IMPORTED_MODULE_9___default()), {
+                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Select__WEBPACK_IMPORTED_MODULE_10___default()), {
                                     labelId: "demo-simple-select-label",
                                     id: "demo-simple-select",
                                     defaultValue: "상의",
@@ -2283,27 +2291,27 @@ function Upload(props) {
                                     required: true,
                                     onChange: handleCategoryChange,
                                     children: [
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "상의",
                                             children: "상의"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "하의",
                                             children: "하의"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "아우터",
                                             children: "아우터"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "디테일",
                                             children: "디테일"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "이미지",
                                             children: "이미지"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "악세사리",
                                             children: "악세사리"
                                         })
@@ -2317,11 +2325,11 @@ function Upload(props) {
                                 marginTop: "25px"
                             },
                             children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_3___default()), {
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_4___default()), {
                                     id: "demo-simple-select-label",
                                     children: "23SS"
                                 }),
-                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Select__WEBPACK_IMPORTED_MODULE_9___default()), {
+                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Select__WEBPACK_IMPORTED_MODULE_10___default()), {
                                     labelId: "demo-simple-select-label",
                                     id: "demo-simple-select",
                                     defaultValue: "23SS",
@@ -2330,11 +2338,11 @@ function Upload(props) {
                                     required: true,
                                     onChange: handleSeasonChange,
                                     children: [
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "23SS",
                                             children: "23SS"
                                         }),
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_10___default()), {
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_11___default()), {
                                             value: "23FW",
                                             children: "23FW"
                                         })
@@ -2342,7 +2350,7 @@ function Upload(props) {
                                 })
                             ]
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_TextField__WEBPACK_IMPORTED_MODULE_5___default()), {
                             id: "standard-basic",
                             sx: {
                                 marginTop: "30px"
@@ -2353,7 +2361,7 @@ function Upload(props) {
                             label: "해시태그입력 #검정 #반팔 ",
                             variant: "outlined"
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_12___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_13___default()), {
                             variant: "contained",
                             sx: {
                                 // height: "60%",
@@ -2396,24 +2404,65 @@ function Upload(props) {
                                             })
                                         ]
                                     }),
-                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                                         className: "custom-file-preview",
-                                        children: photos.length > 0 && photos.map((item, index)=>index != 0 ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                                className: "prev-img",
+                                        onDragEnter: handlehighlight,
+                                        onDragOver: handlehighlight,
+                                        onDragLeave: handleunhighlight,
+                                        onDrop: addDrop,
+                                        children: [
+                                            photos.length > 0 && photos.map((item, index)=>index != 0 ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                                    className: "prev-img",
+                                                    children: [
+                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                            onClick: handeldelete,
+                                                            children: "\xd7"
+                                                        }),
+                                                        item && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
+                                                            src: item.src,
+                                                            alt: item.name
+                                                        })
+                                                    ]
+                                                }, index) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {})),
+                                            isImage ? /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
                                                 children: [
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                        onClick: handeldelete,
-                                                        children: "\xd7"
+                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_icons_material_Add__WEBPACK_IMPORTED_MODULE_3___default()), {
+                                                        onClick: addIconClick,
+                                                        sx: {
+                                                            marginLeft: "54px",
+                                                            marginTop: "39px"
+                                                        }
                                                     }),
-                                                    item && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
-                                                        src: item.src,
-                                                        alt: item.name
+                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("input", {
+                                                        type: "file",
+                                                        style: {
+                                                            visibility: "hidden"
+                                                        },
+                                                        name: "photos",
+                                                        placeholder: "Enter photos",
+                                                        multiple: false,
+                                                        id: "filephotos",
+                                                        onChange: handlefilechange,
+                                                        ref: fileInput
                                                     })
                                                 ]
-                                            }, index) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {}))
+                                            }) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {})
+                                        ]
                                     })
                                 ]
                             })
+                        }),
+                        addPostError && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                            style: {
+                                color: "red"
+                            },
+                            children: "업로드 실패했습니다"
+                        }),
+                        editPostDone && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                            style: {
+                                color: "red"
+                            },
+                            children: "업로드 실패했습니다"
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                             id: "submit_bt",
@@ -2422,7 +2471,7 @@ function Upload(props) {
                             },
                             type: "submit"
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_11___default()), {
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12___default()), {
                             type: "submit",
                             loading: addPostLoading,
                             fullWidth: true,
@@ -2531,9 +2580,7 @@ function Home() {
     const { hasMorePost  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
     const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useSelector)((state)=>state.post);
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_5__.useDispatch)();
-    const [userId, setUserId] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)("");
-    const [userName, setUserName] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)("");
-    const [resultStore, setResultStore] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([]);
+    const [isUserpage, setIsUserpage] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)(false);
     (0,react__WEBPACK_IMPORTED_MODULE_7__.useEffect)(()=>{
         function onScroll() {
             if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 350) {
@@ -2565,6 +2612,12 @@ function Home() {
     }, [
         dispatch
     ]);
+    const loadUserPost = (0,react__WEBPACK_IMPORTED_MODULE_7__.useCallback)(()=>{
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .GET_USER_POST_REQUEST */ .qN,
+            data: null
+        });
+    }, []);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((next_head__WEBPACK_IMPORTED_MODULE_1___default()), {
@@ -2604,10 +2657,16 @@ function Home() {
                             marginBottom: "40px"
                         },
                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z, {
-                            userId: userId,
-                            setUserId: setUserId,
-                            userName: userName,
-                            setUserName: setUserName
+                            setIsUserpage: setIsUserpage
+                        })
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                        style: {
+                            marginBottom: "10px"
+                        },
+                        children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                            onClick: loadUserPost,
+                            children: " 내가 작성한 순 "
                         })
                     }),
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {}),

@@ -32,6 +32,9 @@ import {
   EDIT_POST_WITH_IMAGES_FAILURE,
   EDIT_POST_WITH_IMAGES_REQUEST,
   TOGGLE_SCROLL_REQUEST,
+  GET_USER_POST_SUCCESS,
+  GET_USER_POST_FAILURE,
+  GET_USER_POST_REQUEST,
 } from "@/reducers/post";
 
 //addpost
@@ -218,20 +221,20 @@ function* editPost(action) {
 }
 
 
-//editpost
-function editPostWithImagesAPI(data) {
-  return axios.post(`/post/editPostWithImages`,data);
+//getuserpost
+function getUserPostAPI(data) {
+  return axios.post(`/post/user`, data);
 }
-function* editPostWithImages(action) {
+function* getUserPost(action) {
   try {
-    const result = yield call(editPostWithImagesAPI, action.data);
+    const result = yield call(getUserPostAPI, action.data);
     yield put({
-      type: EDIT_POST_WITH_IMAGES_SUCCESS,
+      type: GET_USER_POST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: EDIT_POST_WITH_IMAGES_FAILURE,
+      type: GET_USER_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -273,9 +276,8 @@ function* watchDuplicatePost() {
 function* watchEditPost() {
   yield takeLatest(EDIT_POST_REQUEST, editPost);
 }
-
-function* watchEditPostWithImages() {
-  yield takeLatest(EDIT_POST_WITH_IMAGES_REQUEST, editPostWithImages);
+function* watchGetUserPost() {
+  yield takeLatest(GET_USER_POST_REQUEST, getUserPost);
 }
 
 export default function* postSaga() {
@@ -289,6 +291,6 @@ export default function* postSaga() {
     fork(watchUnLikePost),
     fork(watchDuplicatePost),
     fork(watchEditPost),
-    fork(watchEditPostWithImages),
+    fork(watchGetUserPost),
   ]);
 }
