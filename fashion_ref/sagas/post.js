@@ -35,6 +35,9 @@ import {
   GET_USER_POST_SUCCESS,
   GET_USER_POST_FAILURE,
   GET_USER_POST_REQUEST,
+  GET_USER_LIKED_POST_SUCCESS,
+  GET_USER_LIKED_POST_FAILURE,
+  GET_USER_LIKED_POST_REQUEST,
 } from "@/reducers/post";
 
 //addpost
@@ -102,7 +105,6 @@ function getHashtagsAPI(data) {
 }
 function* getHashtags(action) {
   try {
-    console.log(action.data);
     const result = yield call(getHashtagsAPI, action.data);
     yield put({
       type: GET_HASHTAGS_SUCCESS,
@@ -241,6 +243,25 @@ function* getUserPost(action) {
 }
 
 
+//getuserLikedpost
+function getUserLikedPostAPI(data) {
+  return axios.post(`/post/userLiked`, data);
+}
+function* getUserLikedPost(action) {
+  try {
+    const result = yield call(getUserLikedPostAPI, action.data);
+    yield put({
+      type: GET_USER_LIKED_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: GET_USER_LIKED_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -280,6 +301,11 @@ function* watchGetUserPost() {
   yield takeLatest(GET_USER_POST_REQUEST, getUserPost);
 }
 
+function* watchGetUserLikedPost() {
+  yield takeLatest(GET_USER_LIKED_POST_REQUEST, getUserLikedPost);
+}
+
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -292,5 +318,6 @@ export default function* postSaga() {
     fork(watchDuplicatePost),
     fork(watchEditPost),
     fork(watchGetUserPost),
+    fork(watchGetUserLikedPost),
   ]);
 }

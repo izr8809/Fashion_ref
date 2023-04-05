@@ -21,6 +21,7 @@ import wrapper from "@/store/configureStore";
 import { END } from "redux-saga";
 import userpage from "./userpage";
 import NoticeModal from "@/Components/NoticeModal";
+import UserPage from "@/Components/UserPage";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
@@ -74,14 +75,6 @@ export default function Home() {
     });
     dispatch(loadPost());
   }, [dispatch]);
-
-  const loadUserPost = useCallback(() => {
-    dispatch({
-      type: GET_USER_POST_REQUEST,
-      data: null,
-    });
-  }, []);
-
   return (
     <>
       <Head>
@@ -101,9 +94,7 @@ export default function Home() {
           <Navbar setIsUserpage={setIsUserpage} />
         </div>
         <div style={{marginBottom :"10px"}}>
-          {isUserpage && (
-            <button onClick={loadUserPost}> 내가 작성한 순 </button>
-          )}
+          {isUserpage && <UserPage/>}
         </div>
         <ResponsiveGrid />
         {/* <div>

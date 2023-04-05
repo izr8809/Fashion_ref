@@ -17,8 +17,8 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import Signup from "@/Components/signup";
-import Upload from "@/Components/upload";
+import Signup from "@/Components/Signup";
+import Upload from "@/Components/Upload";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { useCallback, useEffect, useState } from "react";
@@ -30,7 +30,7 @@ import { useDispatch } from "react-redux";
 import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
 import Searchbar from "./Searchbar";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { GET_HASHTAGS_REQUEST } from "@/reducers/post";
+import { GET_HASHTAGS_REQUEST, GET_USER_POST_REQUEST, TOGGLE_SCROLL_REQUEST } from "@/reducers/post";
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -140,6 +140,14 @@ export default function Navbar({
   const profileClick = useCallback(()=>{
     if(user){
       setIsUserpage(true);
+      
+      dispatch({
+        type: GET_USER_POST_REQUEST,
+        data: null,
+      });
+      dispatch({
+        type: TOGGLE_SCROLL_REQUEST,
+      })
     }else{
       alert("준비중입니다.");
     }

@@ -52,9 +52,9 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(854);
 /* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__);
 /* harmony import */ var _LoginForm__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(3897);
-/* harmony import */ var _upload__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(6234);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _upload__WEBPACK_IMPORTED_MODULE_21__]);
-([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _upload__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _Upload__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(9251);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__]);
+([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
 
 
@@ -251,7 +251,7 @@ function Cardpost(props) {
     ]);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
-            isUploadFormOpen && isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_upload__WEBPACK_IMPORTED_MODULE_21__/* ["default"] */ .Z, {
+            isUploadFormOpen && isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Upload__WEBPACK_IMPORTED_MODULE_21__/* ["default"] */ .Z, {
                 setUploadModalClicked: setUploadModalClicked,
                 uploadModalClicked: uploadModalClicked,
                 setImageIndex: setImageIndex,
@@ -736,8 +736,8 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_icons_material_AccountCircle__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_AccountCircle__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var _mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6952);
 /* harmony import */ var _mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _Components_signup__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(222);
-/* harmony import */ var _Components_upload__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6234);
+/* harmony import */ var _Components_Signup__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(4830);
+/* harmony import */ var _Components_Upload__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(9251);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9564);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_14__);
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(19);
@@ -750,8 +750,8 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(6829);
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20__);
 /* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(1062);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_signup__WEBPACK_IMPORTED_MODULE_12__, _Components_upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__]);
-([_Components_signup__WEBPACK_IMPORTED_MODULE_12__, _Components_upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Signup__WEBPACK_IMPORTED_MODULE_12__, _Components_Upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__]);
+([_Components_Signup__WEBPACK_IMPORTED_MODULE_12__, _Components_Upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
 
 
@@ -863,6 +863,13 @@ function Navbar({ setIsUserpage  }) {
     const profileClick = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
         if (user) {
             setIsUserpage(true);
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_21__/* .GET_USER_POST_REQUEST */ .qN,
+                data: null
+            });
+            dispatch({
+                type: _reducers_post__WEBPACK_IMPORTED_MODULE_21__/* .TOGGLE_SCROLL_REQUEST */ .PS
+            });
         } else {
             alert("준비중입니다.");
         }
@@ -922,10 +929,10 @@ function Navbar({ setIsUserpage  }) {
             flexGrow: 1
         },
         children: [
-            isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_signup__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {
+            isModalOpen && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Signup__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {
                 setIsModalOpen: setIsModalOpen
             }),
-            user && uploadModalOpen && !isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_upload__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {
+            user && uploadModalOpen && !isEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_Upload__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z, {
                 uploadModalClicked: uploadModalClicked,
                 setUploadModalClicked: setUploadModalClicked,
                 setImageIndex: null,
@@ -1494,7 +1501,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 222:
+/***/ 4830:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1725,7 +1732,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 6234:
+/***/ 9251:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1828,6 +1835,7 @@ function Upload(props) {
     const postInfoArray = [];
     const [isImage, setIsImage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [highlight, setHighlight] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const [userName, setUserName] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
     const [reason, onChangeReason, setReason] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
     const [brand, onChangeBrand, setBrand] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
     const [link, onChangeLink, setLink] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z)("");
@@ -2039,6 +2047,7 @@ function Upload(props) {
                 formData.append("season", season);
                 formData.append("hashtag", text);
                 formData.append("reason", reason);
+                formData.append("name", userName);
                 dispatch({
                     type: _reducers_post__WEBPACK_IMPORTED_MODULE_16__/* .EDIT_POST_REQUEST */ .s4,
                     data: formData
@@ -2132,6 +2141,7 @@ function Upload(props) {
             }
             setCardPost(targetPost.Images);
             setImageFile(targetPost.Images);
+            setUserName(targetPost.name);
             setCategory(targetPost.category);
             setSeason(targetPost.season);
             setText(postHashtags);
@@ -2495,6 +2505,159 @@ __webpack_async_result__();
 
 /***/ }),
 
+/***/ 3901:
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ UserPage)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6022);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8742);
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3819);
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1062);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_5__]);
+_reducers_post__WEBPACK_IMPORTED_MODULE_5__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+
+
+
+
+
+
+
+function UserPage({}) {
+    const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)((state)=>state.post);
+    const { user  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useSelector)((state)=>state.user);
+    const [isLiked, setIsLiked] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_2__.useDispatch)();
+    const loadUserPost = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_5__/* .GET_USER_POST_REQUEST */ .qN,
+            data: null
+        });
+        setIsLiked(false);
+    }, []);
+    const likedSorting = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        var sortedArray = [
+            ...postArray
+        ];
+        sortedArray.sort(function(a, b) {
+            return b.Likers.length - a.Likers.length;
+        });
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_5__/* .POST_SORT_REQUEST */ .ce,
+            data: sortedArray
+        });
+    }, [
+        postArray,
+        user
+    ]);
+    const dateSorting = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        var sortedArray = [
+            ...postArray
+        ];
+        sortedArray.sort(function(a, b) {
+            return a.createdAt - b.createdAt;
+        });
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_5__/* .POST_SORT_REQUEST */ .ce,
+            data: sortedArray
+        });
+    }, [
+        postArray,
+        user
+    ]);
+    const loadUserLikedPost = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(()=>{
+        setIsLiked(true);
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_5__/* .GET_USER_LIKED_POST_REQUEST */ .qn
+        });
+    }, [
+        postArray,
+        user
+    ]);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        console.log(postArray);
+    }, [
+        postArray
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: [
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Stack__WEBPACK_IMPORTED_MODULE_3___default()), {
+                spacing: 2,
+                direction: "row",
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
+                    disabled: true,
+                    style: {
+                        marginTop: "-20px",
+                        fontWeight: 900
+                    },
+                    children: [
+                        user.data.name,
+                        "님의 페이지"
+                    ]
+                })
+            }),
+            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((_mui_material_Stack__WEBPACK_IMPORTED_MODULE_3___default()), {
+                spacing: 2,
+                direction: "row",
+                children: [
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        variant: "text",
+                        style: {
+                            fontWeight: 900
+                        },
+                        onClick: loadUserPost,
+                        children: " 작성한 게시물"
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        variant: "text",
+                        style: {
+                            fontWeight: 900
+                        },
+                        onClick: loadUserLikedPost,
+                        children: " 좋아요 누른 게시물"
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        variant: "outlined",
+                        size: "small",
+                        style: {
+                            position: "absolute",
+                            right: "18%",
+                            fontWeight: 900
+                        },
+                        onClick: dateSorting,
+                        children: " 최신 순"
+                    }),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default()), {
+                        variant: "outlined",
+                        size: "small",
+                        style: {
+                            position: "absolute",
+                            right: "12%",
+                            fontWeight: 900
+                        },
+                        onClick: likedSorting,
+                        children: " 좋아요 순 "
+                    })
+                ]
+            })
+        ]
+    });
+}
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ }),
+
 /***/ 891:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -2545,8 +2708,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5107);
 /* harmony import */ var redux_saga__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5998);
 /* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6708);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__]);
-([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3901);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__]);
+([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_6__, _reducers_user__WEBPACK_IMPORTED_MODULE_8__, _store_configureStore__WEBPACK_IMPORTED_MODULE_9__, redux_saga__WEBPACK_IMPORTED_MODULE_10__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_12__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+
 
 
 
@@ -2612,12 +2777,6 @@ function Home() {
     }, [
         dispatch
     ]);
-    const loadUserPost = (0,react__WEBPACK_IMPORTED_MODULE_7__.useCallback)(()=>{
-        dispatch({
-            type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .GET_USER_POST_REQUEST */ .qN,
-            data: null
-        });
-    }, []);
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: [
             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)((next_head__WEBPACK_IMPORTED_MODULE_1___default()), {
@@ -2664,10 +2823,7 @@ function Home() {
                         style: {
                             marginBottom: "10px"
                         },
-                        children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
-                            onClick: loadUserPost,
-                            children: " 내가 작성한 순 "
-                        })
+                        children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_UserPage__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {})
                     }),
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {}),
                     loadPostLoading && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
@@ -2904,6 +3060,13 @@ module.exports = require("@mui/material/Paper");
 /***/ ((module) => {
 
 module.exports = require("@mui/material/Select");
+
+/***/ }),
+
+/***/ 8742:
+/***/ ((module) => {
+
+module.exports = require("@mui/material/Stack");
 
 /***/ }),
 

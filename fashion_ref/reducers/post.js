@@ -30,8 +30,11 @@ export const initialState = {
   editPostDone: false,
   editPostError: null,
   getUserPostLoading: false,
-  getUserPostDone : false,
-  getUserPostError : null,
+  getUserPostDone: false,
+  getUserPostError: null,
+  getUserLikedPostLoading: false,
+  getUserLikedPostDone: false,
+  getUserLikedPostError: null,
   onInfiniteScroll: true,
   isEdit: false,
   hashtags: [],
@@ -82,10 +85,15 @@ export const EDIT_POST_REQUEST = "EDIT_POST_REQUEST";
 export const EDIT_POST_SUCCESS = "EDIT_POST_SUCCESS";
 export const EDIT_POST_FAILURE = "EDIT_POST_FAILURE";
 
-
 export const GET_USER_POST_REQUEST = "GET_USER_POST_REQUEST";
 export const GET_USER_POST_SUCCESS = "GET_USER_POST_SUCCESS";
 export const GET_USER_POST_FAILURE = "GET_USER_POST_FAILURE";
+
+export const GET_USER_LIKED_POST_REQUEST = "GET_USER_LIKED_POST_REQUEST";
+export const GET_USER_LIKED_POST_SUCCESS = "GET_USER_LIKED_POST_SUCCESS";
+export const GET_USER_LIKED_POST_FAILURE = "GET_USER_LIKED_POST_FAILURE";
+
+export const POST_SORT_REQUEST = "POST_SORT_REQUEST";
 
 export const addPost = (data) => {
   return {
@@ -125,7 +133,6 @@ export const gethashtagsFailureAction = (data) => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
-
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -286,7 +293,7 @@ const reducer = (state = initialState, action) => {
         draft.editPostLoading = false;
         draft.editPostError = action.error;
         break;
-        
+
       case GET_USER_POST_REQUEST:
         draft.getUserPostLoading = true;
         draft.getUserPostDone = false;
@@ -294,7 +301,6 @@ const reducer = (state = initialState, action) => {
         break;
 
       case GET_USER_POST_SUCCESS:
-        console.log(action.data);
         draft.postArray = action.data;
         draft.getUserPostLoading = false;
         draft.getUserPostDone = true;
@@ -303,6 +309,23 @@ const reducer = (state = initialState, action) => {
       case GET_USER_POST_FAILURE:
         draft.getUserPostLoading = false;
         draft.getUserPostError = action.error;
+        break;
+
+      case GET_USER_LIKED_POST_REQUEST:
+        draft.getUserLikedPostLoading = true;
+        draft.getUserLikedPostDone = false;
+        draft.getUserLikedPostError = null;
+        break;
+
+      case GET_USER_LIKED_POST_SUCCESS:
+        draft.postArray = action.data;
+        draft.getUserLikedPostLoading = false;
+        draft.getUserLikedPostDone = true;
+        break;
+
+      case GET_USER_LIKED_POST_FAILURE:
+        draft.getUserLikedPostLoading = false;
+        draft.getUserLikedPostError = action.error;
         break;
 
       case RELOAD_POST_REQUEST:
@@ -323,6 +346,10 @@ const reducer = (state = initialState, action) => {
 
       case TOGGLE_ISEDIT_REQUEST:
         draft.isEdit = action.data;
+        break;
+
+      case POST_SORT_REQUEST:
+        draft.postArray = action.data;
         break;
 
       default:

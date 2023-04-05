@@ -95,6 +95,7 @@ export default function Upload(props: UploadProps) {
   const postInfoArray = [];
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const [userName, setUserName] = useState("");
   const [reason, onChangeReason, setReason] = useInput("");
   const [brand, onChangeBrand, setBrand] = useInput("");
   const [link, onChangeLink, setLink] = useInput("");
@@ -302,6 +303,7 @@ export default function Upload(props: UploadProps) {
           formData.append("season", season);
           formData.append("hashtag", text);
           formData.append("reason", reason);
+          formData.append("name", userName);
           dispatch({
             type: EDIT_POST_REQUEST,
             data: formData,
@@ -413,6 +415,7 @@ export default function Upload(props: UploadProps) {
 
       setCardPost(targetPost.Images);
       setImageFile(targetPost.Images);
+      setUserName(targetPost.name);
       setCategory(targetPost.category);
       setSeason(targetPost.season);
       setText(postHashtags);

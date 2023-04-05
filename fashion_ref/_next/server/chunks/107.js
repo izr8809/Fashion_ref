@@ -57,16 +57,19 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   "NY": () => (/* binding */ EDIT_POST_FAILURE),
 /* harmony export */   "Nr": () => (/* binding */ DELETE_POST_SUCCESS),
 /* harmony export */   "PS": () => (/* binding */ TOGGLE_SCROLL_REQUEST),
+/* harmony export */   "PY": () => (/* binding */ GET_USER_LIKED_POST_SUCCESS),
 /* harmony export */   "RR": () => (/* binding */ DUPLICATE_POST_REQUEST),
 /* harmony export */   "SI": () => (/* binding */ LIKE_POST_SUCCESS),
 /* harmony export */   "V": () => (/* binding */ GET_HASHTAGS_FAILURE),
 /* harmony export */   "V4": () => (/* binding */ DUPLICATE_POST_FAILURE),
 /* harmony export */   "VT": () => (/* binding */ UNLIKE_POST_REQUEST),
+/* harmony export */   "X$": () => (/* binding */ GET_USER_LIKED_POST_FAILURE),
 /* harmony export */   "XD": () => (/* binding */ UNLIKE_POST_SUCCESS),
 /* harmony export */   "YQ": () => (/* binding */ LOAD_POST_SUCCESS),
 /* harmony export */   "ZP": () => (__WEBPACK_DEFAULT_EXPORT__),
 /* harmony export */   "_s": () => (/* binding */ ADD_POST_SUCCESS),
 /* harmony export */   "cT": () => (/* binding */ LIKE_POST_FAILURE),
+/* harmony export */   "ce": () => (/* binding */ POST_SORT_REQUEST),
 /* harmony export */   "ey": () => (/* binding */ GET_USER_POST_SUCCESS),
 /* harmony export */   "fS": () => (/* binding */ HASHTAG_SEARCH_REQUEST),
 /* harmony export */   "gq": () => (/* binding */ UNLIKE_POST_FAILURE),
@@ -77,6 +80,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   "q2": () => (/* binding */ addPost),
 /* harmony export */   "qN": () => (/* binding */ GET_USER_POST_REQUEST),
 /* harmony export */   "qb": () => (/* binding */ TOGGLE_EDIT_POST_DONE_REQUEST),
+/* harmony export */   "qn": () => (/* binding */ GET_USER_LIKED_POST_REQUEST),
 /* harmony export */   "rl": () => (/* binding */ LOAD_POST_FAILURE),
 /* harmony export */   "s4": () => (/* binding */ EDIT_POST_REQUEST),
 /* harmony export */   "sT": () => (/* binding */ GET_USER_POST_FAILURE),
@@ -125,6 +129,9 @@ const initialState = {
     getUserPostLoading: false,
     getUserPostDone: false,
     getUserPostError: null,
+    getUserLikedPostLoading: false,
+    getUserLikedPostDone: false,
+    getUserLikedPostError: null,
     onInfiniteScroll: true,
     isEdit: false,
     hashtags: [],
@@ -165,6 +172,10 @@ const EDIT_POST_FAILURE = "EDIT_POST_FAILURE";
 const GET_USER_POST_REQUEST = "GET_USER_POST_REQUEST";
 const GET_USER_POST_SUCCESS = "GET_USER_POST_SUCCESS";
 const GET_USER_POST_FAILURE = "GET_USER_POST_FAILURE";
+const GET_USER_LIKED_POST_REQUEST = "GET_USER_LIKED_POST_REQUEST";
+const GET_USER_LIKED_POST_SUCCESS = "GET_USER_LIKED_POST_SUCCESS";
+const GET_USER_LIKED_POST_FAILURE = "GET_USER_LIKED_POST_FAILURE";
+const POST_SORT_REQUEST = "POST_SORT_REQUEST";
 const addPost = (data)=>{
     return {
         type: ADD_POST_REQUEST,
@@ -334,7 +345,6 @@ const reducer = (state = initialState, action)=>{
                 draft.getUserPostError = null;
                 break;
             case GET_USER_POST_SUCCESS:
-                console.log(action.data);
                 draft.postArray = action.data;
                 draft.getUserPostLoading = false;
                 draft.getUserPostDone = true;
@@ -342,6 +352,20 @@ const reducer = (state = initialState, action)=>{
             case GET_USER_POST_FAILURE:
                 draft.getUserPostLoading = false;
                 draft.getUserPostError = action.error;
+                break;
+            case GET_USER_LIKED_POST_REQUEST:
+                draft.getUserLikedPostLoading = true;
+                draft.getUserLikedPostDone = false;
+                draft.getUserLikedPostError = null;
+                break;
+            case GET_USER_LIKED_POST_SUCCESS:
+                draft.postArray = action.data;
+                draft.getUserLikedPostLoading = false;
+                draft.getUserLikedPostDone = true;
+                break;
+            case GET_USER_LIKED_POST_FAILURE:
+                draft.getUserLikedPostLoading = false;
+                draft.getUserLikedPostError = action.error;
                 break;
             case RELOAD_POST_REQUEST:
                 draft.postArray = [];
@@ -357,6 +381,9 @@ const reducer = (state = initialState, action)=>{
                 break;
             case TOGGLE_ISEDIT_REQUEST:
                 draft.isEdit = action.data;
+                break;
+            case POST_SORT_REQUEST:
+                draft.postArray = action.data;
                 break;
             default:
                 return state;
@@ -680,7 +707,6 @@ function getHashtagsAPI(data) {
 }
 function* getHashtags(action) {
     try {
-        console.log(action.data);
         const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(getHashtagsAPI, action.data);
         yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
             type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_HASHTAGS_SUCCESS */ .sg,
@@ -804,6 +830,24 @@ function* getUserPost(action) {
         });
     }
 }
+//getuserLikedpost
+function getUserLikedPostAPI(data) {
+    return axios__WEBPACK_IMPORTED_MODULE_1__["default"].post(`/post/userLiked`, data);
+}
+function* getUserLikedPost(action) {
+    try {
+        const result = yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.call)(getUserLikedPostAPI, action.data);
+        yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_LIKED_POST_SUCCESS */ .PY,
+            data: result.data
+        });
+    } catch (err) {
+        yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.put)({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_LIKED_POST_FAILURE */ .X$,
+            error: err.response.data
+        });
+    }
+}
 function* watchAddPost() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .ADD_POST_REQUEST */ .z9, addPost);
 }
@@ -834,6 +878,9 @@ function* watchEditPost() {
 function* watchGetUserPost() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_POST_REQUEST */ .qN, getUserPost);
 }
+function* watchGetUserLikedPost() {
+    yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.takeLatest)(_reducers_post__WEBPACK_IMPORTED_MODULE_2__/* .GET_USER_LIKED_POST_REQUEST */ .qn, getUserLikedPost);
+}
 function* postSaga() {
     yield (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.all)([
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchAddPost),
@@ -845,7 +892,8 @@ function* postSaga() {
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchUnLikePost),
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchDuplicatePost),
         (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchEditPost),
-        (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchGetUserPost)
+        (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchGetUserPost),
+        (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_0__.fork)(watchGetUserLikedPost)
     ]);
 }
 

@@ -417,7 +417,7 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
     hashtags.push("#" + req.body.category); //category
     hashtags.push("#" + req.body.season); //season
     hashtags.push("#" + req.body.brand); //brand
-    hashtags.push("#" + req.session.name); // userName
+    hashtags.push("#" + req.body.name); // userName
     console.log(hashtags)
     const result = await Promise.all(
       hashtags.map((tag) =>
@@ -481,6 +481,7 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
   }
 });
 
+//개인이 작성한 포스트 가져오기
 router.post("/user", async (req, res) => {
   //login 상태일때만
   if (req.session.userId) {
@@ -513,4 +514,79 @@ router.post("/user", async (req, res) => {
     res.status(404).json({"message" : "notLoggedIn"});
   }
 });
+
+
+//개인이 좋아요한 포스트 가져오기
+router.post("/userLiked", async (req, res) => {
+  //login 상태일때만
+  if (req.session.userId) {
+    try {
+      where = {};
+      const posts = await Post.findAll({
+        where: { UserId: req.session.userId },
+        // limit: 24, limit 나중에 줘야함
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Hashtag,
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model: Image,
+            order: [["id", "DESC"]],
+          },
+          {
+            model: User,
+            as: "Likers",
+            where: {
+              id: parseInt(req.session.userId, 10),
+            },
+          },
+        ],
+      });
+      res.status(200).json(posts);
+    } catch (err) {
+      console.log(err);
+    }
+  } else{
+    res.status(404).json({"message" : "notLoggedIn"});
+  }
+});
+
+
+//좋아요 순
+router.get("/loadLikedPost", async function (req, res) {
+  try {
+    const where = {};
+    if (parseInt(req.query.lastId, 10)) {
+      // 초기 로딩이 아닐 때
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+    }
+
+    const posts = await Post.findAll({
+      where,
+      limit: 24,
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Image,
+          order: [["id", "DESC"]],
+        },
+        {
+          model: Hashtag,
+          order: [["createdAt", "DESC"]],
+        },
+        {
+          model: User,
+          as: "Likers",
+        },
+      ],
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 module.exports = router;
