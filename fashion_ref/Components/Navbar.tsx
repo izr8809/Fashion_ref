@@ -57,6 +57,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({
+  
   setIsUserpage
 }: NavbarProps): ReactElement {
 
@@ -320,7 +321,7 @@ export default function Navbar({
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
-          <Searchbar />
+          <Searchbar setIsUserpage={setIsUserpage}/>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 

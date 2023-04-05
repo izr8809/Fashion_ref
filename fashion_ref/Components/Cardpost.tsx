@@ -33,6 +33,7 @@ import Upload from "./Upload";
 
 type CardpostProps = {
   index: number;
+  setIsUserpage:any;
   // posts: any[];
   category: string;
   id: number;
@@ -204,6 +205,7 @@ export default function Cardpost(props: CardpostProps) {
           hashtags: "#" + hashname,
         },
       });
+      props.setIsUserpage(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
     [dispatch, props]

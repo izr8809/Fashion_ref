@@ -8,9 +8,11 @@ import { HASHTAG_SEARCH_REQUEST, loadPost } from "@/reducers/post";
 import { useDispatch } from "react-redux";
 import {useEffect, useRef} from 'react';
 
-type SearchbarProps = {};
+type SearchbarProps = {
+  setIsUserpage:any
+};
 
-export default function Searchbar({}: SearchbarProps) {
+export default function Searchbar({setIsUserpage}: SearchbarProps) {
   const [value, onChangeValue, setValue] = useInput("");
   const dispatch = useDispatch();
   const searchBar = useRef<HTMLInputElement>(null);
@@ -41,6 +43,7 @@ export default function Searchbar({}: SearchbarProps) {
           }
         })
         setValue("")
+        setIsUserpage(false)
       }
     },
     [dispatch, value]

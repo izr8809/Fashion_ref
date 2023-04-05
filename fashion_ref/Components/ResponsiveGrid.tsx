@@ -19,9 +19,10 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 type ResponsiveGridProps = {
+  setIsUserpage:any
 };
 
-export default function ResponsiveGrid({}: ResponsiveGridProps) {
+export default function ResponsiveGrid({setIsUserpage}: ResponsiveGridProps) {
   const { postArray } = useSelector((state: any) => state.post);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function ResponsiveGrid({}: ResponsiveGridProps) {
                     }}
                   >
                     <Cardpost
+                      setIsUserpage={setIsUserpage}
                       index={index}
                       name={post.name}
                       // posts={postArray}

@@ -74,6 +74,7 @@ export default function Home() {
       type: RELOAD_POST_REQUEST,
     });
     dispatch(loadPost());
+    setIsUserpage(false);
   }, [dispatch]);
   return (
     <>
@@ -96,7 +97,7 @@ export default function Home() {
         <div style={{marginBottom :"10px"}}>
           {isUserpage && <UserPage/>}
         </div>
-        <ResponsiveGrid />
+        <ResponsiveGrid setIsUserpage={setIsUserpage}/>
         {/* <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
             <Pagination page={page} count={count} color="primary" onChange={handleChange}/>

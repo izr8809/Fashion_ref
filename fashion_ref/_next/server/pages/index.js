@@ -228,6 +228,7 @@ function Cardpost(props) {
                 hashtags: "#" + hashname
             }
         });
+        props.setIsUserpage(false);
         window.scrollTo({
             top: 0,
             behavior: "smooth"
@@ -1029,7 +1030,9 @@ function Navbar({ setIsUserpage  }) {
                                 }
                             }
                         }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Searchbar__WEBPACK_IMPORTED_MODULE_19__/* ["default"] */ .Z, {}),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Searchbar__WEBPACK_IMPORTED_MODULE_19__/* ["default"] */ .Z, {
+                            setIsUserpage: setIsUserpage
+                        }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Box__WEBPACK_IMPORTED_MODULE_15___default()), {
                             sx: {
                                 flexGrow: 1,
@@ -1324,7 +1327,7 @@ const Item = (0,_mui_material_styles__WEBPACK_IMPORTED_MODULE_2__.experimentalSt
         textAlign: "center",
         color: theme.palette.text.secondary
     }));
-function ResponsiveGrid({}) {
+function ResponsiveGrid({ setIsUserpage  }) {
     const { postArray  } = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useSelector)((state)=>state.post);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{}, [
         postArray
@@ -1360,6 +1363,7 @@ function ResponsiveGrid({}) {
                                 },
                                 children: [
                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Cardpost__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z, {
+                                        setIsUserpage: setIsUserpage,
                                         index: index,
                                         name: post.name,
                                         // posts={postArray}
@@ -1420,7 +1424,7 @@ _reducers_post__WEBPACK_IMPORTED_MODULE_6__ = (__webpack_async_dependencies__.th
 
 
 
-function Searchbar({}) {
+function Searchbar({ setIsUserpage  }) {
     const [value, onChangeValue, setValue] = (0,_hooks_useInput__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)("");
     const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_7__.useDispatch)();
     const searchBar = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
@@ -1447,6 +1451,7 @@ function Searchbar({}) {
                 }
             });
             setValue("");
+            setIsUserpage(false);
         }
     }, [
         dispatch,
@@ -2774,6 +2779,7 @@ function Home() {
             type: _reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .RELOAD_POST_REQUEST */ .kT
         });
         dispatch((0,_reducers_post__WEBPACK_IMPORTED_MODULE_6__/* .loadPost */ .HV)());
+        setIsUserpage(false);
     }, [
         dispatch
     ]);
@@ -2825,7 +2831,9 @@ function Home() {
                         },
                         children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_UserPage__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z, {})
                     }),
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {}),
+                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {
+                        setIsUserpage: setIsUserpage
+                    }),
                     loadPostLoading && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                         id: "bottomloading",
                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
