@@ -2843,7 +2843,7 @@ function Home() {
                         },
                         children: isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_Components_UserPage__WEBPACK_IMPORTED_MODULE_14__/* ["default"] */ .Z, {})
                     }),
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Stack__WEBPACK_IMPORTED_MODULE_5___default()), {
+                    !isUserpage && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((_mui_material_Stack__WEBPACK_IMPORTED_MODULE_5___default()), {
                         spacing: 2,
                         direction: "row",
                         sx: {

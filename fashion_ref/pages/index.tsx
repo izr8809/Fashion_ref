@@ -98,8 +98,10 @@ export default function Home() {
         <div style={{ marginBottom: "40px" }}>
           <Navbar setIsUserpage={setIsUserpage} />
         </div>
-        <div style={{ marginBottom: "10px" }}>{isUserpage && <UserPage />}</div>
-
+        <div style={{ marginBottom: "10px" }}>
+          {isUserpage && <UserPage />}
+        </div>
+        { !isUserpage &&
         <Stack spacing={2} direction="row" sx={{marginBottom:"42px", marginTop :"-20px"}}>
           <Button
             variant="outlined"
@@ -120,6 +122,8 @@ export default function Home() {
             좋아요 순{" "}
           </Button> */}
         </Stack>
+        }
+        
         <ResponsiveGrid setIsUserpage={setIsUserpage} />
         {/* <div>
           <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
