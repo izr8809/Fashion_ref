@@ -5,7 +5,7 @@ exports.id = 405;
 exports.ids = [405];
 exports.modules = {
 
-/***/ 7169:
+/***/ 4743:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -48,11 +48,11 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Favorite__WEBPACK_IMPORTED_MODULE_16__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(491);
 /* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(854);
 /* harmony import */ var _mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_FavoriteBorderTwoTone__WEBPACK_IMPORTED_MODULE_19__);
-/* harmony import */ var _LoginForm__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(3897);
-/* harmony import */ var _Upload__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(9251);
+/* harmony import */ var _LoginForm__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(3589);
+/* harmony import */ var _Upload__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(4150);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__]);
 ([_reducers_post__WEBPACK_IMPORTED_MODULE_18__, _LoginForm__WEBPACK_IMPORTED_MODULE_20__, _Upload__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
@@ -551,7 +551,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 3897:
+/***/ 3589:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -562,7 +562,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(891);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1557);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9564);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _mui_lab__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6072);
@@ -575,7 +575,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Typography__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3011);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6572);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_user__WEBPACK_IMPORTED_MODULE_9__]);
 _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -706,7 +706,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 6871:
+/***/ 1986:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -737,20 +737,20 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_icons_material_AccountCircle__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_AccountCircle__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var _mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6952);
 /* harmony import */ var _mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_MoreVert__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _Components_Signup__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(4830);
-/* harmony import */ var _Components_Upload__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(9251);
+/* harmony import */ var _Components_Signup__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6073);
+/* harmony import */ var _Components_Upload__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(4150);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9564);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Modal__WEBPACK_IMPORTED_MODULE_14__);
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(19);
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(3897);
+/* harmony import */ var _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(3589);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(3011);
-/* harmony import */ var _Searchbar__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(7400);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(6572);
+/* harmony import */ var _Searchbar__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(2837);
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(6829);
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_20__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(491);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Signup__WEBPACK_IMPORTED_MODULE_12__, _Components_Upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__]);
 ([_Components_Signup__WEBPACK_IMPORTED_MODULE_12__, _Components_Upload__WEBPACK_IMPORTED_MODULE_13__, _Components_LoginForm__WEBPACK_IMPORTED_MODULE_16__, _reducers_user__WEBPACK_IMPORTED_MODULE_18__, _Searchbar__WEBPACK_IMPORTED_MODULE_19__, _reducers_post__WEBPACK_IMPORTED_MODULE_21__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
@@ -1161,7 +1161,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 6708:
+/***/ 6811:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -1171,7 +1171,7 @@ __webpack_async_result__();
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(891);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1557);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _mui_material_Modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9564);
@@ -1287,7 +1287,7 @@ function NoticeModal({}) {
 
 /***/ }),
 
-/***/ 5723:
+/***/ 2385:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1302,9 +1302,9 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_material_styles__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_mui_material_styles__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19);
 /* harmony import */ var _mui_material_Box__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Box__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _mui_material_Paper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1598);
+/* harmony import */ var _mui_material_Paper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1168);
 /* harmony import */ var _mui_material_Paper__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Paper__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _Cardpost__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7169);
+/* harmony import */ var _Cardpost__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4743);
 /* harmony import */ var _mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5612);
 /* harmony import */ var _mui_material_Grid__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Grid__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6022);
@@ -1392,7 +1392,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7400:
+/***/ 2837:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1405,12 +1405,12 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _mui_icons_material_Search__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8017);
 /* harmony import */ var _mui_icons_material_Search__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Search__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(891);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1557);
 /* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6042);
 /* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _mui_material_IconButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7934);
 /* harmony import */ var _mui_material_IconButton__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_IconButton__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(491);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_7__);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_6__]);
@@ -1509,7 +1509,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 4830:
+/***/ 6073:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1520,7 +1520,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(891);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1557);
 /* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6042);
 /* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _mui_material_Typography__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7163);
@@ -1533,7 +1533,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3011);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6572);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_user__WEBPACK_IMPORTED_MODULE_9__]);
 _reducers_user__WEBPACK_IMPORTED_MODULE_9__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -1740,7 +1740,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 9251:
+/***/ 4150:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -1775,10 +1775,10 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_mui_lab_LoadingButton__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3819);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(891);
+/* harmony import */ var _hooks_useInput__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1557);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(491);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_16__]);
 _reducers_post__WEBPACK_IMPORTED_MODULE_16__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -2513,7 +2513,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 3901:
+/***/ 983:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -2530,7 +2530,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3819);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(491);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_reducers_post__WEBPACK_IMPORTED_MODULE_5__]);
 _reducers_post__WEBPACK_IMPORTED_MODULE_5__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -2666,7 +2666,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 891:
+/***/ 1557:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -2691,7 +2691,7 @@ const useInput = (initValue)=>{
 
 /***/ }),
 
-/***/ 5979:
+/***/ 4186:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
@@ -2704,8 +2704,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(968);
 /* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Components_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6871);
-/* harmony import */ var _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5723);
+/* harmony import */ var _Components_Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1986);
+/* harmony import */ var _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2385);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9648);
 /* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8742);
 /* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_5__);
@@ -2713,14 +2713,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6022);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1062);
+/* harmony import */ var _reducers_post__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(491);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6689);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(3011);
-/* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5107);
+/* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6572);
+/* harmony import */ var _store_configureStore__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9959);
 /* harmony import */ var redux_saga__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5998);
-/* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6708);
-/* harmony import */ var _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3901);
+/* harmony import */ var _Components_NoticeModal__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6811);
+/* harmony import */ var _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(983);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_8__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__, _store_configureStore__WEBPACK_IMPORTED_MODULE_11__, redux_saga__WEBPACK_IMPORTED_MODULE_12__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__]);
 ([_Components_Navbar__WEBPACK_IMPORTED_MODULE_2__, _Components_ResponsiveGrid__WEBPACK_IMPORTED_MODULE_3__, axios__WEBPACK_IMPORTED_MODULE_4__, _reducers_post__WEBPACK_IMPORTED_MODULE_8__, _reducers_user__WEBPACK_IMPORTED_MODULE_10__, _store_configureStore__WEBPACK_IMPORTED_MODULE_11__, redux_saga__WEBPACK_IMPORTED_MODULE_12__, _Components_UserPage__WEBPACK_IMPORTED_MODULE_14__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
@@ -2792,6 +2792,19 @@ function Home() {
     }, [
         dispatch
     ]);
+    const filterTodayPost = (0,react__WEBPACK_IMPORTED_MODULE_9__.useCallback)(()=>{
+        var sortedArray = [
+            ...postArray
+        ];
+        const d = new Date();
+        sortedArray = sortedArray.filter((post)=>post.createdAt - Date.now() == 0);
+        dispatch({
+            type: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .POST_SORT_REQUEST */ .ce,
+            data: sortedArray
+        });
+    }, [
+        dispatch
+    ]);
     const onReady = ()=>{
         alert("준비중!");
     };
@@ -2858,10 +2871,10 @@ function Home() {
                                 left: "11%",
                                 fontWeight: 900
                             },
-                            onClick: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .loadPost */ .HV,
+                            onClick: filterTodayPost,
                             children: [
                                 " ",
-                                "최신 순"
+                                "오늘의 게시물"
                             ]
                         })
                     }),
@@ -3091,7 +3104,7 @@ module.exports = require("@mui/material/Modal");
 
 /***/ }),
 
-/***/ 1598:
+/***/ 1168:
 /***/ ((module) => {
 
 module.exports = require("@mui/material/Paper");
@@ -3231,7 +3244,7 @@ module.exports = import("redux-saga");;
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [107], () => (__webpack_exec__(5979)));
+var __webpack_exports__ = __webpack_require__.X(0, [959], () => (__webpack_exec__(4186)));
 module.exports = __webpack_exports__;
 
 })();
