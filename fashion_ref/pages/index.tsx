@@ -82,7 +82,7 @@ export default function Home() {
     
     var sortedArray = [...postArray];
     const d = new Date();
-    sortedArray = sortedArray.filter((post) => post.createdAt - Date.now() == 0)
+    sortedArray = sortedArray.filter((post) => parseInt(post.createdAt.split("-")[2].substring(0,2), 10) - d.getDate() == 0)
     dispatch({
       type: POST_SORT_REQUEST,
       data: sortedArray,

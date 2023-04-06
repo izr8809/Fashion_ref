@@ -2797,7 +2797,7 @@ function Home() {
             ...postArray
         ];
         const d = new Date();
-        sortedArray = sortedArray.filter((post)=>post.createdAt - Date.now() == 0);
+        sortedArray = sortedArray.filter((post)=>parseInt(post.createdAt.split("-")[2].substring(0, 2), 10) - d.getDate() == 0);
         dispatch({
             type: _reducers_post__WEBPACK_IMPORTED_MODULE_8__/* .POST_SORT_REQUEST */ .ce,
             data: sortedArray
