@@ -426,6 +426,7 @@ const reducer = (state = initialState, action) => {
 
       case POST_SORT_REQUEST:
         draft.postArray = action.data;
+        draft.onInfiniteScroll = false;
         break;
 
       default:
