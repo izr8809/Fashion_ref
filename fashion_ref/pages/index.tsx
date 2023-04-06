@@ -11,6 +11,7 @@ import {
   initialState as postinitialState,
   LOAD_POST_REQUEST,
   RELOAD_POST_REQUEST,
+  POST_SORT_REQUEST,
 } from "@/reducers/post";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import { loadPost } from "@/reducers/post";
@@ -76,6 +77,20 @@ export default function Home() {
     setIsUserpage(false);
   }, [dispatch]);
 
+  
+  const filterTodayPost = useCallback(() => {
+    
+    var sortedArray = [...postArray];
+    const d = new Date();
+    sortedArray = sortedArray.filter((post) => post.createdAt - Date.now() == 0)
+    dispatch({
+      type: POST_SORT_REQUEST,
+      data: sortedArray,
+    });
+
+  }, [dispatch]);
+
+
   const onReady = () => {
     alert("준비중!")
   };
@@ -103,7 +118,7 @@ export default function Home() {
         </div>
         { !isUserpage &&
         <Stack spacing={2} direction="row" sx={{marginBottom:"42px", marginTop :"-20px"}}>
-          <Button
+          {/* <Button
             variant="outlined"
             size="small"
             style={{ position: "absolute", left: "11%", fontWeight: 900 }}
@@ -111,6 +126,15 @@ export default function Home() {
           >
             {" "}
             최신 순
+          </Button> */}
+          <Button
+            variant="outlined"
+            size="small"
+            style={{ position: "absolute", left: "11%", fontWeight: 900 }}
+            onClick={filterTodayPost}
+          >
+            {" "}
+            오늘의 게시물
           </Button>
           {/* <Button
             variant="outlined"
