@@ -8,9 +8,11 @@ const s3 = new S3Client();
 async function upload() {
   const images = await Image.findAll();
 
-  await Promise.all(images.map(image => loadAndUpdate(image)));
+  const promises = images.map(async (image) => {
+    await loadAndUpdate(image);
+  })
 
-  return true;
+  await Promise.all(promises);
 }
 
 async function loadAndUpdate(image) {
@@ -31,6 +33,7 @@ async function loadAndUpdate(image) {
     ACL: "public-read",
     Body: file,
   });
+
   await s3.send(command);
   await image.update({
     name,
