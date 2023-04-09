@@ -10,7 +10,7 @@ const { Op } = require("sequelize");
 const router = express.Router();
 const { S3Client } = require('@aws-sdk/client-s3');
 
-const s3 = new S3Client();
+const s3 = new S3Client({region: process.env.AWS_S3_REGION});
 
 const upload = multer({
   storage: multerS3({
