@@ -3,7 +3,7 @@ const fs = require("fs");
 const uuid = require("uuid");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3")
 
-const s3 = new S3Client();
+const s3 = new S3Client({region: "ap-northeast-2"});
 
 async function upload() {
   const images = await Image.findAll();
@@ -39,6 +39,7 @@ async function loadAndUpdate(image) {
     name,
     src: `https://fashion-ref.s3.ap-northeast-2.amazonaws.com/${key}`,
   })
+  console.log({name});
 }
 
 
