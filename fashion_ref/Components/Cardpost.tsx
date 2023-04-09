@@ -175,9 +175,7 @@ export default function Cardpost(props: CardpostProps) {
   useEffect(() => {
     if (props.Images[imageIndex] == undefined) {
     } else {
-      // console.log("props")
-      // console.log(props)
-      setImagePath(`../${props.Images[imageIndex].src}`);
+      setImagePath(props.Images[imageIndex].src);
     }
   }, [props.Images,imageIndex]);
 
