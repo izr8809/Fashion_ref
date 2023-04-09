@@ -8,11 +8,9 @@ const s3 = new S3Client({region: "ap-northeast-2"});
 async function upload() {
   const images = await Image.findAll();
 
-  const promises = images.map(async (image) => {
+  for (const image of images) {
     await loadAndUpdate(image);
-  })
-
-  await Promise.all(promises);
+  }
 }
 
 async function loadAndUpdate(image) {
