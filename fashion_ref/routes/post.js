@@ -21,7 +21,9 @@ const upload = multer({
       cb(null, {fieldName: file.fieldname});
     },
     key: function (req, file, cb) {
-      cb(null, uuid.v4())
+      const [_, ext] = file.originalname.match(/(\.\w+)$/);
+      const key = uuid.v4() + ext;
+      cb(null, key)
     }
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
