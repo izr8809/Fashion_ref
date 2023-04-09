@@ -6,6 +6,11 @@ const { User, Post, Hashtag, Image } = require("../models");
 const { Op } = require("sequelize");
 
 const router = express.Router();
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+
+const s3 = new S3Client({
+  region: process.env.AWS_S3_REGION,
+});
 
 try {
   fs.accessSync("uploads");
@@ -28,6 +33,21 @@ const upload = multer({
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
 });
+
+router.post("/s3-test", async (req, res) => {
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: "hola",
+    Body: "hello.world",
+  })
+
+  const ret = await s3.send(command);
+
+  console.log(ret);
+
+  res.status(200).json("hihi");
+})
 
 router.get("/getHashtags", async function (req, res) {
   try {
