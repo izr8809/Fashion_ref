@@ -1,53 +1,31 @@
 const express = require("express");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
+const uuid = require('uuid');
 const fs = require("fs");
 const { User, Post, Hashtag, Image } = require("../models");
 const { Op } = require("sequelize");
 
 const router = express.Router();
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client } = require('@aws-sdk/client-s3');
 
-const s3 = new S3Client({
-  region: process.env.AWS_S3_REGION,
-});
-
-try {
-  fs.accessSync("uploads");
-} catch (error) {
-  console.log("uploads 폴더가 없으므로 생성합니다.");
-  fs.mkdirSync("uploads");
-}
+const s3 = new S3Client();
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads");
+  storage: multerS3({
+    s3,
+    bucket: process.env.AWS_S3_BUCKET,
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
     },
-    filename(req, file, done) {
-      // 제로초.png
-      const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); // 제로초
-      done(null, basename + "_" + new Date().getTime() + ext); // 제로초15184712891.png
-    },
+    key: function (req, file, cb) {
+      cb(null, uuid.v4())
+    }
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
 });
-
-router.post("/s3-test", async (req, res) => {
-
-  const command = new PutObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET,
-    Key: "hola",
-    Body: "hello.world",
-  })
-
-  const ret = await s3.send(command);
-
-  console.log(ret);
-
-  res.status(200).json("hihi");
-})
 
 router.get("/getHashtags", async function (req, res) {
   try {
@@ -62,6 +40,7 @@ router.get("/getHashtags", async function (req, res) {
     console.error(error);
   }
 });
+
 router.post("/addPost", upload.array("image"), async (req, res) => {
   try {
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
@@ -101,20 +80,13 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
 
 
       await post.addHashtags(editedResult.map((v) => v[0]));
-      if (req.files) {
-        // const image = await Image.create({ src: req.file.path });
-        // await post.addImages(image);
-        if (Array.isArray(req.files)) {
-          // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-          const images = await Promise.all(
-            req.files.map((image) => Image.create({ src: image.path }))
-          );
-          await post.addImages(images);
-        } else {
-          // 이미지를 하나만 올리면 image: 제로초.png
-          const image = await Image.create({ src: req.files[0].path });
-          await post.addImages(image);
-        }
+
+      if (Array.isArray(req.files)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(
+          req.files.map((image) => Image.create({ src: image.location, name: image.originalname }))
+        );
+        await post.addImages(images);
       }
 
       const madePost = await Post.findOne({

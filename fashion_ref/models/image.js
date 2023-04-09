@@ -6,9 +6,13 @@ module.exports = class Image extends Model {
     return super.init({
       // id가 기본적으로 들어있다.
       src: {
-        type: DataTypes.STRING(200),
+        type: DataTypes.STRING(500),
         allowNull: false,
       },
+      name: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+      }
     }, {
       modelName: 'Image',
       tableName: 'images',
