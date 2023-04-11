@@ -108,7 +108,11 @@ export default function Upload(props: UploadProps) {
     desc: "",
     photos: [null],
   });
-  const [imageFile, setImageFile] = useState<any>(post.photos || []);
+  const [imageFile, setImageFile] = useState<any>(post.photos || [{
+    title: "",
+    desc: "",
+    photos: [null],
+  }]);
   const closeModal = useCallback(() => {
     props.setuploadModalOpen(false);
     props.setUploadModalClicked(false);
@@ -193,9 +197,15 @@ export default function Upload(props: UploadProps) {
       let targetindex = index;
       setPost({
         ...post,
-        photos: [...photos.slice(0, index + 1), ...photos.slice(index + 2)],
+        photos: [...photos.slice(0, index+1), ...photos.slice(index + 2)],
       });
-      setImageFile([...photos.slice(0, index + 1), ...photos.slice(index + 2)]);
+
+      if(isEdit){
+        setImageFile([...imageFile.slice(0, index), ...imageFile.slice(index+1)]);
+      }else{
+        setImageFile([...imageFile.slice(0, index+1), ...imageFile.slice(index+2)]);
+      }
+
 
       // setImageFile( (prev) => prev.filter())
 
@@ -205,7 +215,7 @@ export default function Upload(props: UploadProps) {
         setIsImage(false);
       }
     },
-    [post, photos]
+    [post, photos,isEdit]
   );
 
   //clipboard
@@ -288,7 +298,7 @@ export default function Upload(props: UploadProps) {
 
           [].forEach.call(imageFile, (f) => {
             //file check
-            const isFile = (f as any).name || null;
+            const isFile = (f as any).type || null;
             if (isFile) {
               formData.append("image", f);
             } else {
@@ -315,10 +325,14 @@ export default function Upload(props: UploadProps) {
             alert("이미지 필수");
             return;
           }
+          //if first element is null
+          if (!imageFile[0]) imageFile.shift();
           const formData = new FormData();
+
           [].forEach.call(imageFile, (f) => {
-            formData.append("image", f);
+              formData.append("image", f);
           });
+
           formData.append("userId", user.id);
           formData.append("userName", user.userName);
           formData.append("brand", brand.replaceAll(" ", ""));

@@ -2,29 +2,29 @@ const express = require("express");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
-const uuid = require('uuid');
+const uuid = require("uuid");
 const fs = require("fs");
 const { User, Post, Hashtag, Image } = require("../models");
 const { Op } = require("sequelize");
 
 const router = express.Router();
-const { S3Client } = require('@aws-sdk/client-s3');
+const { S3Client } = require("@aws-sdk/client-s3");
 
-const s3 = new S3Client({region: process.env.AWS_S3_REGION});
+const s3 = new S3Client({ region: process.env.AWS_S3_REGION });
 
 const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_S3_BUCKET,
-    acl: 'public-read',
+    acl: "public-read",
     metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
+      cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
       const [_, ext] = file.originalname.match(/(\.\w+)$/);
       const key = uuid.v4() + ext;
-      cb(null, key)
-    }
+      cb(null, key);
+    },
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
 });
@@ -76,19 +76,22 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
         )
       ); // [[노드, true], [리액트, true]]
 
-
       //hash 중복제거
-      const editedResult = result.filter((v,i) => result.findIndex(x => x[0].name ===v[0].name) === i);
-
+      const editedResult = result.filter(
+        (v, i) => result.findIndex((x) => x[0].name === v[0].name) === i
+      );
 
       await post.addHashtags(editedResult.map((v) => v[0]));
 
       if (Array.isArray(req.files)) {
         // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
         const images = await Promise.all(
-          req.files.map((image) => Image.create({ src: image.location, name: image.originalname }))
+          req.files.map((image) =>
+            Image.create({ src: image.location, name: image.originalname })
+          )
         );
         await post.addImages(images);
+        
       }
 
       const madePost = await Post.findOne({
@@ -167,7 +170,6 @@ router.post("/deletpost/:postId", async function (req, res) {
       // 해시태그 가진 포스팅 하나 남은 경우 헤ㅐ시태그제거
       const where = {};
       for (let i = 0; i < post.Hashtags.length; i++) {
-        console.log(post.Hashtags[i]);
         const postHasHashtag = await Post.findAll({
           where,
           // limit: 24, limit 나중에 줘야함
@@ -377,7 +379,6 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
   }
 });
 
-
 router.post("/editPost", upload.array("image"), async (req, res) => {
   // PATCH /post/1/like
   try {
@@ -406,14 +407,13 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
         },
       ],
     });
-    
 
     //remove and add hashtags
     let hashtags = await post.getHashtags();
     await post.removeHashtags(hashtags.map((v) => v));
 
     //add hashtags again
-    hashtags = await req.body.hashtag.match(/#[^\s#]+/g) || [];
+    hashtags = (await req.body.hashtag.match(/#[^\s#]+/g)) || [];
     hashtags.push("#" + req.body.category); //category
     hashtags.push("#" + req.body.season); //season
     hashtags.push("#" + req.body.brand); //brand
@@ -427,7 +427,9 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
     ); // [[노드, true], [리액트, true]]
 
     //hash 중복제거
-    const editedResult = result.filter((v,i) => result.findIndex(x => x[0].name ===v[0].name) === i);
+    const editedResult = result.filter(
+      (v, i) => result.findIndex((x) => x[0].name === v[0].name) === i
+    );
 
     await post.addHashtags(editedResult.map((v) => v[0]));
 
@@ -452,9 +454,10 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
 
     //add imagepath
     if (Array.isArray(req.files)) {
+      console.log(req.files)
       // 이미지를 여러 개
       const images = await Promise.all(
-        req.files.map((image) => Image.create({ src: image.path }))
+        req.files.map((image) => Image.create({ src: image.location, name: image.originalname }))
       );
       await post.addImages(images);
     } else {
@@ -513,11 +516,10 @@ router.post("/user", async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-  } else{
-    res.status(404).json({"message" : "notLoggedIn"});
+  } else {
+    res.status(404).json({ message: "notLoggedIn" });
   }
 });
-
 
 //개인이 좋아요한 포스트 가져오기
 router.post("/userLiked", async (req, res) => {
@@ -551,11 +553,10 @@ router.post("/userLiked", async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-  } else{
-    res.status(404).json({"message" : "notLoggedIn"});
+  } else {
+    res.status(404).json({ message: "notLoggedIn" });
   }
 });
-
 
 //좋아요 순
 router.get("/loadLikedPost", async function (req, res) {

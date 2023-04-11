@@ -42,7 +42,6 @@ import {
 
 //addpost
 function addPostAPI(data) {
-  console.log(data.image)
   return axios.post("/post/addPost", data);
 }
 function* addPost(action) {
