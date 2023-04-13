@@ -180,7 +180,7 @@ export default function Cardpost(props: CardpostProps) {
   }, [props.Images,imageIndex]);
 
   const onClickRightArrow = useCallback(()=>{
-    if(imageIndex < props.Images.length){
+    if(imageIndex + 1  < props.Images.length){
       setImageIndex((prev)=> prev+1)
     }
   },[props.Images, imageIndex])

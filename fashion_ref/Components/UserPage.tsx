@@ -8,9 +8,11 @@ import {
   GET_USER_LIKED_POST_REQUEST,
   GET_USER_POST_REQUEST, POST_SORT_REQUEST, TOGGLE_SCROLL_REQUEST,
 } from "@/reducers/post";
-type UserPageProps = {};
+type UserPageProps = {
+  setIsUserpage : any;
+};
 
-export default function UserPage({}: UserPageProps) {
+export default function UserPage(props: UserPageProps) {
   const {postArray} = useSelector((state: any) => state.post);
   const { user } = useSelector((state: any) => state.user);
   const [isLiked, setIsLiked] = useState(false);
@@ -60,8 +62,17 @@ export default function UserPage({}: UserPageProps) {
 
   useEffect(()=>{
 
-    console.log(postArray)
   },[postArray])
+
+  
+  //backspace event
+  useEffect(()=>{
+    history.pushState(null, '', '');
+    window.onpopstate = () =>{
+      props.setIsUserpage(false);
+    } 
+
+  },[])
 
   return (
     <>

@@ -97,9 +97,7 @@ export default function Signup({
     },[email, password, passwordCheck, name]);
 
     useEffect(()=>{
-      console.log("signupDone",signUpDone)
       if(signUpDone && !isInitialOpen){
-        console.log("modal")
         setIsModalOpen(false);
         dispatch({
           type: TOGGLE_SIGNUP_DONE,
@@ -107,6 +105,14 @@ export default function Signup({
       }
       setIsInitialOpen(false);
     },[signUpDone])
+
+  //backspace event
+  useEffect(()=>{
+    history.pushState(null, '', '');
+    window.onpopstate = () =>{
+      setIsModalOpen(false);
+    } 
+  },[])
 
   return (
     <Modal

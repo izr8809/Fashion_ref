@@ -457,6 +457,15 @@ export default function Upload(props: UploadProps) {
     [post]
   );
 
+  //backspace event
+  useEffect(()=>{
+    history.pushState(null, '', '');
+    window.onpopstate = () =>{
+      closehashtagsModal();
+      closeModal();
+    } 
+  },[])
+
   return (
     <>
       {showHashModalOpen && (

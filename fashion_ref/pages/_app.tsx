@@ -1,5 +1,6 @@
 import '@/styles/globals.scss'
 import '@/styles/uploadfiles.scss'
+import '@/styles/sidebar.scss'
 import type { AppProps } from 'next/app'
 import wrapper from '../store/configureStore';
 

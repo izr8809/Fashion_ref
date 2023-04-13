@@ -1,17 +1,16 @@
 import React, { HtmlHTMLAttributes, ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
 import useInput from "../hooks/useInput";
-import axios from "axios";
 import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
 import { LoadingButton } from '@mui/lab';
-
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useDispatch } from "react-redux";
 import { TOGGLE_LOGIN_DONE, loginRequestAction } from "@/reducers/user";
 import { useSelector } from "react-redux";
+
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -68,6 +67,15 @@ export default function LoginForm({
     setIsInitialOpen(false);
 
   },[logInDone])
+
+
+  //backspace event
+  useEffect(()=>{
+    history.pushState(null, '', '');
+    window.onpopstate = () =>{
+      setloginModalOpen(false);
+    } 
+  },[])
 
 
   return (

@@ -31,6 +31,7 @@ import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
 import Searchbar from "./Searchbar";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { GET_HASHTAGS_REQUEST, GET_USER_POST_REQUEST, TOGGLE_SCROLL_REQUEST } from "@/reducers/post";
+import SideBar from "./Sidebar";
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -153,6 +154,16 @@ export default function Navbar({
       alert("준비중입니다.");
     }
   },[user])
+
+  
+
+  //backspace event
+  useEffect(()=>{
+    history.pushState(null, '', '');
+    window.onpopstate = () =>{
+      closehashtagsModal();
+    } 
+  },[showHashModalOpen])
 
 
   //Render Menu

@@ -1,14 +1,11 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.css";
 import Navbar from "../Components/Navbar";
 import ResponsiveGrid from "../Components/ResponsiveGrid";
-import axios, { AxiosHeaders } from "axios";
+import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import {
-  initialState as postinitialState,
   LOAD_POST_REQUEST,
   RELOAD_POST_REQUEST,
   POST_SORT_REQUEST,
@@ -19,10 +16,12 @@ import { loadUser } from "@/reducers/user";
 import { useDispatch } from "react-redux";
 import wrapper from "@/store/configureStore";
 import { END } from "redux-saga";
-import userpage from "./userpage";
 import NoticeModal from "@/Components/NoticeModal";
 import UserPage from "@/Components/UserPage";
+import SideBar from "@/Components/Sidebar";
 
+
+//serverside rendering
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
     const cookie: any = context.req ? context.req.headers.cookie : "";
@@ -38,9 +37,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 export default function Home() {
-  // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
-  const { user } = useSelector((state: any) => state.user);
   const { loadPostLoading } = useSelector((state: any) => state.post);
   const { onInfiniteScroll } = useSelector((state: any) => state.post);
   const { hasMorePost } = useSelector((state: any) => state.post);
@@ -77,23 +74,21 @@ export default function Home() {
     setIsUserpage(false);
   }, [dispatch]);
 
-  
   const filterTodayPost = useCallback(() => {
-    
     var sortedArray = [...postArray];
     const d = new Date();
-    sortedArray = sortedArray.filter((post) => parseInt(post.createdAt.split("-")[2].substring(0,2), 10) - d.getDate() == 0)
+    sortedArray = sortedArray.filter(
+      (post) =>
+        parseInt(post.createdAt.split("-")[2].substring(0, 2), 10) -
+          d.getDate() ==
+        0
+    );
     dispatch({
       type: POST_SORT_REQUEST,
       data: sortedArray,
     });
-
   }, [dispatch]);
 
-
-  const onReady = () => {
-    alert("준비중!")
-  };
 
   return (
     <>
@@ -103,62 +98,48 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <NoticeModal />
-      <div style={{ margin: "auto", width: "80%" }}>
-        <a onClick={loadPosts}>
-          <h1 id="title" style={{ cursor: "pointer" }}>
-            CRUMP REFERENCE
-          </h1>
-        </a>
-        <div style={{ marginBottom: "40px" }}>
-          <Navbar setIsUserpage={setIsUserpage} />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          {isUserpage && <UserPage />}
-        </div>
-        { !isUserpage &&
-        <Stack spacing={2} direction="row" sx={{marginBottom:"42px", marginTop :"-20px"}}>
-          {/* <Button
-            variant="outlined"
-            size="small"
-            style={{ position: "absolute", left: "11%", fontWeight: 900 }}
-            onClick={loadPost}
-          >
-            {" "}
-            최신 순
-          </Button> */}
-          <Button
-            variant="outlined"
-            size="small"
-            style={{ position: "absolute", left: "11%", fontWeight: 900 }}
-            onClick={filterTodayPost}
-          >
-            {" "}
-            오늘의 게시물
-          </Button>
-          {/* <Button
-            variant="outlined"
-            size="small"
-            style={{ position: "absolute", left: "17%", fontWeight: 900 }}
-            onClick={onReady}
-          >
-            {" "}
-            좋아요 순{" "}
-          </Button> */}
-        </Stack>
-        }
+      <div id="_service-app" style={{ height : "100vh", display:"flex", position:"relative"}}>
         
-        <ResponsiveGrid setIsUserpage={setIsUserpage} />
-        {/* <div>
-          <Stack spacing={2} sx={{alignItems:"center", marginTop:"30px", marginBottom:"50px"}}>
-            <Pagination page={page} count={count} color="primary" onChange={handleChange}/>
-          </Stack>
-        </div> */}
-        {loadPostLoading && (
-          <div id="bottomloading">
-            <span style={{ fontSize: "240%" }}> 로딩중...</span>
+        <SideBar />
+
+        <NoticeModal />
+        <div id="frame" style={{ margin: "auto", width: "80%" }}>
+          <a onClick={loadPosts}>
+            <h1 id="title" style={{ cursor: "pointer" }}>
+              CRUMP REFERENCE
+            </h1>
+          </a>
+          <div style={{ marginBottom: "40px" }}>
+            <Navbar setIsUserpage={setIsUserpage} />
           </div>
-        )}
+          <div style={{ marginBottom: "10px" }}>
+            {isUserpage && <UserPage setIsUserpage={setIsUserpage} />}
+          </div>
+          {!isUserpage && (
+            <Stack
+              spacing={2}
+              direction="row"
+              sx={{ marginBottom: "42px", marginTop: "-20px" }}
+            >
+              <Button
+                variant="outlined"
+                size="small"
+                style={{ position: "absolute", left: "11%", fontWeight: 900 }}
+                onClick={filterTodayPost}
+              >
+                {" "}
+                오늘의 게시물
+              </Button>
+            </Stack>
+          )}
+
+          <ResponsiveGrid setIsUserpage={setIsUserpage} />
+          {loadPostLoading && (
+            <div id="bottomloading">
+              <span style={{ fontSize: "240%" }}> 로딩중...</span>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
