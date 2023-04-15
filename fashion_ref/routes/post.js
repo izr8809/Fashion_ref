@@ -1,10 +1,8 @@
 const express = require("express");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
-const path = require("path");
 const uuid = require("uuid");
-const fs = require("fs");
-const { User, Post, Hashtag, Image } = require("../models");
+const { User, Post, Hashtag, Image, Sequelize } = require("../models");
 const { Op } = require("sequelize");
 
 const router = express.Router();
@@ -121,6 +119,32 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
 
 router.get("/loadPost", async function (req, res) {
   try {
+    if (req.params.sort === "likes") {
+      const limit = 24;
+      const order = (req.params.order | "desc").toUpperCase();
+      const page = req.params.page | 1;
+      const posts = await Post.findAll({
+        include: [
+          {
+            model: User,
+            as: "Likers",
+            attributes: [],
+          },
+        ],
+        attributes: [
+          [Sequelize.fn('COUNT', Sequelize.col('Likers.id')), 'likes'],
+          ...Post.getAttributes(),
+        ],
+        group: Post.id,
+        order: [["likes", order]],
+        offset: (page - 1) * limit,
+        limit,
+      });
+
+      res.status(200).json(posts);
+      return;
+    }
+
     const where = {};
     if (parseInt(req.query.lastId, 10)) {
       // 초기 로딩이 아닐 때
