@@ -119,10 +119,10 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
 
 router.get("/loadPost", async function (req, res) {
   try {
-    if (req.params.sort === "likes") {
+    if (req.query.sort === "likes") {
       const limit = 24;
-      const order = (req.params.order | "desc").toUpperCase();
-      const page = req.params.page | 1;
+      const order = (req.query.order || "desc").toUpperCase();
+      const page = parseInt(req.query.page || "1");
       const posts = await Post.findAll({
         include: [
           {
@@ -133,12 +133,13 @@ router.get("/loadPost", async function (req, res) {
         ],
         attributes: [
           [Sequelize.fn('COUNT', Sequelize.col('Likers.id')), 'likes'],
-          ...Post.getAttributes(),
+          ...Object.keys(Post.getAttributes()),
         ],
-        group: Post.id,
+        group: ['id'],
         order: [["likes", order]],
         offset: (page - 1) * limit,
         limit,
+        subQuery: false,
       });
 
       res.status(200).json(posts);
