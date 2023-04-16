@@ -123,7 +123,7 @@ router.get("/loadPost", async function (req, res) {
       const limit = 24;
       const order = (req.query.order || "desc").toUpperCase();
       const page = parseInt(req.query.page || "1");
-      const posts = await Post.findAll({
+      const postsByLike = await Post.findAll({
         include: [
           {
             model: User,
@@ -133,14 +133,40 @@ router.get("/loadPost", async function (req, res) {
         ],
         attributes: [
           [Sequelize.fn('COUNT', Sequelize.col('Likers.id')), 'likes'],
-          ...Object.keys(Post.getAttributes()),
+          "id",
+          // ...Object.keys(Post.getAttributes()),
         ],
-        group: ['id'],
+        subQuery: false,
+        group: [Sequelize.col('Post.id')],
         order: [["likes", order]],
         offset: (page - 1) * limit,
         limit,
-        subQuery: false,
       });
+
+      const postIds = postsByLike.map(e => e.id);
+
+      const posts = await Post.findAll({
+        where: {id: postIds},
+        include: [
+          {
+            model: Image,
+            order: [["id", "DESC"]],
+          },
+          {
+            model: Hashtag,
+            order: [["createdAt", "DESC"]],
+            attributes: ['name'],
+            through: { attributes: [] }
+          },
+          {
+            model: User,
+            as: "Likers",
+            attributes: ['name', 'id'],
+            through: { attributes: [] }
+          },
+        ],
+        order: Sequelize.literal(`FIELD(Post.id, ${postIds.join(',')})`)
+      })
 
       res.status(200).json(posts);
       return;
