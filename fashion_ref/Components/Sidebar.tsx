@@ -15,6 +15,7 @@ export default function SideBar(props: SideBarProps) {
     // setOnSidebar((prev) => !prev);
     alert("사이드 바 곧 나옵니다.");
   },[])
+  
 
 
   return (

@@ -113,12 +113,3 @@ app.prepare().then(() => {
     console.log("서버 실행 중!");
   });
 });
-
-// const parseCookies = (cookie = "") =>
-//   cookie
-//     .split(";")
-//     .map((v) => v.split("="))
-//     .reduce((acc, [k, v]) => {
-//       acc[k.trim()] = decodeURIComponent(v);
-//       return acc;
-//     }, {});

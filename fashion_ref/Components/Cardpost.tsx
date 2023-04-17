@@ -396,6 +396,8 @@ export default function Cardpost(props: CardpostProps) {
             {props.reason}
           </Typography>
         </CardContent>
+
+        
         <StyledCardAction>
           <div
             style={{
@@ -436,27 +438,6 @@ export default function Cardpost(props: CardpostProps) {
               </span>
             </div>
           </div>
-          {/* <Button size="small" color="primary">
-          Share
-        </Button> */}
-          {/* <div style={{ margin: "2px" }}>
-          <div
-            className={`Tag${parseInt(props.season) % 10} Tag`}
-            style={{ display: "inline-block", margin: "2px" }}
-          >
-            <a href="">#{season}</a>
-          </div>{" "}
-          &nbsp;
-        </div>
-        <div style={{ margin: "2px" }}>
-          <div
-            className={`TagCategory Tag`}
-            style={{ display: "inline-block", margin: "2px" }}
-          >
-            <a href="">#{category}</a>
-          </div>{" "}
-          &nbsp;
-        </div> */}
           {props.hashtags.map((hashtag, index) => (
             <div style={{ margin: "2px" }} key={index}>
               <div
