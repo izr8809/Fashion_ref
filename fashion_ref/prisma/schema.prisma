@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  PostId    Int
+  UserId    Int
+  post      Posts    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "Like_ibfk_1")
+  user      Users    @relation(fields: [UserId], references: [id], onDelete: Cascade, map: "Like_ibfk_2")
+
+  @@id([PostId, UserId])
+  @@index([UserId], map: "UserId")
+}
+
+model PostHashtag {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  HashtagId Int
+  PostId    Int
+  hashtag   Hashtags @relation(fields: [HashtagId], references: [id], onDelete: Cascade, map: "PostHashtag_ibfk_1")
+  post      Posts    @relation(fields: [PostId], references: [id], onDelete: Cascade, map: "PostHashtag_ibfk_2")
+
+  @@id([HashtagId, PostId])
+  @@index([PostId], map: "PostId")
+}
+
+model Hashtags {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique @db.VarChar(20)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  postHashtags PostHashtag[]
+}
+
+model Images {
+  id        Int      @id @default(autoincrement())
+  src       String   @db.VarChar(500)
+  name      String?  @db.VarChar(500)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  PostId    Int?
+  post      Posts?   @relation(fields: [PostId], references: [id], map: "images_ibfk_1")
+
+  @@index([PostId], map: "PostId")
+}
+
+model Posts {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.Text
+  link         String?       @db.Text
+  brand        String        @db.Text
+  category     String        @db.Text
+  season       String        @db.Text
+  reason       String?       @db.Text
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  UserId       Int?
+  likes        Like[]
+  PostHashtags PostHashtag[]
+  images       Images[]
+  user         Users?        @relation(fields: [UserId], references: [id], map: "posts_ibfk_1")
+
+  @@index([UserId], map: "UserId")
+}
+
+model Users {
+  id        Int      @id @unique @default(autoincrement())
+  name      String   @db.VarChar(20)
+  password  String   @db.VarChar(100)
+  email     String   @unique(map: "email") @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likes     Like[]
+  posts     Posts[]
+}

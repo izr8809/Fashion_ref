@@ -32,7 +32,7 @@ class Post extends Sequelize.Model{
       // RetweetId
     }, {
       modelName: 'Post',
-      tableName: 'posts',
+      tableName: 'Posts',
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci', // 이모티콘 저장
       sequelize,

@@ -19,7 +19,7 @@ class User extends Sequelize.Model{
     },{
       sequelize,
       modelName: 'User',
-      tableName: 'users',
+      tableName: 'Users',
       charset: 'utf8',
       collate: 'utf8_general_ci', // 한글 저장
     }
