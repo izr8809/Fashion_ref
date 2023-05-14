@@ -4,7 +4,7 @@ import userSaga from "./user";
 import worksapceSaga from "./workspace";
 import axios from "axios";
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API
+// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API
 // axios.defaults.baseURL = 'http://localhost:8080/';
 axios.defaults.withCredentials = true;
 
