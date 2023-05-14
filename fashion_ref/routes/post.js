@@ -38,7 +38,7 @@ router.post("/getHashtags", async function (req, res) {
       include:[
         {
           model: Reference,
-          as: "savedRefTags",
+          as: "refTags",
           // where:{ id : parseInt(req.body.workspaceId, 10)}
         }
       ]
