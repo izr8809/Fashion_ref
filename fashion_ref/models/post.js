@@ -40,10 +40,10 @@ class Post extends Sequelize.Model{
   }
   static associate(db){
     db.Post.belongsTo(db.User); // post.addUser, post.getUser, post.setUser
+    db.Post.belongsTo(db.Reference); 
     db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' }); // post.addHashtags
     db.Post.hasMany(db.Image); // post.addImages, post.getImages
     db.Post.belongsToMany(db.User, {through : 'Like', as:'Likers'}); 
-    db.Post.belongsToMany(db.Workspace, { through: 'WorkspacePost' }); 
   }
 };
 

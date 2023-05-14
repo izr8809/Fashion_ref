@@ -27,8 +27,10 @@ class User extends Sequelize.Model{
   }
   static associate(db){
     db.User.hasMany(db.Post);
+    db.User.belongsToMany(db.Notification, { through: 'userNotification' });  
     db.User.belongsToMany(db.Post, {through : 'Like', as : 'Liked'}); 
     db.User.belongsToMany(db.Workspace, { through: 'WorkspaceUser' }); 
+    db.User.belongsToMany(db.Workspace, { through: 'Administrators', as : "WorkspaceAdministrators" });  
   }
 };
 

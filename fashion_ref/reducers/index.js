@@ -2,6 +2,7 @@ import {HYDRATE} from 'next-redux-wrapper';
 import { combineReducers } from 'redux';
 import user from './user';
 import post from './post';
+import workspace from './workspace';
 
 
 const rootReducer = (state, action) => {
@@ -13,6 +14,7 @@ const rootReducer = (state, action) => {
       const combinedReducer = combineReducers({
         user,
         post,
+        workspace,
       });
       return combinedReducer(state, action);
     }

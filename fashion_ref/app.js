@@ -6,7 +6,7 @@ const prod = true;
 const app = next({ prod });
 const handle = app.getRequestHandler();
 const { sequelize } = require("./models");
-const { User, Post, Hashtag, Image } = require("./models");
+const { User, Post, Hashtag, Image, Workspace, Reference } = require("./models");
 const passport = require("passport");
 const dotenv = require('dotenv');
 const cors = require("cors");
@@ -19,6 +19,7 @@ var bodyParser = require("body-parser");
 //router
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
+const workspaceRouter = require('./routes/workspace');
 
 //seqeulize setting
 sequelize
@@ -92,7 +93,12 @@ app.prepare().then(() => {
   //   }
   // });
 
-  server.get("/", function (req, res) {
+   
+  server.use('/post', postRouter);
+  server.use('/user', userRouter);
+  server.use('/workspace', workspaceRouter);
+
+  server.get("/*", function (req, res) {
     handle(req, res);
     // res.writeHead(200, { 'Set-Cookie': 'mycookie=test' });
     // const c = parseCookies(req.headers.cookie)
@@ -105,9 +111,6 @@ app.prepare().then(() => {
     // res.sendFile(path.join(__dirname, '/server/pages/index.js'));
   });
 
-   
-  server.use('/post', postRouter);
-  server.use('/user', userRouter);
 
   server.listen(8080, () => {
     console.log("서버 실행 중!");

@@ -1,13 +1,10 @@
 import React, {
   useCallback,
   ChangeEvent,
-  useMemo,
   useRef,
   useState,
   useEffect,
-  ReactElement,
 } from "react";
-import axios from "axios";
 import FormControl from "@mui/material/FormControl";
 import AddIcon from "@mui/icons-material/Add";
 import InputLabel from "@mui/material/InputLabel";
@@ -21,10 +18,7 @@ import MenuItem from "@mui/material/MenuItem";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import useInput from "../hooks/useInput";
-import { FileUploader } from "react-drag-drop-files";
-import Image from "next/image";
 import { useSelector } from "react-redux";
-import Router from "next/router";
 import { useDispatch } from "react-redux";
 import {
   addPost,
@@ -37,6 +31,7 @@ import {
   TOGGLE_ISEDIT_REQUEST,
 } from "@/reducers/post";
 import { and } from "sequelize";
+import HashList from "./HashList";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
 
 const modalstyle = {
@@ -44,7 +39,7 @@ const modalstyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: "100%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -103,6 +98,9 @@ export default function Upload(props: UploadProps) {
   const { addPostLoading } = useSelector((state: any) => state.post);
   const { addPostDone } = useSelector((state: any) => state.post);
   const { editPostDone } = useSelector((state: any) => state.post);
+  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const { currentSpaceId } = useSelector((state: any) => state.workspace);
+  const { workspaceInfo } = useSelector((state: any) => state.workspace);
   const [post, setPost] = useState({
     title: "",
     desc: "",
@@ -268,13 +266,6 @@ export default function Upload(props: UploadProps) {
     data: [{ name: "" }],
   });
 
-  const getHashtags = useCallback(() => {
-    dispatch({
-      type: GET_HASHTAGS_REQUEST,
-    });
-    setShowHashModalOpen(true);
-  }, [dispatch]);
-
   const onSubmit = useCallback(
     (e: any) => {
       if (brand == "") {
@@ -314,6 +305,7 @@ export default function Upload(props: UploadProps) {
           formData.append("hashtag", text);
           formData.append("reason", reason);
           formData.append("name", userName);
+          formData.append("referenceId", currentSpaceId);
           dispatch({
             type: EDIT_POST_REQUEST,
             data: formData,
@@ -341,6 +333,7 @@ export default function Upload(props: UploadProps) {
           formData.append("season", season);
           formData.append("hashtag", text);
           formData.append("reason", reason);
+          formData.append("referenceId", currentSpaceId);
           dispatch(addPost(formData));
         }
       }
@@ -358,6 +351,7 @@ export default function Upload(props: UploadProps) {
       post.photos,
       isEdit,
       props.postId,
+      currentSpaceId,
     ]
   );
 
@@ -621,22 +615,8 @@ export default function Upload(props: UploadProps) {
             variant="outlined"
           />
 
-          <Button
-            variant="contained"
-            sx={{
-              // height: "60%",
-              whiteSpace: "nowrap",
-              marginRight: "5px",
-              marginTop: "5px",
-              fontWeight: "bold",
-              display: "inline-block",
-            }}
-            size="small"
-            onClick={getHashtags}
-          >
-            #목록
-          </Button>
-          {/* <FileUploader
+        <HashList setShowHashModalOpen={setShowHashModalOpen} />
+         {/* <FileUploader
             handleChange={handleChange}
             name="file"
             types={fileTypes}

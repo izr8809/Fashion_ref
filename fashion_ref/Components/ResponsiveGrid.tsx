@@ -5,9 +5,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Cardpost from "./Cardpost";
 import Grid from "@mui/material/Grid";
-import { useInput } from "@mui/base";
-import axios from "axios";
-import Image from "next/image";
 import { useSelector } from "react-redux";
 
 const Item = styled(Paper)(({ theme }) => ({

@@ -1,37 +1,30 @@
 import { Inter } from "@next/font/google";
 import * as React from "react";
 import { HtmlHTMLAttributes, ReactElement, useRef } from "react";
-import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
+import HomeIcon from '@mui/icons-material/Home';
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import Signup from "@/Components/Signup";
-import Upload from "@/Components/Upload";
+import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Upload from "@/Components/Upload";
 import { useCallback, useEffect, useState } from "react";
-import Login from "@/Components/LoginForm";
-import LoginForm from "@/Components/LoginForm";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { loginRequestAction, logoutRequestAction } from "@/reducers/user";
 import Searchbar from "./Searchbar";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { GET_HASHTAGS_REQUEST, GET_USER_POST_REQUEST, TOGGLE_SCROLL_REQUEST } from "@/reducers/post";
 import SideBar from "./Sidebar";
+import HashList from "./HashList";
+import { loadPost } from "@/reducers/post";
+import {
+  RESET_POST_REQUEST,
+} from "@/reducers/post";
+import { useDispatch } from "react-redux";
+import MypageMenu from "./MypageMenu";
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -45,7 +38,7 @@ const modalstyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: "auto",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -55,23 +48,25 @@ const modalstyle = {
 
 type NavbarProps = {
   setIsUserpage :any;
+  setIsHomeState:any;
 };
 
 export default function Navbar({
-  
+  setIsHomeState,
   setIsUserpage
 }: NavbarProps): ReactElement {
 
   //redux
   const { user } = useSelector((state: any) => state.user);
-  const { logOutLoading } = useSelector((state: any) => state.user);
   const { hashtags } = useSelector((state: any) => state.post);
   const { isEdit } = useSelector((state: any) => state.post);
   const [clipboardFile, setClipboardFile] = useState(null);
   const [uploadModalClicked, setUploadModalClicked] = useState(false);
-  const dispatch = useDispatch();
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
+  const { currentSpaceId } = useSelector((state: any) => state.workspace);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
+  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -79,6 +74,17 @@ export default function Navbar({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
 
+  const loadPosts = useCallback(() => {
+    dispatch({
+      type: RESET_POST_REQUEST,
+    });
+    dispatch(
+      loadPost({
+        referenceId: currentSpaceId,
+      })
+    );
+    setIsUserpage(false);
+  }, [dispatch, currentSpaceId]);
 
   const closehashtagsModal = () => {
     setShowHashModalOpen(false);
@@ -86,10 +92,6 @@ export default function Navbar({
 
   const showModal = () => {
     setIsModalOpen(true);
-  };
-
-  const showLoginModal = () => {
-    setloginModalOpen(true);
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -107,11 +109,6 @@ export default function Navbar({
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-  const Logout = useCallback(() => {
-    dispatch(logoutRequestAction());
-    //왜인지 모르겠는데 로그아웃 후 모달 켜짐
-    setloginModalOpen(false);
-  }, []);
 
   const uploadClick = useCallback(() => {
     if (user) {
@@ -127,35 +124,6 @@ export default function Navbar({
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const onReady = useCallback(() => {
-    alert("준비중입니다.");
-  }, []);
-
-  const getHashtags = useCallback(() => {
-    //dispatch
-    dispatch({
-      type: GET_HASHTAGS_REQUEST,
-    });
-    setShowHashModalOpen(true);
-  }, [dispatch]);
-
-  const profileClick = useCallback(()=>{
-    if(user){
-      setIsUserpage(true);
-      
-      dispatch({
-        type: GET_USER_POST_REQUEST,
-        data: null,
-      });
-      dispatch({
-        type: TOGGLE_SCROLL_REQUEST,
-      })
-    }else{
-      alert("준비중입니다.");
-    }
-  },[user])
-
-  
 
   //backspace event
   useEffect(()=>{
@@ -243,11 +211,6 @@ export default function Navbar({
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {isModalOpen && (
-        <Signup
-          setIsModalOpen={setIsModalOpen}
-        />
-      )}
       {user && uploadModalOpen && !isEdit && (
         <Upload
           uploadModalClicked={uploadModalClicked}
@@ -257,12 +220,6 @@ export default function Navbar({
           setuploadModalOpen={setuploadModalOpen}
           postId={null}
           clipboardFile={clipboardFile}
-        />
-      )}
-      {!user && loginModalOpen && (
-        <LoginForm
-          loginModalOpen={loginModalOpen}
-          setloginModalOpen={setloginModalOpen}
         />
       )}
       {showHashModalOpen && (
@@ -310,38 +267,22 @@ export default function Navbar({
         style={{ backgroundColor: "#FFF", color: "#000" }}
       >
         <Toolbar>
-          <Button
-            variant="contained"
-            sx={{
-              // height: "60%",
-              whiteSpace: "nowrap",
-              marginRight: "5px",
-              fontWeight: "bold",
-              display: "inline-block",
-            }}
-            size="small"
-            onClick={getHashtags}
-          >
-            #목록
-          </Button>
-          <Typography
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          ></Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
-
-          <Searchbar setIsUserpage={setIsUserpage}/>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
-
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          
             <>
               <IconButton
                 size="large"
                 edge="end"
-                sx={{ marginRight: "10px" }}
+                sx={{ marginRight: "10px", transform:"translate(0,-60%)"}}
+                aria-haspopup="false"
+                color="primary"
+                onClick={loadPosts}
+              >            
+                <HomeIcon/>
+              </IconButton>
+              <IconButton
+                size="large"
+                edge="end"
+                sx={{ marginRight: "10px", transform:"translate(0,-60%)" }}
                 aria-label="account of current user"
                 aria-haspopup="false"
                 color="primary"
@@ -350,73 +291,23 @@ export default function Navbar({
                 <AddIcon />
               </IconButton>
             </>
-            {!user ? (
-              <>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    // height: "60%",
-                    width: "40%",
-                    marginRight: "5px",
-                    fontWeight: "bold",
-                    display: "inline-block",
-                  }}
-                  size="small"
-                  onClick={showLoginModal}
-                >
-                  로그인
-                </Button>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    // height: "60%",
-                    width: "40%",
-                    fontWeight: "bold",
-                    display: "inline-block",
-                  }}
-                  onClick={showModal}
-                  size="small"
-                >
-                  가입
-                </Button>
-              </>
-            ) : (
-              <>
-                <LoadingButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    // height: "60%",
-                    width: "100%",
-                    marginRight: "5px",
-                    fontWeight: "bold",
-                    display: "inline-block",
-                    whiteSpace: "nowrap",
-                  }}
-                  size="small"
-                  onClick={Logout}
-                  loading={logOutLoading}
-                >
-                  로그아웃
-                </LoadingButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  color="primary"
-                  onClick={profileClick}
-                >
-                  <AccountCircle />
-                </IconButton>
-              </>
-            )}
+          <HashList setShowHashModalOpen={setShowHashModalOpen}/>
+          <Typography
+            noWrap
+            component="div"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          ></Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+
+          <Searchbar setIsUserpage={setIsUserpage} setIsHomeState={setIsHomeState}/>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            
+          <MypageMenu setIsUserpage={setIsUserpage}/>
+
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, float: "right" }}>
             <IconButton

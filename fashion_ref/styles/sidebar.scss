@@ -1,3 +1,11 @@
+
+*{
+  box-sizing: border-box;
+  margin : 0;
+  padding : 0;
+  outline:0;
+}
+
 .sidebar-container {
   flex-grow: 0;
   flex-shrink: 0;
@@ -142,21 +150,6 @@
     margin-bottom: 2px;
   }
 }
-.private-header-container {
-  margin-bottom: 18px;
-  width: 100%;
-  & div {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    font-size: 14px;
-    // height: 24px;
-    min-height: 24px;
-    padding: 0px 14px 0px 15px;
-    margin-top: 6px;
-    margin-bottom: 2px;
-  }
-}
 
 .bookmarks {
   display: block;
@@ -194,6 +187,7 @@
   padding: 0px;
   margin: 0px;
   border-radius: 0px;
+  margin-top : 0;
 }
 
 .team-header{
@@ -207,17 +201,35 @@
   margin-bottom: 2px;
 }
 
-
-.private-header{
-  display: flex;
-  align-items: center;
-  width: 100%;
-  font-size: 14px;
-  min-height: 24px;
-  padding: 0px 14px 0px 15px;
-  margin-top: 6px;
-  margin-bottom: 2px;
+#teamWorkspaceTagDelete{
+  opacity: 0%;
+  height : 20px;
+  
+  &:hover{
+    opacity: 30%
+  }
 }
-.private {
-  display: block;
+
+#refAddIcon{
+  opacity: 0%;
+  width: 10px;
+  margin-left: -10px;
+  &:hover{
+    opacity: 30%;
+  }
+}
+
+
+#checkboxForm{
+  align-items: start;
+}
+#logoutButton:hover, #workspaceAddButton:hover{
+  background-color: lightgray;
+  opacity: 0.6;
+}
+
+
+#alarmMenu{
+  &:hover{
+  }
 }

@@ -35,13 +35,16 @@ export const initialState = {
   getUserLikedPostLoading: false,
   getUserLikedPostDone: false,
   getUserLikedPostError: null,
+  getLikesortedPostLoading: false,
+  getLikesortedPostDone: false,
+  getLikesortedPostError: null,
   onInfiniteScroll: true,
   isEdit: false,
   hashtags: [],
   hasMorePost: true,
 };
 
-export const RELOAD_POST_REQUEST = "RELOAD_POST_REQUEST";
+export const RESET_POST_REQUEST = "RESET_POST_REQUEST";
 
 export const TOGGLE_SCROLL_REQUEST = "TOGGLE_SCROLL_REQUEST";
 export const TOGGLE_ISEDIT_REQUEST = "TOGGLE_ISEDIT_REQUEST";
@@ -95,6 +98,10 @@ export const GET_USER_LIKED_POST_FAILURE = "GET_USER_LIKED_POST_FAILURE";
 
 export const POST_SORT_REQUEST = "POST_SORT_REQUEST";
 
+export const GET_LIKESORTED_REQUEST = "GET_LIKESORTED_REQUEST";
+export const GET_LIKESORTED_SUCCESS = "GET_LIKESORTED_SUCCESS";
+export const GET_LIKESORTED_FAILURE = "GET_LIKESORTED_FAILURE";
+
 export const addPost = (data) => {
   return {
     type: ADD_POST_REQUEST,
@@ -105,7 +112,7 @@ export const addPost = (data) => {
 export const loadPost = (data) => {
   return {
     type: LOAD_POST_REQUEST,
-    data,
+    data: data,
   };
 };
 
@@ -141,7 +148,7 @@ const reducer = (state = initialState, action) => {
 
       case LOAD_POST_SUCCESS:
         draft.postArray = draft.postArray.concat(action.data);
-        draft.loadPostDone = true;
+        draft.loadPostDone = false;
         draft.loadPostLoading = false;
         draft.hasMorePost = action.data.length === 24; //나중에 바꿔줘야함.
         draft.onInfiniteScroll = true;
@@ -159,7 +166,6 @@ const reducer = (state = initialState, action) => {
         break;
 
       case ADD_POST_SUCCESS:
-        console.log(action.data);
         draft.postArray.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
@@ -329,7 +335,7 @@ const reducer = (state = initialState, action) => {
         draft.getUserLikedPostError = action.error;
         break;
 
-      case RELOAD_POST_REQUEST:
+      case RESET_POST_REQUEST:
         draft.postArray = [];
         break;
 
@@ -352,6 +358,23 @@ const reducer = (state = initialState, action) => {
       case POST_SORT_REQUEST:
         draft.postArray = action.data;
         draft.onInfiniteScroll = false;
+        break;
+
+      case GET_LIKESORTED_REQUEST:
+        draft.getLikesortedPostLoading = true;
+        draft.getLikesortedPostDone = false;
+        draft.getLikesortedPostError = null;
+        break;
+
+      case GET_LIKESORTED_SUCCESS:
+        draft.postArray = action.data;
+        draft.getLikesortedPostLoading = true;
+        draft.getLikesortedPostDone = true;
+        break;
+        
+      case GET_LIKESORTED_FAILURE:
+        draft.getLikesortedPostLoading = false;
+        draft.getLikesortedPostError = action.error;
         break;
 
       default:

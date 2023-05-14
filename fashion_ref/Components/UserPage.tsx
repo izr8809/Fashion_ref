@@ -15,6 +15,7 @@ type UserPageProps = {
 export default function UserPage(props: UserPageProps) {
   const {postArray} = useSelector((state: any) => state.post);
   const { user } = useSelector((state: any) => state.user);
+  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
 
@@ -22,7 +23,9 @@ export default function UserPage(props: UserPageProps) {
   const loadUserPost = useCallback(() => {
     dispatch({
       type: GET_USER_POST_REQUEST,
-      data: null,
+      data: {
+        workspaceId: userCurrentWorkspaceId,
+      },
     });
     setIsLiked(false);
   }, []);
@@ -53,17 +56,14 @@ export default function UserPage(props: UserPageProps) {
   
   const loadUserLikedPost = useCallback(() => {
     setIsLiked(true);
-
     dispatch({
-      type:GET_USER_LIKED_POST_REQUEST
+      type:GET_USER_LIKED_POST_REQUEST,
+      data: {
+        workspaceId: userCurrentWorkspaceId,
+      },
     })
 
   }, [postArray, user]);
-
-  useEffect(()=>{
-
-  },[postArray])
-
   
   //backspace event
   useEffect(()=>{
@@ -77,13 +77,13 @@ export default function UserPage(props: UserPageProps) {
   return (
     <>
     <Stack spacing={2} direction="row">
-        <Button disabled style={{marginTop:"-20px", fontWeight: 900}}>{user.data.name}님의 페이지</Button>
+        <Button disabled style={{marginTop:"-20px", fontWeight: 900}}>{user.name}님의 페이지</Button>
     </Stack>
       <Stack spacing={2} direction="row">
-        <Button variant="text" style={{fontWeight: 900}} onClick={loadUserPost}> 작성한 게시물</Button>
-        <Button variant="text" style={{fontWeight: 900}} onClick={loadUserLikedPost}> 좋아요 누른 게시물</Button>
-        <Button variant="outlined" size="small" style={{position:"absolute", right:"18%",fontWeight: 900}} onClick={dateSorting}> 최신 순</Button>
-        <Button variant="outlined" size="small" style={{position:"absolute", right:"12%", fontWeight: 900}}onClick={likedSorting}> 좋아요 순 </Button>
+        {/* <Button variant="text" style={{fontWeight: 900}} onClick={loadUserPost}> 작성한 게시물</Button>
+        <Button variant="text" style={{fontWeight: 900}} onClick={loadUserLikedPost}> 좋아요 누른 게시물</Button> */}
+        <Button variant="outlined" size="small" style={{fontWeight: 900}} onClick={dateSorting}> 최신 순</Button>
+        <Button variant="outlined" size="small" style={{fontWeight: 900}}onClick={likedSorting}> 좋아요 순 </Button>
       </Stack>
     </>
   );

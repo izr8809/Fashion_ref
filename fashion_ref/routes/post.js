@@ -2,11 +2,12 @@ const express = require("express");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const uuid = require("uuid");
-const { User, Post, Hashtag, Image, Sequelize } = require("../models");
+const { User, Post, Hashtag, Image, Sequelize, Workspace, Reference } = require("../models");
 const { Op } = require("sequelize");
 
 const router = express.Router();
 const { S3Client } = require("@aws-sdk/client-s3");
+const { REACT_LOADABLE_MANIFEST } = require("next/dist/shared/lib/constants");
 
 const s3 = new S3Client({ region: process.env.AWS_S3_REGION });
 
@@ -27,13 +28,20 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
 });
 
-router.get("/getHashtags", async function (req, res) {
+router.post("/getHashtags", async function (req, res) {
   try {
     where = {};
     const hashtags = await Hashtag.findAll({
       where,
       // limit: 10,
       order: [["createdAt", "DESC"]],
+      include:[
+        {
+          model: Reference,
+          as: "savedRefTags",
+          // where:{ id : parseInt(req.body.workspaceId, 10)}
+        }
+      ]
     });
     res.status(200).json(hashtags);
   } catch (error) {
@@ -89,8 +97,16 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
           )
         );
         await post.addImages(images);
-        
       }
+
+      const ref = await Reference.findOne({ 
+        where: { id: parseInt(req.body.referenceId,10) }, 
+      })
+
+      await post.setReference(ref);
+
+
+      ref.addHashtags(editedResult.map(v => v[0])); // 내일부터 다시 해 
 
       const madePost = await Post.findOne({
         where: { id: post.id },
@@ -107,6 +123,10 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
             model: User,
             as: "Likers",
           },
+          {
+            model: Reference,
+            order: [["createdAt", "DESC"]],
+          }
         ],
       });
 
@@ -146,7 +166,7 @@ router.get("/loadPost", async function (req, res) {
       const postIds = postsByLike.map(e => e.id);
 
       const posts = await Post.findAll({
-        where: {id: postIds},
+        where: {ReferenceId: req.query.referenceId},
         include: [
           {
             model: Image,
@@ -179,7 +199,7 @@ router.get("/loadPost", async function (req, res) {
     }
     // console.log(req.query.lastId)
     const posts = await Post.findAll({
-      where,
+      where : { ReferenceId: req.query.referenceId},
       limit: 24,
       order: [["createdAt", "DESC"]],
       include: [
@@ -296,7 +316,6 @@ router.post("/hashtagSearch", async (req, res) => {
     for (let i = 0; i < hashtags.length; i++) {
       hashtagjson = [...hashtagjson, { name: hashtags[i].split("#")[1] }];
     }
-
     where = {};
     const posts = await Post.findAll({
       where: {},
@@ -318,6 +337,11 @@ router.post("/hashtagSearch", async (req, res) => {
           model: User,
           as: "Likers",
         },
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+          where: {id : parseInt(req.body.referenceId, 10)},
+        }
       ],
     });
 
@@ -350,11 +374,10 @@ router.post("/hashtagSearch", async (req, res) => {
   }
 });
 
-router.patch("/:postId/duplicate", async (req, res, next) => {
-  // PATCH /post/1/like
+router.post("/duplicate", async (req, res, next) => {
   try {
     const post = await Post.findOne({
-      where: { id: parseInt(req.params.postId) },
+      where: { id: parseInt(req.body.id) },
       include: [
         {
           model: Hashtag,
@@ -405,6 +428,12 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
       await newPost.addImages(image);
     }
 
+    const ws = await Workspace.findOne({ 
+      where: { id: parseInt(req.body.workspaceId,10) }, 
+    })
+
+    await newPost.setWorkspace(ws);
+
     const madePost = await Post.findOne({
       where: { id: newPost.id },
       include: [
@@ -420,6 +449,10 @@ router.patch("/:postId/duplicate", async (req, res, next) => {
           model: User,
           as: "Likers",
         },
+        {
+          model: Workspace,
+          order: [["createdAt", "DESC"]],
+        }
       ],
     });
 
@@ -505,7 +538,6 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
 
     //add imagepath
     if (Array.isArray(req.files)) {
-      console.log(req.files)
       // 이미지를 여러 개
       const images = await Promise.all(
         req.files.map((image) => Image.create({ src: image.location, name: image.originalname }))
@@ -529,6 +561,10 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
           model: Hashtag,
           order: [["createdAt", "DESC"]],
         },
+        {
+          model: Workspace,
+          order: [["createdAt", "DESC"]],
+        }
       ],
     });
 
@@ -561,6 +597,11 @@ router.post("/user", async (req, res) => {
             model: User,
             as: "Likers",
           },
+          {
+            model: Workspace,
+            where:{ id: parseInt(req.body.workspaceId, 10)},
+            order: [["createdAt", "DESC"]],
+          }
         ],
       });
       res.status(200).json(posts);
@@ -598,6 +639,11 @@ router.post("/userLiked", async (req, res) => {
               id: parseInt(req.session.userId, 10),
             },
           },
+          {
+            model: Reference,
+            where:{ id: parseInt(req.body.referenceId, 10)},
+            order: [["createdAt", "DESC"]],
+          }
         ],
       });
       res.status(200).json(posts);
@@ -635,6 +681,10 @@ router.get("/loadLikedPost", async function (req, res) {
           model: User,
           as: "Likers",
         },
+        {
+          model: Workspace,
+          order: [["createdAt", "DESC"]],
+        }
       ],
     });
 

@@ -8,6 +8,7 @@ module.exports = class Hashtag extends Model {
       name: {
         type: DataTypes.STRING(20),
         allowNull: false,
+        unique : true,
       },
     }, {
       modelName: 'Hashtag',
@@ -19,5 +20,6 @@ module.exports = class Hashtag extends Model {
   }
   static associate(db) {
     db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' });
+    db.Hashtag.belongsToMany(db.Reference, { through: 'refTags' });
   }
 };

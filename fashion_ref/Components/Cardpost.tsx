@@ -28,7 +28,6 @@ import {
   UNLIKE_POST_REQUEST,
 } from "@/reducers/post";
 import FavoriteBorderTwoToneIcon from "@mui/icons-material/FavoriteBorderTwoTone";
-import LoginForm from "./LoginForm";
 import Upload from "./Upload";
 
 type CardpostProps = {
@@ -78,13 +77,14 @@ export default function Cardpost(props: CardpostProps) {
   const { logInDone } = useSelector((state: any) => state.user);
   const { user } = useSelector((state: any) => state.user);
   const { postArray } = useSelector((state: any) => state.post);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const { workspaceInfo } = useSelector((state: any) => state.workspace);;
   // const isLoggedIn = false;
   const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const [like, setLike] = useState(false);
   const {isEdit} = useSelector((state: any) => state.post);
   const [likeClick, setLikeClick] = useState(props.likers?.length || 0);
-  const [loginModalOpen, setIsLoginFormOpen] = useState(false);
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -114,7 +114,6 @@ export default function Cardpost(props: CardpostProps) {
       }
     } else {
       alert("로그인 해주세요");
-      setIsLoginFormOpen(true);
       //로그인 모달 띄우기 넣어야
     }
   }, [user, like, props.id]);
@@ -124,7 +123,6 @@ export default function Cardpost(props: CardpostProps) {
       setModalOpen(true);
     } else {
       alert("로그인 해주세요");
-      setIsLoginFormOpen(true);
       //로그인 모달 띄우기 넣어야
     }
   }, [user]);
@@ -136,9 +134,12 @@ export default function Cardpost(props: CardpostProps) {
 
     return dispatch({
       type: DUPLICATE_POST_REQUEST,
-      data: props.id,
+      data: {
+        id : props.id,
+        workspaceId : userCurrentWorkspaceId
+      },
     });
-  }, [dispatch, props.id, user]);
+  }, [dispatch, props.id, user, userCurrentWorkspaceId]);
 
   const onSubmit = useCallback(
     (e: any) => {
@@ -201,18 +202,19 @@ export default function Cardpost(props: CardpostProps) {
         type: HASHTAG_SEARCH_REQUEST,
         data: {
           hashtags: "#" + hashname,
+          workspaceId : userCurrentWorkspaceId,
         },
       });
       props.setIsUserpage(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [dispatch, props]
+    [dispatch, props, userCurrentWorkspaceId]
   );
 
   useEffect(() => {
     //like 눌렀는지
-    if (user?.data && props.likers) {
-      const isUserLiked = props.likers.find((v) => v.id === user?.data.id);
+    if (user && props.likers) {
+      const isUserLiked = props.likers.find((v) => v.id === user?.id);
       if (isUserLiked) setLike(true);
       else setLike(false);
     }
@@ -229,12 +231,6 @@ export default function Cardpost(props: CardpostProps) {
           uploadModalOpen={isUploadFormOpen}
           postId={props.id}
           clipboardFile={null}
-        />
-      )}
-      {loginModalOpen && (
-        <LoginForm
-          loginModalOpen={loginModalOpen}
-          setloginModalOpen={setIsLoginFormOpen}
         />
       )}
       {modalOpen && (

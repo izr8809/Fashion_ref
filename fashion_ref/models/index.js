@@ -2,6 +2,10 @@ const hashtag = require('./hashtag');
 const image = require('./image');
 const post = require('./post');
 const user = require('./user');
+const workspace = require('./workspace');
+const reference = require('./reference');
+const savedHashs = require('./savedHashs');
+const notification = require('./notification')
 // const fs = require('fs');
 // const path = require('path');
 const Sequelize = require('sequelize');
@@ -17,6 +21,11 @@ db.Hashtag = hashtag;
 db.Image = image;
 db.Post = post;
 db.User = user;
+db.Workspace = workspace;
+db.Reference = reference;
+db.SavedHashs = savedHashs;
+db.Notification = notification;
+
 // fs
 //   .readdirSync(__dirname)
 //   .filter(file => {

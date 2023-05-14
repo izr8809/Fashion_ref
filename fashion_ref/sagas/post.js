@@ -38,11 +38,11 @@ import {
   GET_USER_LIKED_POST_SUCCESS,
   GET_USER_LIKED_POST_FAILURE,
   GET_USER_LIKED_POST_REQUEST,
+  GET_LIKESORTED_REQUEST,
 } from "@/reducers/post";
 
 //addpost
 function addPostAPI(data) {
-  console.log(data.image)
   return axios.post("/post/addPost", data);
 }
 function* addPost(action) {
@@ -81,11 +81,12 @@ function* deletePost(action) {
 
 //addpost
 function loadPostAPI(data) {
-  return axios.get(`/post/loadPost?lastId=${data}`);
+  const lastId = data.lastId || null;
+  const referenceId = data.referenceId;
+  return axios.get(`/post/loadPost?lastId=${lastId}&referenceId=${referenceId}`);
 }
 function* loadPost(action) {
   try {
-    console.log(action.data);
     const result = yield call(loadPostAPI, action.data);
     yield put({
       type: LOAD_POST_SUCCESS,
@@ -101,7 +102,7 @@ function* loadPost(action) {
 
 //getHashtags
 function getHashtagsAPI(data) {
-  return axios.get(`/post/getHashtags`);
+  return axios.post(`/post/getHashtags`, data);
 }
 function* getHashtags(action) {
   try {
@@ -185,7 +186,7 @@ function* unlikePost(action) {
 
 //duplicate
 function duplicatePostAPI(data) {
-  return axios.patch(`/post/${data}/duplicate`);
+  return axios.post(`/post/duplicate`, data);
 }
 function* duplicatePost(action) {
   try {
@@ -262,6 +263,26 @@ function* getUserLikedPost(action) {
   }
 }
 
+
+//getLikesortedpost
+function getLikedsortedPostAPI(data) {
+  return axios.get(`/post/loadPost?sort=likes&workspaceId=${data.workspaceId}`);
+}
+function* getLikedsortedPost(action) {
+  try {
+    const result = yield call(getLikedsortedPostAPI, action.data);
+    yield put({
+      type: GET_USER_LIKED_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: GET_USER_LIKED_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -304,6 +325,10 @@ function* watchGetUserPost() {
 function* watchGetUserLikedPost() {
   yield takeLatest(GET_USER_LIKED_POST_REQUEST, getUserLikedPost);
 }
+function* watchGetLikedsrotedPost() {
+  yield takeLatest(GET_LIKESORTED_REQUEST, getLikedsortedPost);
+}
+
 
 
 export default function* postSaga() {
@@ -319,5 +344,6 @@ export default function* postSaga() {
     fork(watchEditPost),
     fork(watchGetUserPost),
     fork(watchGetUserLikedPost),
+    fork(watchGetLikedsrotedPost),
   ]);
 }
