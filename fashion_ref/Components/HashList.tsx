@@ -13,6 +13,7 @@ type HashListProps = {
 export default function HashList({setShowHashModalOpen}: HashListProps) {
 
     const { userCurrentWorkspaceId } = useSelector((state: any) => state.user)
+    const { currentSpaceId } = useSelector((state: any) => state.workspace);
     const dispatch = useDispatch();
     
     const getHashtags = useCallback(() => {
@@ -20,11 +21,11 @@ export default function HashList({setShowHashModalOpen}: HashListProps) {
         dispatch({
           type: GET_HASHTAGS_REQUEST,
           data:{
-            workspaceId : userCurrentWorkspaceId,
+            referenceId : currentSpaceId,
           }
         });
         setShowHashModalOpen(true);
-      }, [dispatch,userCurrentWorkspaceId]);
+      }, [dispatch,currentSpaceId]);
 
   return (
     <>
