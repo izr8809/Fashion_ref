@@ -38,8 +38,7 @@ router.post("/getHashtags", async function (req, res) {
       include:[
         {
           model: Reference,
-          as: "refTags",
-          // where:{ id : parseInt(req.body.workspaceId, 10)}
+          where:{ id : parseInt(req.body.referenceId, 10)}
         }
       ]
     });
