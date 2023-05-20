@@ -74,16 +74,16 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  server.get("/dbfix", async function (req, res) {
-    const where = {};
-    const ref = await Reference.findOne({
-      where: { id: 1 },
-    });
-    const hashtags = await Hashtag.findAll({
-      where,
-    });
-    await ref.addHashtags(hashtags.map((v) => v[0]));
-  });
+  // server.get("/dbfix", async function (req, res) {
+  //   const where = {};
+  //   const ref = await Reference.findOne({
+  //     where: { id: 1 },
+  //   });
+  //   const hashtags = await Hashtag.findAll({
+  //     where,
+  //   });
+  //   await ref.addHashtags(hashtags.map((v) => v[0]));
+  // });
 
   server.use("/post", postRouter);
   server.use("/user", userRouter);
