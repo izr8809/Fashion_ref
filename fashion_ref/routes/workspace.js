@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const { User, Post, Hashtag, Image, Workspace,Reference, SavedHashs } = require("../models");
 const { Op } = require("sequelize");
 const { send } = require("process");
-const { restore } = require("../models/hashtag");
+const { restore, update } = require("../models/hashtag");
 
 const router = express.Router();
 
@@ -207,4 +207,147 @@ router.post("/deleteSavedtags", async (req, res)=>{
     res.status(400).send({data : null});
   }
 })
+
+
+router.post("/addAdminUser", async (req, res)=>{
+  try{
+    const ws = await Workspace.findOne({
+      where: {id : req.body.workspaceId}
+    })
+    const targetUser = await User.findOne({
+      where: {id : req.body.targetUserId}
+    })
+    
+    await ws.addWorkspaceAdministrators(targetUser);
+
+    const updatedWs = await Workspace.findOne({
+      where: {id : req.body.workspaceId},
+      order: [["id", "DESC"]],
+      include:[
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+          include:[{
+            model: Hashtag,
+            order: [["createdAt", "DESC"]],
+          },{
+            model : SavedHashs,
+            order: [["createdAt", "DESC"]],
+          }]
+        },
+        {
+          model : User,
+          order: [["createdAt", "DESC"]],
+        },
+        {
+          model : User,
+          as : "WorkspaceAdministrators",
+          order: [["createdAt", "DESC"]],
+        }
+      ]
+    })
+
+    res.json(updatedWs)
+  }catch(err){
+    console.log(err)
+    res.status(400).send({data : null});
+  }
+})
+
+
+router.post("/deleteAdminUser", async (req, res)=>{
+  try{
+
+    const ws = await Workspace.findOne({
+      where: {id : req.body.workspaceId}
+    })
+    const targetUser = await User.findOne({
+      where: {id : req.body.targetUserId}
+    })
+    
+    await ws.removeWorkspaceAdministrators(targetUser);
+
+    const updatedWs = await Workspace.findOne({
+      where: {id : req.body.workspaceId},
+      order: [["id", "DESC"]],
+      include:[
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+          include:[{
+            model: Hashtag,
+            order: [["createdAt", "DESC"]],
+          },{
+            model : SavedHashs,
+            order: [["createdAt", "DESC"]],
+          }]
+        },
+        {
+          model : User,
+          order: [["createdAt", "DESC"]],
+        },
+        {
+          model : User,
+          as : "WorkspaceAdministrators",
+          order: [["createdAt", "DESC"]],
+        }
+      ]
+    })
+
+    res.json(updatedWs)
+   
+  }catch(err){
+    console.log(err)
+    res.status(400).send({data : null});
+  }
+})
+
+
+router.post("/deleteMember", async (req, res)=>{
+  try{
+    const ws = await Workspace.findOne({
+      where: {id : req.body.workspaceId}
+    })
+    const targetUser = await User.findOne({
+      where: {id : req.body.targetUserId}
+    })
+    
+    await ws.removeUser(targetUser);
+
+    const updatedWs = await Workspace.findOne({
+      where: {id : req.body.workspaceId},
+      order: [["id", "DESC"]],
+      include:[
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+          include:[{
+            model: Hashtag,
+            order: [["createdAt", "DESC"]],
+          },{
+            model : SavedHashs,
+            order: [["createdAt", "DESC"]],
+          }]
+        },
+        {
+          model : User,
+          order: [["createdAt", "DESC"]],
+        },
+        {
+          model : User,
+          as : "WorkspaceAdministrators",
+          order: [["createdAt", "DESC"]],
+        }
+      ]
+    })
+
+    res.json(updatedWs)
+   
+  }catch(err){
+    console.log(err)
+    res.status(400).send({data : null});
+  }
+})
+
+
 module.exports = router;

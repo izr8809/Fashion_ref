@@ -31,10 +31,21 @@ router.post("/login", async (req, res) => {
             include:[{
               model: Hashtag,
               order: [["createdAt", "DESC"]],
-            },{
+            },
+            {
               model : SavedHashs,
               order: [["createdAt", "DESC"]],
-            }]
+            },
+          ],
+          },
+          {
+            model : User,
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model : User,
+            as : "WorkspaceAdministrators",
+            order: [["createdAt", "DESC"]],
           }
         ]
       },
@@ -93,6 +104,15 @@ router.get("/user",async function (req, res) {
               model : SavedHashs,
               order: [["createdAt", "DESC"]],
             }]
+          },
+          {
+            model : User,
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model : User,
+            as : "WorkspaceAdministrators",
+            order: [["createdAt", "DESC"]],
           }
         ]
       },
@@ -195,6 +215,15 @@ router.post("/addWorkspace", async(req, res) => {
                     model : SavedHashs,
                     order: [["createdAt", "DESC"]],
                   }]
+                },
+                {
+                  model : User,
+                  order: [["createdAt", "DESC"]],
+                },
+                {
+                  model : User,
+                  as : "WorkspaceAdministrators",
+                  order: [["createdAt", "DESC"]],
                 }
               ]
             },
@@ -302,8 +331,17 @@ router.post("/requestConfirm", async(req, res) => {
                 model : SavedHashs,
                 order: [["createdAt", "DESC"]],
               }]
+            },
+            {
+              model : User,
+              order: [["createdAt", "DESC"]],
+            },
+            {
+              model : User,
+              as : "WorkspaceAdministrators",
+              order: [["createdAt", "DESC"]],
             }
-          ]
+          ],
         },
         {
           model: Notification,
@@ -360,6 +398,15 @@ router.post("/requestDeny", async(req, res) => {
               model : SavedHashs,
               order: [["createdAt", "DESC"]],
             }]
+          },
+          {
+            model : User,
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model : User,
+            as : "WorkspaceAdministrators",
+            order: [["createdAt", "DESC"]],
           }
         ]
       },
@@ -404,6 +451,15 @@ router.post("/deleteNoti", async(req, res) => {
               model : SavedHashs,
               order: [["createdAt", "DESC"]],
             }]
+          },
+          {
+            model : User,
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model : User,
+            as : "WorkspaceAdministrators",
+            order: [["createdAt", "DESC"]],
           }
         ]
       },

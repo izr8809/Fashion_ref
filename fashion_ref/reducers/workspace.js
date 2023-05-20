@@ -18,6 +18,15 @@ export const initialState = {
   deleteSavedtagsLoading: false,
   deleteSavedtagsDone: false,
   deleteSavedtagsError: null,
+  addAdminUserLoading: false,
+  addAdminUserDone: false,
+  addAdminUserError: null,
+  deleteAdminUserLoading: false,
+  deleteAdminUserDone: false,
+  deleteAdminUserError: null,
+  deleteMemberLoading: false,
+  deleteMemberDone: false,
+  deleteMemberError: null,
 };
 
 export const LOAD_WORKSPACE_INFO_REQUEST = "LOAD_WORKSPACE_INFO_REQUEST";
@@ -43,6 +52,18 @@ export const DELETE_SAVEDTAGS_SUCCESS = "DELETE_SAVEDTAGS_SUCCESS";
 export const DELETE_SAVEDTAGS_FAILURE = "DELETE_SAVEDTAGS_FAILURE";
 
 export const UPDATE_WORKSPACE_INFO = "UPDATE_WORKSPACE_INFO";
+
+export const ADD_ADMIN_USER_REQUEST = "ADD_ADMIN_USER_REQUEST";
+export const ADD_ADMIN_USER_SUCCESS = "ADD_ADMIN_USER_SUCCESS";
+export const ADD_ADMIN_USER_FAILURE = "ADD_ADMIN_USER_FAILURE";
+
+export const DELETE_ADMIN_USER_REQUEST = "DELETE_ADMIN_USER_REQUEST";
+export const DELETE_ADMIN_USER_SUCCESS = "DELETE_ADMIN_USER_SUCCESS";
+export const DELETE_ADMIN_USER_FAILURE = "DELETE_ADMIN_USER_FAILURE";
+
+export const DELETE_MEMBER_REQUEST = "DELETE_MEMBER_REQUEST";
+export const DELETE_MEMBER_SUCCESS = "DELETE_MEMBER_SUCCESS";
+export const DELETE_MEMBER_FAILURE = "DELETE_MEMBER_FAILURE";
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -120,7 +141,6 @@ const reducer = (state = initialState, action) => {
         draft.addtagLoading = false;
         draft.addtagError = action.error;
         break;
-      
 
       case DELETE_SAVEDTAGS_REQUEST:
         draft.deleteSavedtagsLoading = true;
@@ -141,6 +161,57 @@ const reducer = (state = initialState, action) => {
 
       case UPDATE_WORKSPACE_INFO:
         draft.workspaceInfo = action.data.selectedWorkspaceInfo;
+        break;
+
+      case ADD_ADMIN_USER_REQUEST:
+        draft.addAdminUserLoading = true;
+        draft.addAdminUserError = null;
+        draft.addAdminUserDone = false;
+        break;
+
+      case ADD_ADMIN_USER_SUCCESS:
+        draft.addAdminUserLoading = false;
+        draft.workspaceInfo = action.data;
+        draft.addAdminUserDone = true;
+        break;
+
+      case ADD_ADMIN_USER_FAILURE:
+        draft.addAdminUserLoading = false;
+        draft.addAdminUserError = action.error;
+        break;
+
+      case DELETE_ADMIN_USER_REQUEST:
+        draft.deleteAdminUserLoading = true;
+        draft.deleteAdminUserError = null;
+        draft.deleteAdminUserDone = false;
+        break;
+
+      case DELETE_ADMIN_USER_SUCCESS:
+        draft.deleteAdminUserLoading = false;
+        draft.workspaceInfo = action.data;
+        draft.deleteAdminUserDone = true;
+        break;
+
+      case DELETE_ADMIN_USER_FAILURE:
+        draft.deleteAdminUserLoading = false;
+        draft.deleteAdminUserError = action.error;
+        break;
+
+      case DELETE_MEMBER_REQUEST:
+        draft.deleteMemberLoading = true;
+        draft.deleteMemberError = null;
+        draft.deleteMemberDone = false;
+        break;
+
+      case DELETE_MEMBER_SUCCESS:
+        draft.deleteMemberLoading = false;
+        draft.workspaceInfo = action.data;
+        draft.deleteMemberDone = true;
+        break;
+
+      case DELETE_MEMBER_FAILURE:
+        draft.deleteMemberLoading = false;
+        draft.deleteMemberError = action.error;
         break;
 
       default:

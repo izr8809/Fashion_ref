@@ -1,6 +1,7 @@
 import * as React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import useInput from "../hooks/useInput";
+import styled from "@emotion/styled";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import {
@@ -21,6 +22,58 @@ type SearchbarProps = {
   setIsHomeState:any;
 };
 
+const InputBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  position:relative;
+
+  &:focus-within {
+    box-shadow: 0 10px 10px rgb(0, 0, 0, 0.3);
+  }
+`
+
+const Input = styled.input`
+  flex: 1 0 0;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+`
+
+const DeleteButton = styled.div`
+  cursor: pointer;
+  margin-right : 19px;
+`
+
+const DropDownBox = styled.ul`
+  display: block;
+  margin: 0 auto;
+  padding: 8px 0;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 10px 10px rgb(0, 0, 0, 0.3);
+  list-style-type: none;
+  z-index: 3;
+  position:absolute;
+  width:100%;
+`
+
+const DropDownItem = styled.li`
+  padding: 0 16px;
+
+  &.selected {
+    background-color: lightgray;
+  }
+`
+
+
 export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarProps) {
   const [value, onChangeValue, setValue] = useInput("");
   const dispatch = useDispatch();
@@ -33,6 +86,10 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
   const [emptySearchedTagsError, setEmptySearchedTagsError] = useState(false);
   const [referenceIndex, setReferenceIndex] = useState(0);
+  const [inputValue, setInputValue] = useState("")
+  const [isHaveInputValue, setIsHaveInputValue] = useState(false)
+  const [dropDownList, setDropDownList] = useState([])
+  const [dropDownItemIndex, setDropDownItemIndex] = useState(-1)
   useEffect(() => {
     if (searchBar.current) {
       searchBar.current.focus();
@@ -167,6 +224,61 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
     })
   }, [savedTagsArray, userCurrentWorkspaceId]);
 
+  const showDropDownList = useCallback(() => {
+    if (inputValue === '') {
+      setIsHaveInputValue(false)
+      setDropDownList([])
+    } else {
+      const index = workspaceInfo.References.findIndex((v:any) => v.id == currentSpaceId);
+      const choosenTextList = workspaceInfo.References[index].Hashtags.filter((textItem :any) =>
+        textItem.name.includes(inputValue)
+      )
+      setDropDownList(choosenTextList)
+    }
+  },[inputValue, currentSpaceId]);
+
+  const changeInputValue = (event:any) => {
+    setInputValue(event.target.value)
+    setIsHaveInputValue(true)
+  }
+
+  const clickDropDownItem = useCallback( (clickedItem:any) => {
+    setInputValue("")
+    let hashArray = [...searchedTags, clickedItem.name];
+    setSearchedTags(hashArray);
+    dispatch({
+      type: HASHTAG_SEARCH_REQUEST,
+      data: {
+        hashtags: "#" + clickedItem.name,
+        referenceId: currentSpaceId,
+      },
+    });
+    setIsHaveInputValue(false)
+  },[currentSpaceId, searchedTags]);
+
+  const handleDropDownKey = (event:any) => {
+    //input에 값이 있을때만 작동
+    if (isHaveInputValue) {
+      if (
+        event.key === 'ArrowDown' &&
+        dropDownList.length - 1 > dropDownItemIndex
+      ) {
+        setDropDownItemIndex(dropDownItemIndex + 1)
+      }
+
+      if (event.key === 'ArrowUp' && dropDownItemIndex >= 0)
+        setDropDownItemIndex(dropDownItemIndex - 1)
+      if (event.key === 'Enter' && dropDownItemIndex >= 0) {
+        clickDropDownItem(dropDownList[dropDownItemIndex])
+        setDropDownItemIndex(-1)
+      }
+    }
+  }
+
+  useEffect(()=>{
+    showDropDownList();
+  }, [inputValue])
+
   return (
     <>
       <div style={{ width: "60%", marginTop: "20px" }}>
@@ -180,10 +292,11 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
                 fill: "#9A9A9A",
                 position: "absolute",
                 right: "3px",
-                transform: "translate(0, 40%)",
+                transform: "translate(0, 70%)",
+                zIndex: 5,
               }}
             />
-            <TextField
+            {/* <TextField
               id="search-bar"
               className="text"
               sx={{
@@ -198,7 +311,40 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
               placeholder="Search..."
               size="small"
               inputRef={searchBar}
-            />
+              onKeyUp={handleDropDownKey}
+            /> */}
+            
+            <InputBox >
+              <Input
+                type='text'
+                value={inputValue}
+                onChange={changeInputValue}
+                onKeyUp={handleDropDownKey}
+              />
+              <DeleteButton onClick={() => setInputValue("")}>&times;</DeleteButton>
+            </InputBox>
+            {isHaveInputValue && (
+              <DropDownBox>
+                {dropDownList && dropDownList.length === 0 && (
+                  <DropDownItem>해당하는 단어가 없습니다</DropDownItem>
+                )}
+                {dropDownList && dropDownList.map((dropDownItem :any, dropDownIndex) => {
+                  return (
+                    <DropDownItem
+                      key={dropDownIndex}
+                      onClick={() => clickDropDownItem(dropDownItem)}
+                      onMouseOver={() => setDropDownItemIndex(dropDownIndex)}
+                      className={
+                        dropDownItemIndex === dropDownIndex ? 'selected' : ''
+                      }
+                    >
+                      
+                    <SearchIcon/>#{dropDownItem.name}
+                    </DropDownItem>
+                  )
+                })}
+              </DropDownBox>
+            )}
           </form>
         </div>
         <div style={{ marginTop: "10px", display: "flex", height:"28px" }}>
@@ -300,6 +446,8 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
           </div>
         </div>
       </div>
+       <div style={{padding:"10px"}}>
+    </div>
     </>
   );
 }

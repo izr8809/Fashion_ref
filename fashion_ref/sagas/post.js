@@ -62,7 +62,7 @@ function* addPost(action) {
 
 //addpost
 function deletePostAPI(data) {
-  return axios.post(`/post/deletpost/${data}`, data);
+  return axios.post(`/post/deletpost`, data);
 }
 function* deletePost(action) {
   try {

@@ -125,6 +125,10 @@ export default function MainView({}: MainViewProps) {
     }
   },[userCurrentWorkspaceId, referenceName])
 
+  useEffect(()=>{
+    console.log(workspaceInfo)
+
+  },[workspaceInfo])
   return (
     <>
     {isAddingReference && <Modal

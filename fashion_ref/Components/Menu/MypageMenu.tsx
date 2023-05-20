@@ -65,7 +65,7 @@ export default function MypageMenu(props: MypageMenuProps) {
 
   return (
     <>
-      <div style={{transform:"translate(0,-90%)"}}>
+      <div >
         <div
           id="demo-positioned-button"
           aria-controls={open ? "demo-positioned-menu" : undefined}

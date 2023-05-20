@@ -24,7 +24,7 @@ import {
   RESET_POST_REQUEST,
 } from "@/reducers/post";
 import { useDispatch } from "react-redux";
-import MypageMenu from "./MypageMenu";
+import MypageMenu from "./Menu/MypageMenu";
 
 const style: React.CSSProperties = {
   background: "#0092ff",
@@ -272,7 +272,7 @@ export default function Navbar({
               <IconButton
                 size="large"
                 edge="end"
-                sx={{ marginRight: "10px", transform:"translate(0,-60%)"}}
+                sx={{ marginRight: "10px"}}
                 aria-haspopup="false"
                 color="primary"
                 onClick={loadPosts}
@@ -282,7 +282,7 @@ export default function Navbar({
               <IconButton
                 size="large"
                 edge="end"
-                sx={{ marginRight: "10px", transform:"translate(0,-60%)" }}
+                sx={{ marginRight: "10px"}}
                 aria-label="account of current user"
                 aria-haspopup="false"
                 color="primary"

@@ -1,5 +1,5 @@
 import { LOAD_POST_REQUEST, RESET_POST_REQUEST } from "@/reducers/post";
-import { ADD_REFERENCE_FAILURE, ADD_REFERENCE_REQUEST, ADD_REFERENCE_SUCCESS, ADD_TAG_FALIURE, ADD_TAG_REQUEST, ADD_TAG_SUCCESS, ADD_WORKSPACE_TAGS_FAILURE, ADD_WORKSPACE_TAGS_REQUEST, ADD_WORKSPACE_TAGS_SUCCESS, DELETE_SAVEDTAGS_FAILURE, DELETE_SAVEDTAGS_REQUEST, DELETE_SAVEDTAGS_SUCCESS, DELETE_WORKSPACE_TAGS_FAILURE, DELETE_WORKSPACE_TAGS_REQUEST, DELETE_WORKSPACE_TAGS_SUCCESS, LOAD_WORKSPACE_INFO_FAILURE, LOAD_WORKSPACE_INFO_REQUEST, LOAD_WORKSPACE_INFO_SUCCESS, REFERENCE_CLICK_FAILURE, REFERENCE_CLICK_REQUEST, REFERENCE_CLICK_SUCCESS } from "@/reducers/workspace";
+import { ADD_ADMIN_USER_FAILURE, ADD_ADMIN_USER_REQUEST, ADD_ADMIN_USER_SUCCESS, ADD_REFERENCE_FAILURE, ADD_REFERENCE_REQUEST, ADD_REFERENCE_SUCCESS, ADD_TAG_FALIURE, ADD_TAG_REQUEST, ADD_TAG_SUCCESS, ADD_WORKSPACE_TAGS_FAILURE, ADD_WORKSPACE_TAGS_REQUEST, ADD_WORKSPACE_TAGS_SUCCESS, DELETE_ADMIN_USER_FAILURE, DELETE_ADMIN_USER_REQUEST, DELETE_ADMIN_USER_SUCCESS, DELETE_MEMBER_FAILURE, DELETE_MEMBER_REQUEST, DELETE_MEMBER_SUCCESS, DELETE_SAVEDTAGS_FAILURE, DELETE_SAVEDTAGS_REQUEST, DELETE_SAVEDTAGS_SUCCESS, DELETE_WORKSPACE_TAGS_FAILURE, DELETE_WORKSPACE_TAGS_REQUEST, DELETE_WORKSPACE_TAGS_SUCCESS, LOAD_WORKSPACE_INFO_FAILURE, LOAD_WORKSPACE_INFO_REQUEST, LOAD_WORKSPACE_INFO_SUCCESS, REFERENCE_CLICK_FAILURE, REFERENCE_CLICK_REQUEST, REFERENCE_CLICK_SUCCESS } from "@/reducers/workspace";
 import axios from "axios";
 import { all, call, put, takeLatest,fork } from "redux-saga/effects";
 
@@ -87,8 +87,6 @@ try {
 }
 
 
-
-
 //delete Saved Reference tag
 function deleteSavedtagsAPI(data) {
   return axios.post(`/workspace/deleteSavedtags`, data);
@@ -108,7 +106,80 @@ function deleteSavedtagsAPI(data) {
     });
   }
   }
- 
+
+
+//add admin user
+function addAdminUserAPI(data) {
+  return axios.post(`/workspace/addAdminUser`, data);
+  }
+  
+  function* addAdminUser(action) {
+  try {
+    const result = yield call(addAdminUserAPI, action.data);
+    yield put({
+      type: ADD_ADMIN_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: ADD_ADMIN_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+  }
+
+//delete admin user
+function deleteAdminUserAPI(data) {
+  return axios.post(`/workspace/deleteAdminUser`, data);
+  }
+  
+  function* deleteAdminUser(action) {
+  try {
+    const result = yield call(deleteAdminUserAPI, action.data);
+    yield put({
+      type: DELETE_ADMIN_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: DELETE_ADMIN_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+  }
+
+//delete member 
+function deleteMemberAPI(data) {
+  return axios.post(`/workspace/deleteMember`, data);
+  }
+  
+  function* deleteMember(action) {
+  try {
+    const result = yield call(deleteMemberAPI, action.data);
+    yield put({
+      type: DELETE_MEMBER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: DELETE_MEMBER_FAILURE,
+      error: err.response.data,
+    });
+  }
+  }
+
+  function* watchAddAdminUser() {
+    yield takeLatest(ADD_ADMIN_USER_REQUEST, addAdminUser);
+  } 
+  
+  function* watchDeleteAdminUser() {
+    yield takeLatest(DELETE_ADMIN_USER_REQUEST, deleteAdminUser);
+  }
+  
+  function* watchDeleteMember() {
+    yield takeLatest(DELETE_MEMBER_REQUEST, deleteMember);
+  } 
+
 function* watchDeleteSavedtags() {
   yield takeLatest(DELETE_SAVEDTAGS_REQUEST, deleteSavedtags);
 } 
@@ -139,5 +210,8 @@ export default function* workspaceSaga() {
     fork(watchAddReference),
     fork(watchAddTag),
     fork(watchDeleteSavedtags),
+    fork(watchAddAdminUser),
+    fork(watchDeleteAdminUser),
+    fork(watchDeleteMember),
   ]);
 }

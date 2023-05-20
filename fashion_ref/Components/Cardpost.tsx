@@ -78,8 +78,9 @@ export default function Cardpost(props: CardpostProps) {
   const { user } = useSelector((state: any) => state.user);
   const { postArray } = useSelector((state: any) => state.post);
   const dispatch = useDispatch()
+  const { currentSpaceId } = useSelector((state: any) => state.workspace);
   const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);;
+  const { workspaceInfo } = useSelector((state: any) => state.workspace);
   // const isLoggedIn = false;
   const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const [like, setLike] = useState(false);
@@ -136,10 +137,10 @@ export default function Cardpost(props: CardpostProps) {
       type: DUPLICATE_POST_REQUEST,
       data: {
         id : props.id,
-        workspaceId : userCurrentWorkspaceId
+        referenceId : currentSpaceId
       },
     });
-  }, [dispatch, props.id, user, userCurrentWorkspaceId]);
+  }, [dispatch, props.id, user, currentSpaceId]);
 
   const onSubmit = useCallback(
     (e: any) => {
@@ -152,10 +153,13 @@ export default function Cardpost(props: CardpostProps) {
 
       return dispatch({
         type: DELETE_POST_REQUEST,
-        data: props.id,
+        data: {
+          postId: props.id,
+          referenceId :currentSpaceId 
+        }
       });
     },
-    [dispatch, props.id, user]
+    [props.id, user,currentSpaceId]
   );
 
   const editClick = () => {

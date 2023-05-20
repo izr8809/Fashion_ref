@@ -223,10 +223,10 @@ router.get("/loadPost", async function (req, res) {
   }
 });
 
-router.post("/deletpost/:postId", async function (req, res) {
+router.post("/deletpost", async function (req, res) {
   try {
     const post = await Post.findOne({
-      where: { id: parseInt(req.params.postId) },
+      where: { id: parseInt(req.body.postId) },
       include: [
         {
           model: Hashtag,
@@ -237,11 +237,11 @@ router.post("/deletpost/:postId", async function (req, res) {
     if (!post) {
       res.status(403).send("게시글이 없습니다.");
     } else {
-      // 해시태그 가진 포스팅 하나 남은 경우 헤ㅐ시태그제거
+      // 해시태그 가진 포스팅 하나 남은 경우 헤시태그제거
       const where = {};
       for (let i = 0; i < post.Hashtags.length; i++) {
         const postHasHashtag = await Post.findAll({
-          where,
+          where: {ReferenceId: req.body.referenceId},
           // limit: 24, limit 나중에 줘야함
           include: [
             {
@@ -264,10 +264,10 @@ router.post("/deletpost/:postId", async function (req, res) {
 
       await Post.destroy({
         where: {
-          id: parseInt(req.params.postId),
+          id: parseInt(req.body.postId),
         },
       });
-      res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+      res.status(200).json({ PostId: parseInt(req.body.postId, 10) });
     }
   } catch (error) {
     console.error(error);
@@ -386,6 +386,10 @@ router.post("/duplicate", async (req, res, next) => {
           model: Image,
           order: [["id", "DESC"]],
         },
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+        }
       ],
     });
     if (!post) {
@@ -427,11 +431,11 @@ router.post("/duplicate", async (req, res, next) => {
       await newPost.addImages(image);
     }
 
-    const ws = await Workspace.findOne({ 
-      where: { id: parseInt(req.body.workspaceId,10) }, 
+    const ref = await Reference.findOne({ 
+      where: { id: req.body.referenceId }, 
     })
 
-    await newPost.setWorkspace(ws);
+    await newPost.setReference(ref);
 
     const madePost = await Post.findOne({
       where: { id: newPost.id },
@@ -449,7 +453,7 @@ router.post("/duplicate", async (req, res, next) => {
           as: "Likers",
         },
         {
-          model: Workspace,
+          model: Reference,
           order: [["createdAt", "DESC"]],
         }
       ],
@@ -488,12 +492,27 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
           model: Hashtag,
           order: [["createdAt", "DESC"]],
         },
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+        }
       ],
     });
+
+    const ref = await Reference.findOne({
+      where: { id: req.body.referenceId},
+      include:[
+      {
+        model: Hashtag,
+        order: [["createdAt", "DESC"]],
+      },
+    ]
+    })
 
     //remove and add hashtags
     let hashtags = await post.getHashtags();
     await post.removeHashtags(hashtags.map((v) => v));
+    await ref.removeHashtags(hashtags.map((v)=> v));
 
     //add hashtags again
     hashtags = (await req.body.hashtag.match(/#[^\s#]+/g)) || [];
@@ -515,6 +534,7 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
     );
 
     await post.addHashtags(editedResult.map((v) => v[0]));
+    await ref.addHashtags(editedResult.map((v) => v[0]));
 
     //remove imagespath
     let images = await post.getImages();
@@ -561,7 +581,7 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
           order: [["createdAt", "DESC"]],
         },
         {
-          model: Workspace,
+          model:  Reference,
           order: [["createdAt", "DESC"]],
         }
       ],

@@ -33,13 +33,12 @@ import {
 import { and } from "sequelize";
 import HashList from "./HashList";
 const fileTypes = ["JPG", "PNG", "GIF", "JPEG"];
-
 const modalstyle = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "100%",
+  width: "400px",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -59,7 +58,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: "400px",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -106,11 +105,15 @@ export default function Upload(props: UploadProps) {
     desc: "",
     photos: [null],
   });
-  const [imageFile, setImageFile] = useState<any>(post.photos || [{
-    title: "",
-    desc: "",
-    photos: [null],
-  }]);
+  const [imageFile, setImageFile] = useState<any>(
+    post.photos || [
+      {
+        title: "",
+        desc: "",
+        photos: [null],
+      },
+    ]
+  );
   const closeModal = useCallback(() => {
     props.setuploadModalOpen(false);
     props.setUploadModalClicked(false);
@@ -195,15 +198,20 @@ export default function Upload(props: UploadProps) {
       let targetindex = index;
       setPost({
         ...post,
-        photos: [...photos.slice(0, index+1), ...photos.slice(index + 2)],
+        photos: [...photos.slice(0, index + 1), ...photos.slice(index + 2)],
       });
 
-      if(isEdit){
-        setImageFile([...imageFile.slice(0, index), ...imageFile.slice(index+1)]);
-      }else{
-        setImageFile([...imageFile.slice(0, index+1), ...imageFile.slice(index+2)]);
+      if (isEdit) {
+        setImageFile([
+          ...imageFile.slice(0, index),
+          ...imageFile.slice(index + 1),
+        ]);
+      } else {
+        setImageFile([
+          ...imageFile.slice(0, index + 1),
+          ...imageFile.slice(index + 2),
+        ]);
       }
-
 
       // setImageFile( (prev) => prev.filter())
 
@@ -213,7 +221,7 @@ export default function Upload(props: UploadProps) {
         setIsImage(false);
       }
     },
-    [post, photos,isEdit]
+    [post, photos, isEdit]
   );
 
   //clipboard
@@ -322,7 +330,7 @@ export default function Upload(props: UploadProps) {
           const formData = new FormData();
 
           [].forEach.call(imageFile, (f) => {
-              formData.append("image", f);
+            formData.append("image", f);
           });
 
           formData.append("userId", user.id);
@@ -409,14 +417,13 @@ export default function Upload(props: UploadProps) {
       if (targetPost.Hashtags.length > 4) {
         for (let i = 0; i < targetPost.Hashtags.length; i++) {
           const hashname = targetPost.Hashtags[i]?.name;
-          if(hashname != targetPost.category.toUpperCase() && 
-             hashname != targetPost.season.toUpperCase() &&
-             hashname != targetPost.brand.toUpperCase() && 
-             hashname != targetPost.name.toUpperCase())
-             {
-             postHashtags = postHashtags.concat(
-              `#${hashname} `
-            );
+          if (
+            hashname != targetPost.category.toUpperCase() &&
+            hashname != targetPost.season.toUpperCase() &&
+            hashname != targetPost.brand.toUpperCase() &&
+            hashname != targetPost.name.toUpperCase()
+          ) {
+            postHashtags = postHashtags.concat(`#${hashname} `);
           }
         }
       }
@@ -436,7 +443,6 @@ export default function Upload(props: UploadProps) {
         ...post,
         photos: photos.concat(targetPost.Images),
       });
-
     }
   }, [isEdit, postArray]);
 
@@ -452,13 +458,13 @@ export default function Upload(props: UploadProps) {
   );
 
   //backspace event
-  useEffect(()=>{
-    history.pushState(null, '', '');
-    window.onpopstate = () =>{
+  useEffect(() => {
+    history.pushState(null, "", "");
+    window.onpopstate = () => {
       closehashtagsModal();
       closeModal();
-    } 
-  },[])
+    };
+  }, []);
 
   return (
     <>
@@ -614,9 +620,8 @@ export default function Upload(props: UploadProps) {
             label="해시태그입력 #검정 #반팔 "
             variant="outlined"
           />
-
-        <HashList setShowHashModalOpen={setShowHashModalOpen} />
-         {/* <FileUploader
+          <HashList setShowHashModalOpen={setShowHashModalOpen} />
+          {/* <FileUploader
             handleChange={handleChange}
             name="file"
             types={fileTypes}

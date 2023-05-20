@@ -37,7 +37,6 @@ export default function HashList({setShowHashModalOpen}: HashListProps) {
               marginRight: "5px",
               fontWeight: "bold",
               display: "inline-block",
-              transform:"translate(0,-95%)"
             }}
             size="small"
             onClick={getHashtags}

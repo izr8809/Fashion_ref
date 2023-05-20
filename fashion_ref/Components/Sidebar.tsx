@@ -5,8 +5,6 @@ import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrow
 import { useCallback, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import useInput from "@/hooks/useInput";
 import { Button} from "@mui/material";
 import Box from "@mui/material/Box";
@@ -18,10 +16,11 @@ import {
   GET_USER_POST_REQUEST,
   TOGGLE_SCROLL_REQUEST,
 } from "@/reducers/post";
-import WorkspaceChangeMenu from "./WorkspaceChangeMenu";
+import WorkspaceChangeMenu from "./Menu/WorkspaceChangeMenu";
 import { ADD_REFERENCE_REQUEST } from "@/reducers/workspace";
 import { REFERENCE_CLICK_REQUEST } from "@/reducers/workspace";
-import AlarmMenu from "./AlarmMenu";
+import AlarmMenu from "./Menu/AlarmMenu";
+import SettingsMenu from "./Menu/SettingsMenu";
 
 type SideBarProps = {
   setIsUserpage: any;
@@ -219,32 +218,7 @@ export default function SideBar(props: SideBarProps) {
                     <div className="sidebar-top">
                       <div>
                         <AlarmMenu isHomeState={props.isHomeState}/>
-                        <div
-                          style={{
-                            flexDirection: "row",
-                            flex: "1 1 auto",
-                            whiteSpace: "nowrap",
-                            minWidth: "0px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            alignItems: "flex-start",
-                            position:"relative"
-                          }}
-                        >
-                          <div style={{ width: "10px" }}>
-                            <BrightnessLowIcon
-                              sx={{ height: "20px", opacity: 0.7 }}
-                            />
-                          </div>
-                          <div
-                            style={{
-                              width: "auto",
-                              top:"1px",
-                            }}
-                          >
-                            설정과 멤버
-                          </div>
-                        </div>
+                        <SettingsMenu isHomeState={props.isHomeState}/>
                       </div>
                     </div>
                   </div>
