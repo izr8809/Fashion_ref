@@ -12,4 +12,4 @@ const production = {
 
 const backUrl = env.NODE_ENV === 'production' ? 'http://15.164.224.172:8080' : 'http://localhost:8080';
 
-module.exports = {  production, backUrl };
+module.exports = { production, backUrl };
