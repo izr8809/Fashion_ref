@@ -167,14 +167,16 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
   );
 
   useEffect(() => {
-    const refIndex = workspaceInfo.References?.findIndex(
-      (v: any) => v.id === currentSpaceId
-    );
-    if(workspaceInfo.References.length !=0){
-      setSavedTagsArray(workspaceInfo.References[refIndex].SavedHashs)
-    }else{
-      setSavedTagsArray([]);
-      setIsHomeState(true);
+    if(workspaceInfo){
+      const refIndex = workspaceInfo.References?.findIndex(
+        (v: any) => v.id === currentSpaceId
+      );
+      if(workspaceInfo.References.length !=0){
+        setSavedTagsArray(workspaceInfo.References[refIndex].SavedHashs)
+      }else{
+        setSavedTagsArray([]);
+        setIsHomeState(true);
+      }
     }
   }, [workspaceInfo, currentSpaceId]);
 

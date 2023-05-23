@@ -63,9 +63,9 @@ export default function MainView({}: MainViewProps) {
   },[])
 
   useEffect(()=>{
-    if(user){
       if(lastWorkspaceId){
         const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
+        console.log(selectedWorkspaceInfo)
         dispatch({
           type: UPDATE_WORKSPACE_INFO,
           data:{
@@ -106,8 +106,6 @@ export default function MainView({}: MainViewProps) {
             }
           });
       }
-    }
-
   },[lastReferenceId,lastBoardId,lastWorkspaceId,user])
 
   // const addReference = useCallback(() => {
@@ -233,7 +231,7 @@ export default function MainView({}: MainViewProps) {
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 4, sm: 8, md: 16 }}
             >
-              {workspaceInfo.References &&
+              {workspaceInfo &&
                 (workspaceInfo.References as Array<any>).map((ref, index) => (
                   <Grid item xs={6} sm={4} md={3} lg={4}> 
                     <Item>

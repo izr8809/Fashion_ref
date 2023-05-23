@@ -1,6 +1,6 @@
 import produce from "immer";
 export const initialState = {
-  workspaceInfo: [],
+  workspaceInfo: null,
   currentCategory: null,
   currentSpaceId: null,
   loadWorkspaceInfoLoading: false,

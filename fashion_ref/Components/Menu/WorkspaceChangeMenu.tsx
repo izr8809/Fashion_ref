@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useState, useEffect, useCallback } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch } from "react-redux";
-import { ADD_WORKSPACE_REQUEST, REQUEST_WORKSPACE_PERMISSION_REQUEST, UPDATE_WORKSPACE_ID, logoutRequestAction } from "@/reducers/user";
+import { ADD_WORKSPACE_REQUEST, CHANGE_WORKSPACE_ID, REQUEST_WORKSPACE_PERMISSION_REQUEST, logoutRequestAction } from "@/reducers/user";
 import Input from "@mui/material/Input";
 import useInput from "@/hooks/useInput";
 import { CHANGE_WORKSPACE_REQUEST, UPDATE_WORKSPACE_INFO } from "@/reducers/workspace";
@@ -42,8 +42,6 @@ export default function WorkspaceChangeMenu() {
 
   useEffect(() => {
     if (workspaceInfo && user) {
-      // const x = userWorkspace.find((v: any) => v.id === userCurrentWorkspaceId);
-      // console.log(x)
       if (workspaceInfo.name.split("_")[0] == "private") {
         setSwitcherName(`${user.name}'s Reference`);
       } else {
@@ -90,7 +88,6 @@ export default function WorkspaceChangeMenu() {
   },[isCode, value, userCurrentWorkspaceId])
 
   const loadWorkspace = useCallback((id : number)=>{
-    if(user){
       const selectedWorkspace = user.Workspaces.find((v:any) => v.id === id)
       dispatch({
         type:UPDATE_WORKSPACE_INFO,
@@ -99,7 +96,7 @@ export default function WorkspaceChangeMenu() {
         }
       })
       dispatch({
-        type:UPDATE_WORKSPACE_ID,
+        type: CHANGE_WORKSPACE_ID,
         data: {
           id : id,
         }
@@ -117,7 +114,6 @@ export default function WorkspaceChangeMenu() {
       handleClose();
       setSwitcherName(selectedWorkspace.name);
       setBrandcode(selectedWorkspace.code);
-    }
 
   },[workspaceInfo, userWorkspaces, user])
 

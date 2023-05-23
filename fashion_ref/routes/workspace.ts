@@ -205,12 +205,16 @@ router.post("/addReference", async (req, res) => {
 
 router.post("/referenceClick", async (req, res) => {
   try {
+    console.log(req.body.workspaceId)
+    console.log(req.body.referenceId)
+    console.log(req.session.userId )
       const updatedUser = await User.update({
         lastWorkspaceId : req.body.workspaceId,
         lastReferenceId : req.body.referenceId,
       },{
         where: { id: req.session.userId }, 
       });
+      console.log(updatedUser)
 
       const response : ReferenceClickSuccessResponse = {
         referenceId : req.body.referenceId,

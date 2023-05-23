@@ -111,7 +111,7 @@ export default function SettingsMenu(props: SettingsMenuProps) {
         }}
       >
           <>
-            {workspaceInfo.Users && workspaceInfo.Users.map((w: any, index: any) => (
+            {workspaceInfo && workspaceInfo.Users.map((w: any, index: any) => (
               <MenuItem
                 id="alarmMenu"
                 style={{ width: "400px", marginTop: "10px" }}

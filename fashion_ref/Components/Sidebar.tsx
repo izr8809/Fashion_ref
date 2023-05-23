@@ -305,7 +305,7 @@ export default function SideBar(props: SideBarProps) {
                               </div>
                               <div id="refAddIcon" style={{cursor:"pointer"}} onClick={addReferenceClick} > <AddIcon/></div>
                             </div>
-                            {workspaceInfo.References && isRefOpen && workspaceInfo.References.map((v :any, index : number)=> (
+                            {workspaceInfo && isRefOpen && workspaceInfo.References.map((v :any, index : number)=> (
                             <div style={{alignItems:"start", margin:0,padding:0,marginLeft:"18%", height :"auto", cursor:"pointer"}} onClick={() => {refClickEvent(v.id); props.setIsHomeState(false)}}>
                               • {v.name} 
                             </div>)) 
