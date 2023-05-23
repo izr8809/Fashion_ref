@@ -56,8 +56,9 @@ interface LoginSuccessResponse extends UserInfo {}
 interface LoadUserSuccessResponse extends UserInfo {}
 
 interface LogoutSuccessResponse {
-  data: null;
-  message: string;
+  data: {
+    message: string;
+  }
 }
 
 interface SignupSuccessResponse {
@@ -254,7 +255,7 @@ router.get("/user", async function (req, res) {
   }
 });
 
-router.get("/logout", (req, res) => {
+router.get("/logout", async function(req, res) {
   if (!req.session.userId) {
     const response: FailureResponse = {
       data: {
@@ -265,10 +266,11 @@ router.get("/logout", (req, res) => {
   } else {
     req.session.destroy(() => {}); // 세션 삭제
     const response: LogoutSuccessResponse = {
-      data: null,
-      message: "ok",
+      data: {
+        message: "ok",
+      }
     };
-    res.json(response);
+    res.status(200).json(response);
   }
 });
 

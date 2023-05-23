@@ -63,44 +63,52 @@ export default function MainView({}: MainViewProps) {
   },[])
 
   useEffect(()=>{
-    if(lastWorkspaceId){
-      const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
-      dispatch({
-        type: UPDATE_WORKSPACE_INFO,
-        data:{
-          selectedWorkspaceInfo :selectedWorkspaceInfo 
-        }
-      });
-      dispatch({
-        type: CHANGE_WORKSPACE_ID,
-        data :{
-          id : lastWorkspaceId
-        }
-      });
-      if(lastReferenceId || lastBoardId){
+    if(user){
+      if(lastWorkspaceId){
+        const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
         dispatch({
-          type: CHANGE_CURRENTSPACE_ID,
-          data: {
-            id :lastReferenceId 
+          type: UPDATE_WORKSPACE_INFO,
+          data:{
+            selectedWorkspaceInfo :selectedWorkspaceInfo 
           }
-        })
+        });
         dispatch({
-          type: REFERENCE_CLICK_REQUEST,
-          data: {
-            referenceId : lastReferenceId,
-            workspaceId : lastWorkspaceId,
+          type: CHANGE_WORKSPACE_ID,
+          data :{
+            id : lastWorkspaceId
           }
-        })
-        setIsHomeState(false)
+        });
+        if(lastReferenceId || lastBoardId){
+          dispatch({
+            type: CHANGE_CURRENTSPACE_ID,
+            data: {
+              id :lastReferenceId 
+            }
+          })
+          dispatch({
+            type: REFERENCE_CLICK_REQUEST,
+            data: {
+              referenceId : lastReferenceId,
+              workspaceId : lastWorkspaceId,
+            }
+          })
+          setIsHomeState(false)
+        }
+      }else{
+          dispatch({
+            type: SET_WORKSPACE_INFO_REQUEST,
+            data: user,
+          });
+          dispatch({
+            type: CHANGE_WORKSPACE_ID,
+            data :{
+              id : user.Workspaces[0].id
+            }
+          });
       }
-    }else{
-        dispatch({
-          type: SET_WORKSPACE_INFO_REQUEST,
-          data: user,
-        })
     }
 
-  },[lastReferenceId,lastBoardId,lastWorkspaceId])
+  },[lastReferenceId,lastBoardId,lastWorkspaceId,user])
 
   // const addReference = useCallback(() => {
   //   setIsAddingNewRef(false);

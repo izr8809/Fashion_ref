@@ -16,7 +16,7 @@ type MypageMenuProps = {
   };
   
 export default function MypageMenu(props: MypageMenuProps) {
-  const { userWorkspace } = useSelector((state: any) => state.user);
+  const { userWorkspaces } = useSelector((state: any) => state.user);
   const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();

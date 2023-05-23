@@ -13,7 +13,7 @@ import { CHANGE_WORKSPACE_REQUEST, UPDATE_WORKSPACE_INFO } from "@/reducers/work
 import { RESET_POST_REQUEST } from "@/reducers/post";
 
 export default function WorkspaceChangeMenu() {
-  const { userWorkspace } = useSelector((state: any) => state.user);
+  const { userWorkspaces } = useSelector((state: any) => state.user);
   const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
@@ -41,16 +41,17 @@ export default function WorkspaceChangeMenu() {
   }, []);
 
   useEffect(() => {
-    if (userWorkspace[0]) {
-      const x = userWorkspace.find((v: any) => v.id === userCurrentWorkspaceId);
-      if (x.name.split("_")[0] == "private") {
+    if (workspaceInfo && user) {
+      // const x = userWorkspace.find((v: any) => v.id === userCurrentWorkspaceId);
+      // console.log(x)
+      if (workspaceInfo.name.split("_")[0] == "private") {
         setSwitcherName(`${user.name}'s Reference`);
       } else {
-        setSwitcherName(x.name);
+        setSwitcherName(workspaceInfo.name);
       }
-      setBrandcode(x.code)
+      setBrandcode(workspaceInfo.code)
     }
-  }, [userWorkspace]);
+  }, [workspaceInfo,user]);
 
   const Logout = useCallback(() => {
     dispatch(logoutRequestAction())
@@ -89,34 +90,36 @@ export default function WorkspaceChangeMenu() {
   },[isCode, value, userCurrentWorkspaceId])
 
   const loadWorkspace = useCallback((id : number)=>{
-    const selectedWorkspace = userWorkspace.find((v:any) => v.id === id)
-    dispatch({
-      type:UPDATE_WORKSPACE_INFO,
-      data:{
-        selectedWorkspaceInfo : selectedWorkspace, 
-      }
-    })
-    dispatch({
-      type:UPDATE_WORKSPACE_ID,
-      data: {
-        id : id,
-      }
-    })
-    dispatch({
-      type: RESET_POST_REQUEST,
-    })
-    dispatch({
-      type: CHANGE_WORKSPACE_REQUEST,
-      data:{
-        workspaceId : id,
-        referenceId : null,
-      }
-    })
-    handleClose();
-    setSwitcherName(selectedWorkspace.name);
-    setBrandcode(selectedWorkspace.code);
+    if(user){
+      const selectedWorkspace = user.Workspaces.find((v:any) => v.id === id)
+      dispatch({
+        type:UPDATE_WORKSPACE_INFO,
+        data:{
+          selectedWorkspaceInfo : selectedWorkspace, 
+        }
+      })
+      dispatch({
+        type:UPDATE_WORKSPACE_ID,
+        data: {
+          id : id,
+        }
+      })
+      dispatch({
+        type: RESET_POST_REQUEST,
+      })
+      dispatch({
+        type: CHANGE_WORKSPACE_REQUEST,
+        data:{
+          workspaceId : id,
+          referenceId : null,
+        }
+      })
+      handleClose();
+      setSwitcherName(selectedWorkspace.name);
+      setBrandcode(selectedWorkspace.code);
+    }
 
-  },[workspaceInfo, userWorkspace])
+  },[workspaceInfo, userWorkspaces, user])
 
   return (
     <>
@@ -153,8 +156,8 @@ export default function WorkspaceChangeMenu() {
           top: "32px",
         }}
       >
-        {userWorkspace &&
-          userWorkspace.map((w: any, index: any) => (
+        {user &&
+          user.Workspaces.map((w: any, index: any) => (
             <MenuItem
               onClick={()=>loadWorkspace(w.id)}
               style={{ width: "244px", marginTop: "10px" }}

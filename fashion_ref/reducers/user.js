@@ -39,7 +39,7 @@ export const initialState = {
   signUpData: {},
   loginData: {},
   posts: [],
-  userWorkspace: [],
+  userWorkspaces: [],
   userCurrentWorkspaceId: 0,
   lastWorkspaceId : null,
   lastReferenceId : null,
