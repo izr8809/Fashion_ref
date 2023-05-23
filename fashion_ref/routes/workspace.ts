@@ -1,5 +1,8 @@
-const express = require("express");
-const multer = require("multer");
+import express from 'express';
+import multer from 'multer'
+import session from "express-session";
+
+export {}
 const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
@@ -9,6 +12,62 @@ const { send } = require("process");
 const { restore, update } = require("../models/hashtag");
 
 const router = express.Router();
+
+interface WorkspaceInfo {
+  id : number,
+  name : string,
+  isPremium : number,
+  code : string,
+  References : [
+    id : number,
+    name : string,
+    WorkspaceId : number,
+    Hashtags : [
+      id : number,
+      name : string,
+    ],
+    SavedHashs : [
+      id : number,
+      hashs : string,
+    ],
+  ][],
+}
+
+interface AddReferenceSuccessResponse extends WorkspaceInfo {}
+
+interface AddReferenceTagSuccessResponse extends WorkspaceInfo {}
+
+interface AddAdministratorsSuccessResponse extends WorkspaceInfo {
+  WorkspaceUser : [],
+  WorkspaceAdministrators : [],
+}
+
+
+interface DeleteAdministratorsSuccessResponse extends WorkspaceInfo {
+  WorkspaceUser : [],
+  WorkspaceAdministrators : [],
+}
+
+
+interface DeleteMemeberSuccessResponse extends WorkspaceInfo {
+  WorkspaceUser : [],
+  WorkspaceAdministrators : [],
+}
+
+interface ReferenceClickSuccessResponse {
+  referenceId : number,
+}
+
+interface ChangeWorkspaceSuccessResponse {
+  workspaceId : number,
+}
+
+interface FailureResponse {
+  data: {
+    message: string;
+    error?: Error | any;
+  }
+}
 
 // router.post("/addTag", async (req, res) => {
 //   //find workspace
@@ -95,9 +154,6 @@ const router = express.Router();
 
 router.post("/addReference", async (req, res) => {
   try {
-    console.log("here")
-    console.log(req.body.workspaceId)
-
       const ws = await Workspace.findOne({ 
         where: { id: parseInt(req.body.workspaceId,10) }, 
       })
@@ -113,7 +169,7 @@ router.post("/addReference", async (req, res) => {
           include:[
               {
                 model: Reference,
-                order: [["createdAt", "DESC"]],
+                order: [["createdAt", "ASC"]],
                   include:[{
                     model: Hashtag,
                     order: [["createdAt", "DESC"]],
@@ -122,16 +178,56 @@ router.post("/addReference", async (req, res) => {
                     order: [["createdAt", "DESC"]],
                   }]
               },
-          ]
+          ],
+          order : [[ Reference, "createdAt", "DESC"]],
         }) 
+      const response : AddReferenceSuccessResponse = {
+        id : updatedWs.id,
+        name : updatedWs.name,
+        isPremium : updatedWs.isPremium,
+        code : updatedWs.code,
+        References : updatedWs.References,
+      }
 
-      res.json(updatedWs);
+      res.json(response);
     
   } catch (err) {
+    const response : FailureResponse = {
+      data: {
+        message:"addReferenceFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
     console.log(err);
   }
 });
 
+router.post("/referenceClick", async (req, res) => {
+  try {
+      const updatedUser = await User.update({
+        lastWorkspaceId : req.body.workspaceId,
+        lastReferenceId : req.body.referenceId,
+      },{
+        where: { id: req.session.userId }, 
+      });
+
+      const response : ReferenceClickSuccessResponse = {
+        referenceId : req.body.referenceId,
+      }
+      res.json(response);
+    
+  } catch (err) {
+    const response : FailureResponse = {
+      data: {
+        message:"referenceClickFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
+    console.log(err);
+  }
+});
 
 router.post("/addReferenceTag", async (req, res) => {
 try {
@@ -150,7 +246,7 @@ try {
         include:[
             {
               model: Reference,
-              order: [["createdAt", "DESC"]],
+              order: [["createdAt", "ASC"]],
                 include:[{
                   model: Hashtag,
                   order: [["createdAt", "DESC"]],
@@ -159,14 +255,30 @@ try {
                   order: [["createdAt", "DESC"]],
                 }]
             },
-        ]
+        ],
+        order : [[ Reference, "createdAt", "DESC"]],
       }) 
 
-    res.json(updatedWs);
+      const response : AddReferenceTagSuccessResponse = {
+        id : updatedWs.id,
+        name : updatedWs.name,
+        isPremium : updatedWs.isPremium,
+        code : updatedWs.code,
+        References : updatedWs.References,
+      }
+
+      res.json(response);
   
 } catch (err) {
+
+  const response : FailureResponse = {
+    data: {
+      message:"addReferenceTagFailure",
+      error: err,
+    }
+  }
+  res.status(401).send(response);
   console.log(err);
-  res.status(400).send({data : null})
 }
 });
 
@@ -188,7 +300,7 @@ router.post("/deleteSavedtags", async (req, res)=>{
       include:[
           {
             model: Reference,
-            order: [["createdAt", "DESC"]],
+            order: [["createdAt", "ASC"]],
             include:[
               {
                 model :SavedHashs,
@@ -196,16 +308,30 @@ router.post("/deleteSavedtags", async (req, res)=>{
               }
             ]
           },
-      ]
+      ],
+      order : [[ Reference, "createdAt", "DESC"]],
     })
 
+    const response :AddReferenceSuccessResponse = {
+      id : ws.id,
+      name : ws.name,
+      isPremium : ws.isPremium,
+      code : ws.code,
+      References : ws.References,
+    }
 
-    res.json(ws)
+    res.json(response);
 
   }catch(err){
-    console.log(err)
-    res.status(400).send({data : null});
-  }
+    const response : FailureResponse = {
+      data: {
+        message:"deleteSavedTagsFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
+      console.log(err)
+    }
 })
 
 
@@ -222,11 +348,10 @@ router.post("/addAdminUser", async (req, res)=>{
 
     const updatedWs = await Workspace.findOne({
       where: {id : req.body.workspaceId},
-      order: [["id", "DESC"]],
       include:[
         {
           model: Reference,
-          order: [["createdAt", "DESC"]],
+          order: [["createdAt", "ASC"]],
           include:[{
             model: Hashtag,
             order: [["createdAt", "DESC"]],
@@ -244,13 +369,31 @@ router.post("/addAdminUser", async (req, res)=>{
           as : "WorkspaceAdministrators",
           order: [["createdAt", "DESC"]],
         }
-      ]
+      ],
+      order : [[ Reference, "createdAt", "DESC"]],
     })
 
-    res.json(updatedWs)
+    const response : AddAdministratorsSuccessResponse  = {
+      id : updatedWs.id,
+      name : updatedWs.name,
+      isPremium : updatedWs.isPremium,
+      code : updatedWs.code,
+      References : updatedWs.References,
+      WorkspaceUser : updatedWs.WorkspaceUser,
+      WorkspaceAdministrators : updatedWs.WorkspaceAdministrators, 
+    }
+
+    res.json(response);
+
   }catch(err){
     console.log(err)
-    res.status(400).send({data : null});
+    const response : FailureResponse = {
+      data: {
+        message:"addAdministratorsFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
   }
 })
 
@@ -269,11 +412,10 @@ router.post("/deleteAdminUser", async (req, res)=>{
 
     const updatedWs = await Workspace.findOne({
       where: {id : req.body.workspaceId},
-      order: [["id", "DESC"]],
       include:[
         {
           model: Reference,
-          order: [["createdAt", "DESC"]],
+          order: [["createdAt", "ASC"]],
           include:[{
             model: Hashtag,
             order: [["createdAt", "DESC"]],
@@ -291,14 +433,31 @@ router.post("/deleteAdminUser", async (req, res)=>{
           as : "WorkspaceAdministrators",
           order: [["createdAt", "DESC"]],
         }
-      ]
+      ],
+      order : [[ Reference, "createdAt", "DESC"]],
     })
 
-    res.json(updatedWs)
-   
+    const response : DeleteAdministratorsSuccessResponse  = {
+      id : updatedWs.id,
+      name : updatedWs.name,
+      isPremium : updatedWs.isPremium,
+      code : updatedWs.code,
+      References : updatedWs.References,
+      WorkspaceUser : updatedWs.WorkspaceUser,
+      WorkspaceAdministrators : updatedWs.WorkspaceAdministrators, 
+    }
+
+    res.json(response);
+
   }catch(err){
     console.log(err)
-    res.status(400).send({data : null});
+    const response : FailureResponse = {
+      data: {
+        message:"deleteAdministratorsFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
   }
 })
 
@@ -316,11 +475,10 @@ router.post("/deleteMember", async (req, res)=>{
 
     const updatedWs = await Workspace.findOne({
       where: {id : req.body.workspaceId},
-      order: [["id", "DESC"]],
       include:[
         {
           model: Reference,
-          order: [["createdAt", "DESC"]],
+          order: [["createdAt", "ASC"]],
           include:[{
             model: Hashtag,
             order: [["createdAt", "DESC"]],
@@ -338,16 +496,58 @@ router.post("/deleteMember", async (req, res)=>{
           as : "WorkspaceAdministrators",
           order: [["createdAt", "DESC"]],
         }
-      ]
+      ],
+      order : [[ Reference, "createdAt", "DESC"]],
     })
 
-    res.json(updatedWs)
-   
+    const response : DeleteMemeberSuccessResponse  = {
+      id : updatedWs.id,
+      name : updatedWs.name,
+      isPremium : updatedWs.isPremium,
+      code : updatedWs.code,
+      References : updatedWs.References,
+      WorkspaceUser : updatedWs.WorkspaceUser,
+      WorkspaceAdministrators : updatedWs.WorkspaceAdministrators, 
+    }
+
+    res.json(response);
+
   }catch(err){
     console.log(err)
-    res.status(400).send({data : null});
+    const response : FailureResponse = {
+      data: {
+        message:"deleteMemberFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
   }
 })
 
+router.post("/changeWorkspace", async (req, res) => {
+  try {
+      const updatedUser = await User.update({
+        lastWorkspaceId : req.body.workspaceId,
+        lastReferenceId : req.body.referenceId,
+      },{
+        where: { id: req.session.userId }, 
+      });
+
+      const response : ChangeWorkspaceSuccessResponse = {
+        workspaceId : req.body.referenceId,
+      }
+      res.json(response);
+    
+  } catch (err) {
+    const response : FailureResponse = {
+      data: {
+        message:"changeWorkspaceFailure",
+        error: err,
+      }
+    }
+    res.status(401).send(response);
+    console.log(err);
+  }
+});
 
 module.exports = router;

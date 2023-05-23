@@ -135,7 +135,7 @@ export default function Upload(props: UploadProps) {
   };
   const inputRef = useRef(null);
   const [category, setCategory] = React.useState("상의");
-  const [season, setSeason] = React.useState("23SS");
+  const [season, setSeason] = React.useState("24FW");
   const [text, onChangeText, setText] = useInput("");
   const [cardPost, setCardPost] = useState([]);
   const [prevBrandName, setPrevBrandName] = useState("");
@@ -606,8 +606,9 @@ export default function Upload(props: UploadProps) {
               required
               onChange={handleSeasonChange}
             >
-              <MenuItem value={"23SS"}>23SS</MenuItem>
               <MenuItem value={"23FW"}>23FW</MenuItem>
+              <MenuItem value={"24SS"}>24SS</MenuItem>
+              <MenuItem value={"24FW"}>23FW</MenuItem>
             </Select>
           </FormControl>
 

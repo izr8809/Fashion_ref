@@ -105,10 +105,11 @@ export default function SideBar(props: SideBarProps) {
     dispatch({
       type: REFERENCE_CLICK_REQUEST,
       data:{
-        referenceId: id,
+        referenceId : id,
+        workspaceId : userCurrentWorkspaceId,
       }
     })
-  },[])
+  },[userCurrentWorkspaceId])
 
   const closeModal = useCallback(()=>{
     setIsAddingNewRef(false);
@@ -201,7 +202,7 @@ export default function SideBar(props: SideBarProps) {
                         >
                           <span></span>
                         </div>
-                        <div style={{ width: "100%" }}>
+                        <div style={{ width: "100%", margin: 0, padding :0 }}>
                           <WorkspaceChangeMenu />
                         </div>
                       </div>

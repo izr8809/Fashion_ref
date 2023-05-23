@@ -16,9 +16,10 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import AddIcon from '@mui/icons-material/Add';
 import ReferenceView from "./ReferenceView";
-import { ADD_REFERENCE_REQUEST, REFERENCE_CLICK_REQUEST, SET_WORKSPACE_INFO_REQUEST } from "@/reducers/workspace";
+import { ADD_REFERENCE_REQUEST, CHANGE_CURRENTSPACE_ID, REFERENCE_CLICK_REQUEST, SET_WORKSPACE_INFO_REQUEST, UPDATE_WORKSPACE_INFO } from "@/reducers/workspace";
 import useInput from "@/hooks/useInput";
 import { GenericHTMLFormElement } from "axios";
+import { CHANGE_WORKSPACE_ID } from "@/reducers/user";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -45,7 +46,10 @@ type MainViewProps = {};
 export default function MainView({}: MainViewProps) {
   const dispatch = useDispatch();
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
-  const {userCurrentWorkspaceId} = useSelector((state: any) => state.user);
+  const { userCurrentWorkspaceId} = useSelector((state: any) => state.user);
+  const { lastWorkspaceId } = useSelector((state: any) => state.user);
+  const { lastReferenceId } = useSelector((state: any) => state.user);
+  const { lastBoardId } = useSelector((state: any) => state.user);
   const { user } = useSelector((state: any) => state.user); 
   const [isHomeState, setIsHomeState] = useState(true);
   const [isAddingReference, setIsAddingReference] = useState(false);
@@ -57,6 +61,46 @@ export default function MainView({}: MainViewProps) {
   const addReference = useCallback(()=>{
     setIsAddingReference(true);
   },[])
+
+  useEffect(()=>{
+    if(lastWorkspaceId){
+      const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
+      dispatch({
+        type: UPDATE_WORKSPACE_INFO,
+        data:{
+          selectedWorkspaceInfo :selectedWorkspaceInfo 
+        }
+      });
+      dispatch({
+        type: CHANGE_WORKSPACE_ID,
+        data :{
+          id : lastWorkspaceId
+        }
+      });
+      if(lastReferenceId || lastBoardId){
+        dispatch({
+          type: CHANGE_CURRENTSPACE_ID,
+          data: {
+            id :lastReferenceId 
+          }
+        })
+        dispatch({
+          type: REFERENCE_CLICK_REQUEST,
+          data: {
+            referenceId : lastReferenceId,
+            workspaceId : lastWorkspaceId,
+          }
+        })
+        setIsHomeState(false)
+      }
+    }else{
+        dispatch({
+          type: SET_WORKSPACE_INFO_REQUEST,
+          data: user,
+        })
+    }
+
+  },[lastReferenceId,lastBoardId,lastWorkspaceId])
 
   // const addReference = useCallback(() => {
   //   setIsAddingNewRef(false);
@@ -73,11 +117,12 @@ export default function MainView({}: MainViewProps) {
     dispatch({
       type: REFERENCE_CLICK_REQUEST,
       data:{
-        referenceId: id,
+        referenceId : id,
+        workspaceId : userCurrentWorkspaceId,
       }
     })
     setIsHomeState(false)
-  },[])
+  },[userCurrentWorkspaceId])
 
   // useEffect(()=>{
   //   if(user){
@@ -89,15 +134,6 @@ export default function MainView({}: MainViewProps) {
   //     })
   //   }
   // },[user,workspaceInfo])
-
-  useEffect(()=>{
-    if(user){
-      dispatch({
-        type: SET_WORKSPACE_INFO_REQUEST,
-        data: user,
-      })
-    }
-  },[user])
 
   useEffect(()=>{
     if(currentSpaceId){
@@ -125,10 +161,7 @@ export default function MainView({}: MainViewProps) {
     }
   },[userCurrentWorkspaceId, referenceName])
 
-  useEffect(()=>{
-    console.log(workspaceInfo)
 
-  },[workspaceInfo])
   return (
     <>
     {isAddingReference && <Modal

@@ -1,5 +1,5 @@
 import { LOAD_POST_REQUEST, RESET_POST_REQUEST } from "@/reducers/post";
-import { ADD_ADMIN_USER_FAILURE, ADD_ADMIN_USER_REQUEST, ADD_ADMIN_USER_SUCCESS, ADD_REFERENCE_FAILURE, ADD_REFERENCE_REQUEST, ADD_REFERENCE_SUCCESS, ADD_TAG_FALIURE, ADD_TAG_REQUEST, ADD_TAG_SUCCESS, ADD_WORKSPACE_TAGS_FAILURE, ADD_WORKSPACE_TAGS_REQUEST, ADD_WORKSPACE_TAGS_SUCCESS, DELETE_ADMIN_USER_FAILURE, DELETE_ADMIN_USER_REQUEST, DELETE_ADMIN_USER_SUCCESS, DELETE_MEMBER_FAILURE, DELETE_MEMBER_REQUEST, DELETE_MEMBER_SUCCESS, DELETE_SAVEDTAGS_FAILURE, DELETE_SAVEDTAGS_REQUEST, DELETE_SAVEDTAGS_SUCCESS, DELETE_WORKSPACE_TAGS_FAILURE, DELETE_WORKSPACE_TAGS_REQUEST, DELETE_WORKSPACE_TAGS_SUCCESS, LOAD_WORKSPACE_INFO_FAILURE, LOAD_WORKSPACE_INFO_REQUEST, LOAD_WORKSPACE_INFO_SUCCESS, REFERENCE_CLICK_FAILURE, REFERENCE_CLICK_REQUEST, REFERENCE_CLICK_SUCCESS } from "@/reducers/workspace";
+import { ADD_ADMIN_USER_FAILURE, ADD_ADMIN_USER_REQUEST, ADD_ADMIN_USER_SUCCESS, ADD_REFERENCE_FAILURE, ADD_REFERENCE_REQUEST, ADD_REFERENCE_SUCCESS, ADD_TAG_FALIURE, ADD_TAG_REQUEST, ADD_TAG_SUCCESS, ADD_WORKSPACE_TAGS_FAILURE, ADD_WORKSPACE_TAGS_REQUEST, ADD_WORKSPACE_TAGS_SUCCESS, CHANGE_WORKSPACE_FAILURE, CHANGE_WORKSPACE_REQUEST, CHANGE_WORKSPACE_SUCCESS, DELETE_ADMIN_USER_FAILURE, DELETE_ADMIN_USER_REQUEST, DELETE_ADMIN_USER_SUCCESS, DELETE_MEMBER_FAILURE, DELETE_MEMBER_REQUEST, DELETE_MEMBER_SUCCESS, DELETE_SAVEDTAGS_FAILURE, DELETE_SAVEDTAGS_REQUEST, DELETE_SAVEDTAGS_SUCCESS, DELETE_WORKSPACE_TAGS_FAILURE, DELETE_WORKSPACE_TAGS_REQUEST, DELETE_WORKSPACE_TAGS_SUCCESS, LOAD_WORKSPACE_INFO_FAILURE, LOAD_WORKSPACE_INFO_REQUEST, LOAD_WORKSPACE_INFO_SUCCESS, REFERENCE_CLICK_FAILURE, REFERENCE_CLICK_REQUEST, REFERENCE_CLICK_SUCCESS } from "@/reducers/workspace";
 import axios from "axios";
 import { all, call, put, takeLatest,fork } from "redux-saga/effects";
 
@@ -25,14 +25,19 @@ function* loadWorkspaceInfo(action) {
   }
 }
 
+function referenceClickAPI(data) {
+  return axios.post(`/workspace/referenceClick`, data);
+}
+
 function* referenceClick(action) {
   try {
+    const result = yield call(referenceClickAPI, action.data);
     yield put({
       type: RESET_POST_REQUEST,
     })
     yield put({
       type: LOAD_POST_REQUEST,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REFERENCE_CLICK_SUCCESS,
@@ -168,6 +173,32 @@ function deleteMemberAPI(data) {
   }
   }
 
+
+//change workspace  
+function changeWorkspaceAPI(data) {
+  return axios.post(`/workspace/changeWorkspace`, data);
+  }
+  
+  function* changeWorkspace(action) {
+  try {
+    const result = yield call(changeWorkspaceAPI, action.data);
+    yield put({
+      type: CHANGE_WORKSPACE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: CHANGE_WORKSPACE_FAILURE,
+      error: err.response.data,
+    });
+  }
+  }
+
+
+  function* watchChangeWorkspace() {
+    yield takeLatest(CHANGE_WORKSPACE_REQUEST, changeWorkspace);
+  } 
+
   function* watchAddAdminUser() {
     yield takeLatest(ADD_ADMIN_USER_REQUEST, addAdminUser);
   } 
@@ -213,5 +244,6 @@ export default function* workspaceSaga() {
     fork(watchAddAdminUser),
     fork(watchDeleteAdminUser),
     fork(watchDeleteMember),
+    fork(watchChangeWorkspace),
   ]);
 }

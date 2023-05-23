@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const next = require("next");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -6,14 +6,6 @@ const prod = true;
 const app = next({ prod });
 const handle = app.getRequestHandler();
 const { sequelize } = require("./models");
-const {
-  User,
-  Post,
-  Hashtag,
-  Image,
-  Workspace,
-  Reference,
-} = require("./models");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -23,7 +15,7 @@ const fs = require("fs");
 var bodyParser = require("body-parser");
 
 //router
-const postRouter = require("./routes/post");
+const postRouter = require ("./routes/post");
 const userRouter = require("./routes/user");
 const workspaceRouter = require("./routes/workspace");
 
@@ -33,7 +25,7 @@ sequelize
   .then(() => {
     console.log("databse is connected");
   })
-  .catch((err) => {
+  .catch((err:Error) => {
     console.error(err);
   });
 

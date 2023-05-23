@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { ADD_WORKSPACE_REQUEST, REQUEST_WORKSPACE_PERMISSION_REQUEST, UPDATE_WORKSPACE_ID, logoutRequestAction } from "@/reducers/user";
 import Input from "@mui/material/Input";
 import useInput from "@/hooks/useInput";
-import { UPDATE_WORKSPACE_INFO } from "@/reducers/workspace";
+import { CHANGE_WORKSPACE_REQUEST, UPDATE_WORKSPACE_INFO } from "@/reducers/workspace";
 import { RESET_POST_REQUEST } from "@/reducers/post";
 
 export default function WorkspaceChangeMenu() {
@@ -54,8 +54,13 @@ export default function WorkspaceChangeMenu() {
 
   const Logout = useCallback(() => {
     dispatch(logoutRequestAction())
-    window.location.href="/";
   }, []);
+
+  useEffect(()=>{
+    if(!user){
+      window.location.href="/";
+    }
+  },[user])
 
   const sumbitForm = useCallback((e:React.FormEvent<HTMLFormElement>)=>{
     if(value ==""){
@@ -84,9 +89,7 @@ export default function WorkspaceChangeMenu() {
   },[isCode, value, userCurrentWorkspaceId])
 
   const loadWorkspace = useCallback((id : number)=>{
-
     const selectedWorkspace = userWorkspace.find((v:any) => v.id === id)
-
     dispatch({
       type:UPDATE_WORKSPACE_INFO,
       data:{
@@ -101,6 +104,13 @@ export default function WorkspaceChangeMenu() {
     })
     dispatch({
       type: RESET_POST_REQUEST,
+    })
+    dispatch({
+      type: CHANGE_WORKSPACE_REQUEST,
+      data:{
+        workspaceId : id,
+        referenceId : null,
+      }
     })
     handleClose();
     setSwitcherName(selectedWorkspace.name);
@@ -149,7 +159,7 @@ export default function WorkspaceChangeMenu() {
               onClick={()=>loadWorkspace(w.id)}
               style={{ width: "244px", marginTop: "10px" }}
             >
-              {w.name.split("_")[0] == "private" ? user.name : w.name}
+              {w.name.split("_")[0] == "private" ? user.name +"님의 작업실" : w.name}
             </MenuItem>
           ))}
 

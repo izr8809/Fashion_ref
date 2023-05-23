@@ -1,26 +1,122 @@
-const express = require("express");
-const multer = require("multer");
+import express from 'express';
+import multer from 'multer'
+import session from "express-session";
+import { error } from 'console';
+
+export {}
 const multerS3 = require("multer-s3");
 const uuid = require("uuid");
-const { User, Post, Hashtag, Image, Sequelize, Workspace, Reference } = require("../models");
+const { User, Post, Hashtag, Sequelize, Workspace, Reference, Image } = require("../models");
 const { Op } = require("sequelize");
-
 const router = express.Router();
 const { S3Client } = require("@aws-sdk/client-s3");
 const { REACT_LOADABLE_MANIFEST } = require("next/dist/shared/lib/constants");
-
 const s3 = new S3Client({ region: process.env.AWS_S3_REGION });
+
+type FieldName = { fieldName : string}
+type FileNameCallback = (error: Error | null, {} : FieldName) => void
+
+interface PostInfo {
+    id : number,
+    name : string,
+    brand : string,
+    category : string,
+    season : string,
+    userId : number,
+    ReferenceId : number,
+    Images : [
+      id : number,
+      postId : number,
+      src : string,
+      name : string,
+    ][],
+    Hashtags : [
+      id : number,
+      name : string,
+    ][],
+    Likers : [
+      PostId : number,
+      UserId : number,
+    ][],
+    References:[
+      id : number,
+      name : string,
+      WorkspaceId : number,
+    ][],
+    reason? : string,
+}
+
+interface GetHashtagsSuccessResponse {
+  hashtags : [
+    id : number,
+    name : string,
+    References : [
+      id : number,
+      name : string,
+      WorkspaceId : number,
+    ],
+  ],
+}
+
+interface AddPostSuccessResponse extends PostInfo{}
+
+interface LoadPostSuccessResponse{
+  posts : [ 
+    PostInfo 
+  ],
+}
+
+interface DeletePostSuccessResponse {
+  PostId : number,
+}
+
+interface LikePostSuccessResponse {
+  PostId : number,
+}
+
+interface UnlikePostSuccessResponse {
+  PostId : number,
+}
+
+interface HashtagSearchSuccessResponse {
+  posts : [ 
+    PostInfo 
+  ],
+}
+
+interface DuplicatePostSuccessResponse extends PostInfo{}
+
+interface EditPostSuccessResponse extends PostInfo{}
+
+interface GetUserPostSuccessResponse {
+  posts : [
+    PostInfo 
+  ],
+}
+
+interface GetUserLikedPostSuccessResponse {
+  posts : [
+    PostInfo
+  ]
+}
+
+interface FailureResponse {
+  data: {
+    message: string;
+    error?: Error | any;
+  };
+}
 
 const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_S3_BUCKET,
     acl: "public-read",
-    metadata: function (req, file, cb) {
+    metadata: function (req : express.Request ,file :Express.Multer.File, cb :FileNameCallback ) {
       cb(null, { fieldName: file.fieldname });
     },
-    key: function (req, file, cb) {
-      const [_, ext] = file.originalname.match(/(\.\w+)$/);
+    key: function (req : express.Request, file :Express.Multer.File, cb :FileNameCallback) {
+      const [_, ext] :any = file.originalname.match(/(\.\w+)$/);
       const key = uuid.v4() + ext;
       cb(null, key);
     },
@@ -28,9 +124,9 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
 });
 
-router.post("/getHashtags", async function (req, res) {
+router.post("/getHashtags", async function (req : express.Request, res) {
   try {
-    where = {};
+    const where = {};
     const hashtags = await Hashtag.findAll({
       where,
       // limit: 10,
@@ -42,8 +138,18 @@ router.post("/getHashtags", async function (req, res) {
         }
       ]
     });
-    res.status(200).json(hashtags);
+    const response : GetHashtagsSuccessResponse = {
+      hashtags : hashtags,
+    }
+    res.status(200).json(response);
   } catch (error) {
+    const response : FailureResponse = {
+      data : {
+        message : "getHashtagsFailure",
+        error : error,
+      },
+    }
+    res.status(400).send(response);
     console.error(error);
   }
 });
@@ -74,7 +180,7 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
       hashtags.push("#" + req.session.name); // userName
 
       const result = await Promise.all(
-        hashtags.map((tag) =>
+        hashtags.map((tag : any) =>
           Hashtag.findOrCreate({
             where: { name: tag.slice(1).toUpperCase() },
           })
@@ -128,10 +234,31 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
           }
         ],
       });
+      const response : AddPostSuccessResponse = {
+        id : madePost.id,
+        name : madePost.name,
+        brand : madePost.brand,
+        category : madePost.category,
+        season : madePost.season,
+        userId : madePost.userId,
+        ReferenceId : madePost.ReferenceId,
+        Images : madePost.Images,
+        Hashtags : madePost.Hashtags,
+        Likers : madePost.Likers,
+        References : madePost.References,
+        reason : madePost.reason,
+      }
 
-      res.json(madePost);
+      res.json(response);
     }
   } catch (err) {
+    const response : FailureResponse = {
+      data : {
+        message : "addPostFailure",
+        error : err,
+      },
+    }
+    res.status(400).send(response);
     console.log(err);
   }
 });
@@ -140,8 +267,8 @@ router.get("/loadPost", async function (req, res) {
   try {
     if (req.query.sort === "likes") {
       const limit = 24;
-      const order = (req.query.order || "desc").toUpperCase();
-      const page = parseInt(req.query.page || "1");
+      const order = ((req.query.order || "desc") as string).toUpperCase();
+      const page = parseInt(((req.query.page || "1") as string));
       const postsByLike = await Post.findAll({
         include: [
           {
@@ -162,7 +289,7 @@ router.get("/loadPost", async function (req, res) {
         limit,
       });
 
-      const postIds = postsByLike.map(e => e.id);
+      const postIds = postsByLike.map((e:any) => e.id);
 
       const posts = await Post.findAll({
         where: {ReferenceId: req.query.referenceId},
@@ -187,14 +314,17 @@ router.get("/loadPost", async function (req, res) {
         order: Sequelize.literal(`FIELD(Post.id, ${postIds.join(',')})`)
       })
 
-      res.status(200).json(posts);
+      const response : LoadPostSuccessResponse = {
+        posts: posts,
+      }
+      res.status(200).json(response);
       return;
     }
 
-    const where = {};
-    if (parseInt(req.query.lastId, 10)) {
+    const where = { id : {}};
+    if (parseInt(req.query.lastId as string, 10)) {
       // 초기 로딩이 아닐 때
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+      where.id = { [Op.lt]: parseInt(req.query.lastId as string, 10) };
     }
     // console.log(req.query.lastId)
     const posts = await Post.findAll({
@@ -216,9 +346,20 @@ router.get("/loadPost", async function (req, res) {
         },
       ],
     });
-    // console.log(posts)
-    res.status(200).json(posts);
+    
+    const response : LoadPostSuccessResponse = {
+      posts : posts,
+    }
+    res.status(200).json(response);
+
   } catch (error) {
+    const response : FailureResponse = {
+      data : {
+        error: error,
+        message : "loadPostFailure",
+      }
+    }
+    res.status(201).json(response);
     console.error(error);
   }
 });
@@ -267,14 +408,24 @@ router.post("/deletpost", async function (req, res) {
           id: parseInt(req.body.postId),
         },
       });
-      res.status(200).json({ PostId: parseInt(req.body.postId, 10) });
+      const response : DeletePostSuccessResponse = {
+        PostId : parseInt(req.body.postId, 10) 
+      }
+      res.status(200).json(response);
     }
   } catch (error) {
+    const response : FailureResponse = {
+      data :{
+        message : "deletePostFailure",
+        error: error,
+      }
+    }
+    res.status(201).json(response)
     console.error(error);
   }
 });
 
-router.patch("/:postId/like", async (req, res, next) => {
+router.patch("/:postId/like", async (req : express.Request, res, next) => {
   // PATCH /post/1/like
   try {
     const post = await Post.findOne({
@@ -284,14 +435,24 @@ router.patch("/:postId/like", async (req, res, next) => {
       return res.status(403).send("게시글이 존재하지 않습니다.");
     }
     await post.addLikers(req.session.userId);
-    res.json({ PostId: post.id });
+    const response: LikePostSuccessResponse = {
+      PostId : post.id
+    }
+    res.json(response);
   } catch (error) {
+    const response :FailureResponse = {
+      data : {
+        message : "likePostFailure",
+        error: error,
+      }
+    }
+    res.status(201).json(response);
     console.error(error);
     next(error);
   }
 });
 
-router.delete("/:postId/unlike", async (req, res, next) => {
+router.delete("/:postId/unlike", async (req : express.Request, res, next) => {
   // PATCH /post/1/like
   try {
     const post = await Post.findOne({
@@ -301,21 +462,31 @@ router.delete("/:postId/unlike", async (req, res, next) => {
       return res.status(403).send("게시글이 존재하지 않습니다.");
     }
     await post.removeLikers(req.session.userId);
-    res.json({ PostId: post.id });
+    const response :UnlikePostSuccessResponse = {
+      PostId : post.id,
+    }
+    res.json(response);
   } catch (error) {
+    const response : FailureResponse = {
+      data :{
+        message: "unlikePostFailure",
+        error: error,
+      }
+    }
+    res.status(201).json(response);
     console.error(error);
     next(error);
   }
 });
 
-router.post("/hashtagSearch", async (req, res) => {
+router.post("/hashtagSearch", async (req : express.Request, res) => {
   try {
     const hashtags = req.body.hashtags.match(/#[^\s#]+/g);
-    var hashtagjson = [];
+    var hashtagjson : any = [];
     for (let i = 0; i < hashtags.length; i++) {
       hashtagjson = [...hashtagjson, { name: hashtags[i].split("#")[1] }];
     }
-    where = {};
+    var where = {};
     const posts = await Post.findAll({
       where: {},
       // limit: 24, limit 나중에 줘야함
@@ -344,7 +515,7 @@ router.post("/hashtagSearch", async (req, res) => {
       ],
     });
 
-    var PostIdlist = [];
+    var PostIdlist: any = [];
     for (let i = 0; i < posts.length; i++) {
       if (posts[i].Hashtags.length == hashtags.length)
         PostIdlist = [...PostIdlist, { id: posts[i].id }];
@@ -365,15 +536,36 @@ router.post("/hashtagSearch", async (req, res) => {
           model: Image,
           order: [["id", "DESC"]],
         },
+        {
+          model: User,
+          as: "Likers",
+        },
+        {
+          model: Reference,
+          order: [["createdAt", "DESC"]],
+          where: {id : parseInt(req.body.referenceId, 10)},
+        }
       ],
     });
-    res.status(200).json(postsAllHashtags);
+    const response : HashtagSearchSuccessResponse = {
+      posts : postsAllHashtags,
+    }
+
+    res.status(200).json(response);
   } catch (err) {
+    const response : FailureResponse = {
+      data : {
+        message: "hashtagSearchFailure",
+        error: err,
+      }
+    }
+    res.status(201).json(response);
+
     console.log(err);
   }
 });
 
-router.post("/duplicate", async (req, res, next) => {
+router.post("/duplicate", async (req : express.Request, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: parseInt(req.body.id) },
@@ -410,7 +602,7 @@ router.post("/duplicate", async (req, res, next) => {
 
     let hashtags = post.Hashtags;
     const result = await Promise.all(
-      hashtags.map((tag) =>
+      hashtags.map((tag : any) =>
         Hashtag.findOrCreate({
           where: { name: tag.name },
         })
@@ -422,7 +614,7 @@ router.post("/duplicate", async (req, res, next) => {
     if (Array.isArray(post.Images)) {
       // 이미지를 여러 개
       const images = await Promise.all(
-        post.Images.map((image) => Image.create({ src: image.src }))
+        post.Images.map((image : any) => Image.create({ src: image.src }))
       );
       await newPost.addImages(images);
     } else {
@@ -458,15 +650,37 @@ router.post("/duplicate", async (req, res, next) => {
         }
       ],
     });
+    
+    const response : DuplicatePostSuccessResponse = {
+      id : madePost.id,
+      name : madePost.name,
+      brand : madePost.brand,
+      category : madePost.category,
+      season : madePost.season,
+      userId : madePost.userId,
+      ReferenceId : madePost.ReferenceId,
+      Images : madePost.Images,
+      Hashtags : madePost.Hashtags,
+      Likers : madePost.Likers,
+      References : madePost.References,
+      reason : madePost.reason,
+    }
 
-    res.json(madePost);
+    res.json(response);
   } catch (error) {
+    const response : FailureResponse = {
+      data : {
+        message: "duplicatePostFailure",
+        error: error,
+      }
+    }
+    res.status(201).json(response);
     console.error(error);
     next(error);
   }
 });
 
-router.post("/editPost", upload.array("image"), async (req, res) => {
+router.post("/editPost", upload.array("image"), async (req : express.Request, res) => {
   // PATCH /post/1/like
   try {
     const updatePost = await Post.update(
@@ -511,8 +725,8 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
 
     //remove and add hashtags
     let hashtags = await post.getHashtags();
-    await post.removeHashtags(hashtags.map((v) => v));
-    await ref.removeHashtags(hashtags.map((v)=> v));
+    await post.removeHashtags(hashtags.map((v :any) => v));
+    await ref.removeHashtags(hashtags.map((v :any)=> v));
 
     //add hashtags again
     hashtags = (await req.body.hashtag.match(/#[^\s#]+/g)) || [];
@@ -521,7 +735,7 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
     hashtags.push("#" + req.body.brand); //brand
     hashtags.push("#" + req.body.name); // userName
     const result = await Promise.all(
-      hashtags.map((tag) =>
+      hashtags.map((tag:any) =>
         Hashtag.findOrCreate({
           where: { name: tag.slice(1).toUpperCase() },
         })
@@ -538,14 +752,14 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
 
     //remove imagespath
     let images = await post.getImages();
-    await post.removeImages(images.map((v) => v));
+    await post.removeImages(images.map((v:any) => v));
 
     //add imagepath
     if (req.body.imagePath) {
       if (Array.isArray(req.body.imagePath)) {
         // 이미지를 여러 개
         const images = await Promise.all(
-          req.body.imagePath.map((image) => Image.create({ src: image }))
+          req.body.imagePath.map((image: string) => Image.create({ src: image }))
         );
         await post.addImages(images);
       } else {
@@ -564,8 +778,10 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
       await post.addImages(images);
     } else {
       // 이미지를 하나
-      const image = await Image.create({ src: req.files[0].path });
-      await post.addImages(image);
+      if(req.files){
+        const image = await Image.create({ src: (req.files as any)[0].path });
+        await post.addImages(image);
+      }
     }
 
     //다시 한번 가져오기
@@ -586,9 +802,32 @@ router.post("/editPost", upload.array("image"), async (req, res) => {
         }
       ],
     });
+   
+    const response : EditPostSuccessResponse = {
+      id : newPost.id,
+      name : newPost.name,
+      brand : newPost.brand,
+      category : newPost.category,
+      season : newPost.season,
+      userId : newPost.userId,
+      ReferenceId : newPost.ReferenceId,
+      Images : newPost.Images,
+      Hashtags : newPost.Hashtags,
+      Likers : newPost.Likers,
+      References : newPost.References,
+      reason : newPost.reason,
+    }
 
-    res.json({ postInfo: newPost, postId: post.id });
+    res.json(response); 
+
   } catch (error) {
+    const response : FailureResponse = {
+      data :{
+        message: "editPostFailure",
+        error : error,
+      }
+    }
+    res.status(201).send(response);
     console.error(error);
   }
 });
@@ -598,7 +837,7 @@ router.post("/user", async (req, res) => {
   //login 상태일때만
   if (req.session.userId) {
     try {
-      where = {};
+      var where = {};
       const posts = await Post.findAll({
         where: { UserId: req.session.userId },
         // limit: 24, limit 나중에 줘야함
@@ -623,12 +862,31 @@ router.post("/user", async (req, res) => {
           }
         ],
       });
-      res.status(200).json(posts);
+
+      const response : GetUserPostSuccessResponse = {
+        posts : posts,
+      }
+  
+      res.json(response); 
+
     } catch (err) {
+      const response : FailureResponse = {
+        data : {
+          message : "getUserPostFailure",
+          error : err,
+        }
+      }
+      res.status(201).send(response);
       console.log(err);
     }
   } else {
-    res.status(404).json({ message: "notLoggedIn" });
+    
+    const response : FailureResponse = {
+      data : {
+        message : "notLoggedIn",
+      }
+    }
+    res.status(404).json(response);
   }
 });
 
@@ -637,7 +895,7 @@ router.post("/userLiked", async (req, res) => {
   //login 상태일때만
   if (req.session.userId) {
     try {
-      where = {};
+      var where = {};
       const posts = await Post.findAll({
         where: { UserId: req.session.userId },
         // limit: 24, limit 나중에 줘야함
@@ -655,7 +913,7 @@ router.post("/userLiked", async (req, res) => {
             model: User,
             as: "Likers",
             where: {
-              id: parseInt(req.session.userId, 10),
+              id: req.session.userId,
             },
           },
           {
@@ -665,52 +923,68 @@ router.post("/userLiked", async (req, res) => {
           }
         ],
       });
-      res.status(200).json(posts);
+      const response : GetUserLikedPostSuccessResponse = {
+        posts : posts,
+      }
+      res.status(200).json(response);
     } catch (err) {
+     
+      const response : FailureResponse = {
+        data : {
+          message : "getUserLikedPostFailure",
+          error : err,
+        }
+      }
+      res.status(201).send(response);
       console.log(err);
     }
   } else {
-    res.status(404).json({ message: "notLoggedIn" });
+    const response : FailureResponse = {
+      data : {
+        message : "notLoggedIn",
+      }
+    }
+    res.status(404).json(response);
   }
 });
 
 //좋아요 순
-router.get("/loadLikedPost", async function (req, res) {
-  try {
-    const where = {};
-    if (parseInt(req.query.lastId, 10)) {
-      // 초기 로딩이 아닐 때
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
-    }
+// router.get("/loadLikedPost", async function (req, res) {
+//   try {
+//     const where = { id :{}};
+//     if (parseInt(req.query.lastId as string, 10)) {
+//       // 초기 로딩이 아닐 때
+//       where.id = { [Op.lt]: parseInt(req.query.lastId as string, 10) };
+//     }
 
-    const posts = await Post.findAll({
-      where,
-      limit: 24,
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: Image,
-          order: [["id", "DESC"]],
-        },
-        {
-          model: Hashtag,
-          order: [["createdAt", "DESC"]],
-        },
-        {
-          model: User,
-          as: "Likers",
-        },
-        {
-          model: Workspace,
-          order: [["createdAt", "DESC"]],
-        }
-      ],
-    });
+//     const posts = await Post.findAll({
+//       where,
+//       limit: 24,
+//       order: [["createdAt", "DESC"]],
+//       include: [
+//         {
+//           model: Image,
+//           order: [["id", "DESC"]],
+//         },
+//         {
+//           model: Hashtag,
+//           order: [["createdAt", "DESC"]],
+//         },
+//         {
+//           model: User,
+//           as: "Likers",
+//         },
+//         {
+//           model: Workspace,
+//           order: [["createdAt", "DESC"]],
+//         }
+//       ],
+//     });
 
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error(error);
-  }
-});
+//     res.status(200).json(posts);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
 
 module.exports = router;

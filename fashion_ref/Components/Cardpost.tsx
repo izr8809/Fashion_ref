@@ -206,13 +206,13 @@ export default function Cardpost(props: CardpostProps) {
         type: HASHTAG_SEARCH_REQUEST,
         data: {
           hashtags: "#" + hashname,
-          workspaceId : userCurrentWorkspaceId,
+          referenceId :currentSpaceId 
         },
       });
       props.setIsUserpage(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [dispatch, props, userCurrentWorkspaceId]
+    [dispatch, props, currentSpaceId]
   );
 
   useEffect(() => {

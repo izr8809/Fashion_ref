@@ -139,22 +139,25 @@ export default function SettingsMenu(props: SettingsMenuProps) {
                 </div>
                 {workspaceInfo.WorkspaceAdministrators && workspaceInfo.WorkspaceAdministrators.find((v:any)=> v.id === w.id) ? 
                 <Button
-                      variant="contained"
+                      // variant="contained"
                       size="small"
-                      sx={{width:"30%"}}
+                      sx={{width:"30%", marginRight:"5px"}}
                       onClick={() => deleteAdminUser(w.id)}
                     >
                       관리자 해제
                     </Button> : 
                     <Button
-                      variant="contained"
+                      // variant="contained"
                       size="small"
-                      sx={{width:"30%"}}
+                      sx={{width:"30%", marginRight:"5px"}}
                       onClick={() => addAdminUser(w.id)}
                     >
                       관리자 등록
                     </Button>}
-                    <Button onClick={() => deleteMember(w.id)}>내보내기</Button>
+                    <Button 
+                      variant="contained" 
+                      size="small"
+                      onClick={() => deleteMember(w.id)}>내보내기</Button>
               </MenuItem>
             ))}
           </>

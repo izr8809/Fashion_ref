@@ -42,16 +42,16 @@ export default function ReferenceView({setIsHomeState}: ReferenceViewProps) {
     dispatch({
       type: RESET_POST_REQUEST,
       data: {
-        workspaceId: userCurrentWorkspaceId,
+        referenceId: currentSpaceId,
       },
     });
     dispatch(
       loadPost({
-        workspaceId: userCurrentWorkspaceId,
+        referenceId: currentSpaceId,
       })
     );
     setIsUserpage(false);
-  }, [dispatch, userCurrentWorkspaceId]);
+  }, [dispatch, currentSpaceId]);
 
   const filterTodayPost = useCallback(() => {
     var sortedArray = [...postArray];
@@ -71,8 +71,9 @@ export default function ReferenceView({setIsHomeState}: ReferenceViewProps) {
   const sortpostbylikes = useCallback(() => {
     dispatch({
       type: GET_LIKESORTED_REQUEST,
+      referenceId : currentSpaceId, 
     });
-  }, [dispatch]);
+  }, [dispatch,currentSpaceId]);
 
   
 //   useEffect(() => {

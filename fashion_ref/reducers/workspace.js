@@ -27,6 +27,9 @@ export const initialState = {
   deleteMemberLoading: false,
   deleteMemberDone: false,
   deleteMemberError: null,
+  changeWorkspaceLoading : false,
+  changeWorkspaceDone : false,
+  changeWorkspaceError : null,
 };
 
 export const LOAD_WORKSPACE_INFO_REQUEST = "LOAD_WORKSPACE_INFO_REQUEST";
@@ -53,6 +56,8 @@ export const DELETE_SAVEDTAGS_FAILURE = "DELETE_SAVEDTAGS_FAILURE";
 
 export const UPDATE_WORKSPACE_INFO = "UPDATE_WORKSPACE_INFO";
 
+export const CHANGE_CURRENTSPACE_ID = "CHANGE_CURRENTSPACE_ID";
+
 export const ADD_ADMIN_USER_REQUEST = "ADD_ADMIN_USER_REQUEST";
 export const ADD_ADMIN_USER_SUCCESS = "ADD_ADMIN_USER_SUCCESS";
 export const ADD_ADMIN_USER_FAILURE = "ADD_ADMIN_USER_FAILURE";
@@ -64,6 +69,10 @@ export const DELETE_ADMIN_USER_FAILURE = "DELETE_ADMIN_USER_FAILURE";
 export const DELETE_MEMBER_REQUEST = "DELETE_MEMBER_REQUEST";
 export const DELETE_MEMBER_SUCCESS = "DELETE_MEMBER_SUCCESS";
 export const DELETE_MEMBER_FAILURE = "DELETE_MEMBER_FAILURE";
+
+export const CHANGE_WORKSPACE_REQUEST = "CHANGE_WORKSPACE_REQUEST";
+export const CHANGE_WORKSPACE_SUCCESS = "CHANGE_WORKSPACE_SUCCESS";
+export const CHANGE_WORKSPACE_FAILURE = "CHANGE_WORKSPACE_FAILURE"; 
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -142,6 +151,22 @@ const reducer = (state = initialState, action) => {
         draft.addtagError = action.error;
         break;
 
+      case CHANGE_WORKSPACE_REQUEST:
+        draft.changeWorkspaceLoading = true;
+        draft.changeWorkspaceError = null;
+        draft.changeWorkspaceDone = false;
+        break;
+
+      case CHANGE_WORKSPACE_SUCCESS:
+        draft.changeWorkspaceLoading = false;
+        draft.changeWorkspaceDone = true;
+        break;
+
+      case CHANGE_WORKSPACE_FAILURE:
+        draft.changeWorkspaceLoading = false;
+        draft.changeWorkspaceError = action.error;
+        break;
+
       case DELETE_SAVEDTAGS_REQUEST:
         draft.deleteSavedtagsLoading = true;
         draft.deleteSavedtagsError = null;
@@ -162,6 +187,9 @@ const reducer = (state = initialState, action) => {
       case UPDATE_WORKSPACE_INFO:
         draft.workspaceInfo = action.data.selectedWorkspaceInfo;
         break;
+
+      case CHANGE_CURRENTSPACE_ID:
+        draft.currentSpaceId = action.data.id;
 
       case ADD_ADMIN_USER_REQUEST:
         draft.addAdminUserLoading = true;

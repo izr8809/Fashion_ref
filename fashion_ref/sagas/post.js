@@ -39,6 +39,8 @@ import {
   GET_USER_LIKED_POST_FAILURE,
   GET_USER_LIKED_POST_REQUEST,
   GET_LIKESORTED_REQUEST,
+  GET_LIKESORTED_SUCCESS,
+  GET_LIKESORTED_FAILURE,
 } from "@/reducers/post";
 
 //addpost
@@ -87,6 +89,7 @@ function loadPostAPI(data) {
 }
 function* loadPost(action) {
   try {
+    console.log(action.data)
     const result = yield call(loadPostAPI, action.data);
     yield put({
       type: LOAD_POST_SUCCESS,
@@ -266,18 +269,18 @@ function* getUserLikedPost(action) {
 
 //getLikesortedpost
 function getLikedsortedPostAPI(data) {
-  return axios.get(`/post/loadPost?sort=likes&workspaceId=${data.workspaceId}`);
+  return axios.get(`/post/loadPost?sort=likes&referenceId=${data.referenceId}`);
 }
 function* getLikedsortedPost(action) {
   try {
     const result = yield call(getLikedsortedPostAPI, action.data);
     yield put({
-      type: GET_USER_LIKED_POST_SUCCESS,
+      type: GET_LIKESORTED_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: GET_USER_LIKED_POST_FAILURE,
+      type: GET_LIKESORTED_FAILURE,
       error: err.response.data,
     });
   }

@@ -147,7 +147,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case LOAD_POST_SUCCESS:
-        draft.postArray = draft.postArray.concat(action.data);
+        draft.postArray = draft.postArray.concat(action.data.posts);
         draft.loadPostDone = false;
         draft.loadPostLoading = false;
         draft.hasMorePost = action.data.length === 24; //나중에 바꿔줘야함.
@@ -202,7 +202,7 @@ const reducer = (state = initialState, action) => {
 
       case GET_HASHTAGS_SUCCESS:
         draft.getHashTagsLoading = true;
-        draft.hashtags = action.data;
+        draft.hashtags = action.data.hashtags;
         draft.getHashTagsDone = true;
         break;
 
@@ -218,7 +218,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case HASHTAG_SEARCH_SUCCESS:
-        draft.postArray = action.data;
+        draft.postArray = action.data.posts;
         draft.hashtagSearchDone = true;
         draft.hashtagSearchLoading = false;
         draft.onInfiniteScroll = true;
@@ -287,11 +287,11 @@ const reducer = (state = initialState, action) => {
       case EDIT_POST_SUCCESS:
         //바뀐 포스팅 인덱스 찾아서 그것만 바꿔서 postArray 다시 업뎃
         const editedPost = state.postArray.find(
-          (v) => v.id === action.data.postId
+          (v) => v.id === action.data.id
         );
         const editedPostindex = state.postArray.indexOf(editedPost);
 
-        draft.postArray[editedPostindex] = action.data.postInfo;
+        draft.postArray[editedPostindex] = action.data;
         draft.editPostLoading = false;
         draft.editPostDone = true;
         break;
@@ -356,6 +356,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case POST_SORT_REQUEST:
+        console.log(action.data)
         draft.postArray = action.data;
         draft.onInfiniteScroll = false;
         break;
@@ -367,7 +368,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case GET_LIKESORTED_SUCCESS:
-        draft.postArray = action.data;
+        draft.postArray = action.data.posts;
         draft.getLikesortedPostLoading = true;
         draft.getLikesortedPostDone = true;
         break;

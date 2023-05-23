@@ -15,6 +15,18 @@ class User extends Sequelize.Model{
         type: Sequelize.STRING(100),
         allowNull : false,
         unique : true,
+      },
+      lastWorkspaceId: {
+        type: Sequelize.INTEGER,
+        allowNull : true,
+      },
+      lastReferenceId: {
+        type: Sequelize.INTEGER,
+        allowNull : true,
+      },
+      lastBoardId: {
+        type: Sequelize.INTEGER,
+        allowNull : true,
       }
     },{
       sequelize,

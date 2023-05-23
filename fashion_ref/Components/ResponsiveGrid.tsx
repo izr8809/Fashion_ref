@@ -22,11 +22,6 @@ type ResponsiveGridProps = {
 export default function ResponsiveGrid({setIsUserpage}: ResponsiveGridProps) {
   const { postArray } = useSelector((state: any) => state.post);
 
-  useEffect(() => {
-  }, [postArray]);
-
-
-
   //check if I like
   return (
     <>

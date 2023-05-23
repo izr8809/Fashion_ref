@@ -36,11 +36,13 @@ export default function AlarmMenu(props: AlarmMenuProps) {
     setAnchorEl(null);
   };
   useEffect(() => {
-    setFilteredNoti(
-      user.Notifications.filter(
-        (v: any) => v.workspaceId == userCurrentWorkspaceId
-      )
-    );
+    if(user){
+      setFilteredNoti(
+        user.Notifications.filter(
+          (v: any) => v.workspaceId == userCurrentWorkspaceId
+        )
+      );
+    }
   }, [user]);
 
   const confirmRequest = useCallback((id: number) => {
@@ -126,7 +128,7 @@ export default function AlarmMenu(props: AlarmMenuProps) {
             </div>
           ) : (
             <>
-            {user.Notifications.length != 0 ? (
+            {user && user.Notifications.length != 0 ? (
             <div
               style={{
                 backgroundColor: "#EC5E5E",
@@ -139,7 +141,7 @@ export default function AlarmMenu(props: AlarmMenuProps) {
                 opacity: 0.8,
               }}
             >
-              <span>{user.Notifications.length}</span>
+              <span>{user && user.Notifications.length}</span>
             </div>) : (<></>)
 
             }
@@ -210,7 +212,7 @@ export default function AlarmMenu(props: AlarmMenuProps) {
           ))
         ) : (
           <>
-            {user.Notifications.map((w: any, index: any) => (
+            {user && user.Notifications.map((w: any, index: any) => (
               <MenuItem
                 id="alarmMenu"
                 style={{ width: "400px", marginTop: "10px" }}

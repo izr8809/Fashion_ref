@@ -41,6 +41,9 @@ export const initialState = {
   posts: [],
   userWorkspace: [],
   userCurrentWorkspaceId: 0,
+  lastWorkspaceId : null,
+  lastReferenceId : null,
+  lastBoardId : null,
 };
 
 export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
@@ -178,12 +181,14 @@ const reducer = (state = initialState, action) => {
 
       case LOAD_USER_SUCCESS:
         draft.loadUserLoading = false;
-        draft.user = action.data;
         draft.loadUserDone = true;
         //if workspace exists
-        if (action.data) {
+        if (action.data.Workspaces) {
+          draft.user = action.data;
           draft.userWorkspace = action.data.Workspaces;
-          draft.userCurrentWorkspaceId = action.data.Workspaces[0].id || 0;
+          draft.userCurrentWorkspaceId = action.data.lastWorkspaceId || 0;
+          draft.lastWorkspaceId = action.data.lastWorkspaceId;
+          draft.lastReferenceId = action.data.lastReferenceId;
         }
         break;
 
@@ -203,7 +208,9 @@ const reducer = (state = initialState, action) => {
         draft.logInLoading = false;
         draft.user = action.data;
         draft.userWorkspace = action.data.Workspaces;
-        draft.userCurrentWorkspaceId = action.data.Workspaces[0].id || 0;
+        draft.userCurrentWorkspaceId = action.data.lastWorkspaceId || 0;
+        draft.lastWorkspaceId = action.data.lastWorkspaceId;
+        draft.lastReferenceId = action.data.lastReferenceId;
         break;
 
       case LOG_IN_FAILURE:
@@ -217,7 +224,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case LOG_OUT_SUCCESS:
-        draft.logOutDone = false;
+        draft.logOutDone = true;
         draft.logOutLoading = false;
         draft.logOutError = null;
         draft.user = null;
@@ -346,7 +353,7 @@ const reducer = (state = initialState, action) => {
 
       case DENY_REQUEST_SUCCESS:
         draft.denyRequestLoading = false;
-        draft.user = action.data;
+        draft.user.Notifications = action.data;
         draft.denyRequestDone = true;
         break;
 
@@ -363,7 +370,7 @@ const reducer = (state = initialState, action) => {
 
       case DELELTE_NOTI_SUCCESS:
         draft.deleteNotiLoading = false;
-        draft.user = action.data;
+        draft.user.Notifications = action.data;
         draft.deleteNotiDone = true;
         break;
 
@@ -372,9 +379,6 @@ const reducer = (state = initialState, action) => {
         draft.deleteNotiError = action.error;
         break;
 
-      case UPDATE_WORKSPACE_ID:
-        draft.userCurrentWorkspaceId = action.data.id;
-        break;
       default:
         return state;
     }

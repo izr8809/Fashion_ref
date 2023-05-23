@@ -125,7 +125,7 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
         setIsUserpage(false);
       }
     },
-    [dispatch, value]
+    [dispatch, value,currentSpaceId]
   );
 
   const saveTag = useCallback(() => {
@@ -229,9 +229,10 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
       setIsHaveInputValue(false)
       setDropDownList([])
     } else {
+      var value = (inputValue.split("#").length > 1) ? inputValue.split("#")[1] : inputValue; 
       const index = workspaceInfo.References.findIndex((v:any) => v.id == currentSpaceId);
       const choosenTextList = workspaceInfo.References[index].Hashtags.filter((textItem :any) =>
-        textItem.name.includes(inputValue)
+        textItem.name.includes(value)
       )
       setDropDownList(choosenTextList)
     }
@@ -350,13 +351,13 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
         <div style={{ marginTop: "10px", display: "flex", height:"28px" }}>
           <div
             style={{
-              width: "11%",
+              width: "8%",
               textAlign: "center",
               padding: "10px 0",
               fontSize: "0.7rem",
             }}
           >
-            저장된 태그 그룹
+            저장된 태그
           </div>
           <div style={{ width: "92%" }}>
             {savedTagsArray.map(
