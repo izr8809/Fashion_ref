@@ -1,31 +1,30 @@
-import express from "express";
-const next = require("next");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
+import express from 'express';
+const next = require('next');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const prod = true;
 const app = next({ prod });
 const handle = app.getRequestHandler();
-const { sequelize } = require("./models");
-const passport = require("passport");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+const { sequelize } = require('./models');
+const passport = require('passport');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const path = require('path');
 
-var bodyParser = require("body-parser");
+var bodyParser = require('body-parser');
 
 //router
-const postRouter = require ("./routes/post");
-const userRouter = require("./routes/user");
-const workspaceRouter = require("./routes/workspace");
+const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
+const workspaceRouter = require('./routes/workspace');
 
 //seqeulize setting
 sequelize
   .sync({ force: false })
   .then(() => {
-    console.log("databse is connected");
+    console.log('databse is connected');
   })
-  .catch((err:Error) => {
+  .catch((err: Error) => {
     console.error(err);
   });
 
@@ -34,10 +33,10 @@ dotenv.config();
 app.prepare().then(() => {
   const server = express();
   server.use(express.static(__dirname));
-  server.use("/", express.static(path.join(__dirname, "public")));
+  server.use('/', express.static(path.join(__dirname, 'public')));
   server.use(
     cors({
-      origin: "*",
+      origin: '*',
       credentials: true,
     })
   );
@@ -59,7 +58,7 @@ app.prepare().then(() => {
         secure: false,
         maxAge: 1000 * 60 * 60 * 24,
       },
-      name: "session-cookie",
+      name: 'session-cookie',
     })
   );
 
@@ -77,15 +76,15 @@ app.prepare().then(() => {
   //   await ref.addHashtags(hashtags.map((v) => v[0]));
   // });
 
-  server.use("/post", postRouter);
-  server.use("/user", userRouter);
-  server.use("/workspace", workspaceRouter);
+  server.use('/post', postRouter);
+  server.use('/user', userRouter);
+  server.use('/workspace', workspaceRouter);
 
-  server.get("/*", function (req, res) {
+  server.get('/*', function (req, res) {
     handle(req, res);
   });
 
   server.listen(8080, () => {
-    console.log("서버 실행 중!");
+    console.log('서버 실행 중!');
   });
 });

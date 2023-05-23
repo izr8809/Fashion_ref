@@ -100,12 +100,6 @@ interface GetUserLikedPostSuccessResponse {
   ]
 }
 
-interface FailureResponse {
-  data: {
-    message: string;
-    error?: Error | any;
-  };
-}
 
 const upload = multer({
   storage: multerS3({

@@ -6,13 +6,8 @@ const workspace = require('./workspace');
 const reference = require('./reference');
 const savedHashs = require('./savedHashs');
 const notification = require('./notification')
-// const fs = require('fs');
-// const path = require('path');
 const Sequelize = require('sequelize');
-// const process = require('process');
-// const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'production';
-const config = require(__dirname + '/../config/config.js')[env];
+const config = require('../config/config.js')['production'];
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
