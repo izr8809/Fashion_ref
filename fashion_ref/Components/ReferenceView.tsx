@@ -95,13 +95,13 @@ export default function ReferenceView({setIsHomeState}: ReferenceViewProps) {
       ) {
         if (hasMorePost && !loadPostLoading && onInfiniteScroll) {
           const lastId = postArray[postArray.length - 1].id;
-          // dispatch({
-          //   type: LOAD_POST_REQUEST,
-          //   data: {
-          //     lastId: lastId,
-          //     workspaceId: userCurrentWorkspaceId,
-          //   },
-          // });
+          dispatch({
+            type: LOAD_POST_REQUEST,
+            data: {
+              lastId: lastId,
+              referenceId: currentSpaceId,
+            },
+          });
         }
       }
     }
@@ -115,7 +115,7 @@ export default function ReferenceView({setIsHomeState}: ReferenceViewProps) {
     dispatch,
     postArray,
     onInfiniteScroll,
-    userCurrentWorkspaceId,
+    currentSpaceId,
   ]);
 
   

@@ -100,6 +100,12 @@ interface GetUserLikedPostSuccessResponse {
   ]
 }
 
+interface FailureResponse {
+  data: {
+    message: string;
+    error?: Error | any;
+  }
+}
 
 const upload = multer({
   storage: multerS3({
@@ -323,7 +329,7 @@ router.get("/loadPost", async function (req, res) {
     // console.log(req.query.lastId)
     const posts = await Post.findAll({
       where : { ReferenceId: req.query.referenceId},
-      limit: 24,
+      // limit: 96,
       order: [["createdAt", "DESC"]],
       include: [
         {

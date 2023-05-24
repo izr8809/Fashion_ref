@@ -9,7 +9,7 @@ const {
   Reference,
   SavedHashs,
   Notification,
-} = require('../../../models');
+} = require('../../models');
 
 type Data = {
   name: string;
