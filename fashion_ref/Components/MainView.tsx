@@ -65,7 +65,6 @@ export default function MainView({}: MainViewProps) {
   useEffect(()=>{
       if(lastWorkspaceId){
         const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
-        console.log(selectedWorkspaceInfo)
         dispatch({
           type: UPDATE_WORKSPACE_INFO,
           data:{

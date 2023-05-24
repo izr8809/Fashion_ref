@@ -150,7 +150,7 @@ const reducer = (state = initialState, action) => {
         draft.postArray = draft.postArray.concat(action.data.posts);
         draft.loadPostDone = false;
         draft.loadPostLoading = false;
-        draft.hasMorePost = action.data.length === 24; //나중에 바꿔줘야함.
+        draft.hasMorePost = action.data.posts.length === 24; 
         draft.onInfiniteScroll = true;
         break;
 
@@ -356,7 +356,6 @@ const reducer = (state = initialState, action) => {
         break;
 
       case POST_SORT_REQUEST:
-        console.log(action.data)
         draft.postArray = action.data;
         draft.onInfiniteScroll = false;
         break;

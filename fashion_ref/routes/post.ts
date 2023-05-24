@@ -19,6 +19,7 @@ type FileNameCallback = (error: Error | null, {} : FieldName) => void
 interface PostInfo {
     id : number,
     name : string,
+    link : string,
     brand : string,
     category : string,
     season : string,
@@ -156,6 +157,7 @@ router.post("/getHashtags", async function (req : express.Request, res) {
 
 router.post("/addPost", upload.array("image"), async (req, res) => {
   try {
+    console.log(req.body.link)
     let hashtags = await req.body.hashtag.match(/#[^\s#]+/g);
     if (req.files) {
       const post = await Post.create({
@@ -237,6 +239,7 @@ router.post("/addPost", upload.array("image"), async (req, res) => {
       const response : AddPostSuccessResponse = {
         id : madePost.id,
         name : madePost.name,
+        link : madePost.link,
         brand : madePost.brand,
         category : madePost.category,
         season : madePost.season,
@@ -321,15 +324,14 @@ router.get("/loadPost", async function (req, res) {
       return;
     }
 
-    const where = { id : {}};
+    var where :any = { ReferenceId: req.query.referenceId };
     if (parseInt(req.query.lastId as string, 10)) {
       // 초기 로딩이 아닐 때
       where.id = { [Op.lt]: parseInt(req.query.lastId as string, 10) };
     }
-    // console.log(req.query.lastId)
     const posts = await Post.findAll({
-      where : { ReferenceId: req.query.referenceId},
-      // limit: 96,
+      where : where,
+      limit: 24,
       order: [["createdAt", "DESC"]],
       include: [
         {
@@ -654,6 +656,7 @@ router.post("/duplicate", async (req : express.Request, res, next) => {
     const response : DuplicatePostSuccessResponse = {
       id : madePost.id,
       name : madePost.name,
+      link : madePost.link,
       brand : madePost.brand,
       category : madePost.category,
       season : madePost.season,
@@ -806,6 +809,7 @@ router.post("/editPost", upload.array("image"), async (req : express.Request, re
     const response : EditPostSuccessResponse = {
       id : newPost.id,
       name : newPost.name,
+      link : newPost.link,
       brand : newPost.brand,
       category : newPost.category,
       season : newPost.season,
