@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import Input from "@mui/material/Input";
 import useInput from "@/hooks/useInput";
-import { GET_USER_LIKED_POST_REQUEST, LOAD_POST_REQUEST, RESET_POST_REQUEST } from "@/reducers/post";
+import { GET_USER_LIKED_POST_REQUEST, GET_USER_POST_REQUEST, LOAD_POST_REQUEST, RESET_POST_REQUEST } from "@/reducers/post";
 
 
 
@@ -39,7 +39,7 @@ export default function MypageMenu(props: MypageMenuProps) {
         type: RESET_POST_REQUEST,
     })
     dispatch({
-        type:LOAD_POST_REQUEST,
+        type: GET_USER_POST_REQUEST,
         data:{
             referenceId : currentSpaceId,
         }

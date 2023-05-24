@@ -843,7 +843,7 @@ router.post("/user", async (req, res) => {
     try {
       var where = {};
       const posts = await Post.findAll({
-        where: { UserId: req.session.userId },
+        where: { UserId: req.session.userId, ReferenceId : req.body.referenceId },
         // limit: 24, limit 나중에 줘야함
         order: [["createdAt", "DESC"]],
         include: [
@@ -859,11 +859,11 @@ router.post("/user", async (req, res) => {
             model: User,
             as: "Likers",
           },
-          {
-            model: Workspace,
-            where:{ id: parseInt(req.body.workspaceId, 10)},
-            order: [["createdAt", "DESC"]],
-          }
+          // {
+          //   model: Workspace,
+          //   where:{ id: parseInt(req.body.workspaceId, 10)},
+          //   order: [["createdAt", "DESC"]],
+          // }
         ],
       });
 
@@ -901,7 +901,7 @@ router.post("/userLiked", async (req, res) => {
     try {
       var where = {};
       const posts = await Post.findAll({
-        where: { UserId: req.session.userId },
+        where: { UserId: req.session.userId, ReferenceId : req.body.referenceId },
         // limit: 24, limit 나중에 줘야함
         order: [["createdAt", "DESC"]],
         include: [

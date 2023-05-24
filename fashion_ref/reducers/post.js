@@ -308,7 +308,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case GET_USER_POST_SUCCESS:
-        draft.postArray = action.data;
+        draft.postArray = action.data.posts;
         draft.getUserPostLoading = false;
         draft.getUserPostDone = true;
         break;
@@ -325,7 +325,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case GET_USER_LIKED_POST_SUCCESS:
-        draft.postArray = action.data;
+        draft.postArray = action.data.posts;
         draft.getUserLikedPostLoading = false;
         draft.getUserLikedPostDone = true;
         break;
@@ -356,6 +356,7 @@ const reducer = (state = initialState, action) => {
         break;
 
       case POST_SORT_REQUEST:
+        console.log(action.data)
         draft.postArray = action.data;
         draft.onInfiniteScroll = false;
         break;
