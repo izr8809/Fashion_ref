@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Op } from 'sequelize';
-const { User, Post, Hashtag, Reference } = require('../../../models');
+const { User, Post, Hashtag, Reference, Image } = require('../../../models');
 
 interface HashtagSearchSuccessResponse {
   posts: PostInfo[];

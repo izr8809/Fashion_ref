@@ -101,6 +101,7 @@ router.use(upload.array('image')).post(async (req, res) => {
       id: madePost.id,
       name: madePost.name,
       brand: madePost.brand,
+      link: madePost.link,
       category: madePost.category,
       season: madePost.season,
       userId: madePost.userId,

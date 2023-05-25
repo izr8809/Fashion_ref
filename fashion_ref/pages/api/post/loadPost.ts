@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Sequelize, Op } from 'sequelize';
 
-const { Hashtag, Post, User } = require('../../../models');
+const { Hashtag, Post, User, Image } = require('../../../models');
 
 interface LoadPostSuccessResponse {
   posts: PostInfo[];

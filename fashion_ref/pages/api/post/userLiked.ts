@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const { Hashtag, Reference, Post, User } = require('../../../models');
+const { Hashtag, Reference, Post, User, Image } = require('../../../models');
 
 interface GetUserLikedPostSuccessResponse {
   posts: PostInfo[];
