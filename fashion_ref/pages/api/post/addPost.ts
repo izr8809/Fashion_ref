@@ -1,10 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import s3 from '@/lib/aws-config';
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import { v4 as uuidv4 } from 'uuid';
 import { getSession } from '@/lib/session';
+import { upload } from '@/lib/aws-config';
 
 const { User, Post, Hashtag, Image, Reference } = require('../../../models');
 
@@ -16,23 +13,6 @@ interface NextApiRequestExtended extends NextApiRequest {
 interface AddPostSuccessResponse extends PostInfo {}
 
 const router = nextConnect<NextApiRequestExtended, NextApiResponse>();
-
-const upload = multer({
-  storage: multerS3({
-    s3,
-    bucket: process.env.AWS_S3_BUCKET!,
-    acl: 'public-read',
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: function (req, file, cb) {
-      const [_, ext]: any = file.originalname.match(/(\.\w+)$/);
-      const key = uuidv4() + ext;
-      cb(null, key);
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-});
 
 router.use(upload.array('image')).post(async (req, res) => {
   try {

@@ -16,8 +16,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<LoginSuccessResponse | FailureResponse>
 ) {
-  // user 정보를 DB에서 조회
-  // console.log("email" +req.body.email)
+  if (req.method !== 'POST') {
+    return;
+  }
 
   const { email, password } = req.body;
 

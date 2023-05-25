@@ -13,6 +13,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SignupSuccessResponse | FailureResponse>
 ) {
+  if (req.method !== 'POST') {
+    return;
+  }
+
   const { email, password, name } = req.body;
   const hashedPassword = await bcrypt.hash(password, 12);
 

@@ -14,17 +14,13 @@ interface GetHashtagsSuccessResponse {
   };
 }
 
-interface FailureResponse {
-  data: {
-    message: string;
-    error?: Error | any;
-  };
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<GetHashtagsSuccessResponse | FailureResponse>
 ) {
+  if (req.method !== 'POST') {
+    return;
+  }
   try {
     const where = {};
     const hashtags = await Hashtag.findAll({

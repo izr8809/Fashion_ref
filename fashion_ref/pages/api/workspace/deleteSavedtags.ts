@@ -1,11 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const {
-  Hashtag,
-  Workspace,
-  Reference,
-  SavedHashs,
-} = require('../../../models');
+const { Workspace, Reference, SavedHashs } = require('../../../models');
 
 interface AddReferenceSuccessResponse extends WorkspaceInfo {}
 
@@ -13,33 +8,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AddReferenceSuccessResponse | FailureResponse>
 ) {
-  if (req.method !== 'POST') {
-    return;
-  }
   try {
-    const workspaceId = parseInt(req.body.workspaceId);
+    const savedHash = await SavedHashs.findOne({
+      id: req.body.id,
+    });
+
+    if (savedHash) {
+      await SavedHashs.destroy({
+        where: { id: req.body.id },
+      });
+    }
 
     const ws = await Workspace.findOne({
-      where: { id: workspaceId },
-    });
-
-    const reference = await Reference.create({
-      name: req.body.name,
-    });
-
-    await reference.setWorkspace(ws);
-
-    const updatedWs = await Workspace.findOne({
-      where: { id: workspaceId },
+      where: { id: req.body.workspaceId },
       include: [
         {
           model: Reference,
           order: [['createdAt', 'ASC']],
           include: [
-            {
-              model: Hashtag,
-              order: [['createdAt', 'DESC']],
-            },
             {
               model: SavedHashs,
               order: [['createdAt', 'DESC']],
@@ -49,19 +35,20 @@ export default async function handler(
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
+
     const response: AddReferenceSuccessResponse = {
-      id: updatedWs.id,
-      name: updatedWs.name,
-      isPremium: updatedWs.isPremium,
-      code: updatedWs.code,
-      References: updatedWs.References,
+      id: ws.id,
+      name: ws.name,
+      isPremium: ws.isPremium,
+      code: ws.code,
+      References: ws.References,
     };
 
     res.json(response);
   } catch (err) {
     const response: FailureResponse = {
       data: {
-        message: 'addReferenceFailure',
+        message: 'deleteSavedTagsFailure',
         error: err,
       },
     };

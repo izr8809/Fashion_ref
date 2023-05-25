@@ -5,32 +5,33 @@ const {
   Workspace,
   Reference,
   SavedHashs,
+  User,
 } = require('../../../models');
 
-interface AddReferenceSuccessResponse extends WorkspaceInfo {}
+interface AddAdministratorsSuccessResponse extends WorkspaceInfo {
+  WorkspaceUser: [];
+  WorkspaceAdministrators: [];
+}
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AddReferenceSuccessResponse | FailureResponse>
+  res: NextApiResponse<AddAdministratorsSuccessResponse | FailureResponse>
 ) {
   if (req.method !== 'POST') {
     return;
   }
   try {
-    const workspaceId = parseInt(req.body.workspaceId);
-
     const ws = await Workspace.findOne({
-      where: { id: workspaceId },
+      where: { id: req.body.workspaceId },
+    });
+    const targetUser = await User.findOne({
+      where: { id: req.body.targetUserId },
     });
 
-    const reference = await Reference.create({
-      name: req.body.name,
-    });
-
-    await reference.setWorkspace(ws);
+    await ws.addWorkspaceAdministrators(targetUser);
 
     const updatedWs = await Workspace.findOne({
-      where: { id: workspaceId },
+      where: { id: req.body.workspaceId },
       include: [
         {
           model: Reference,
@@ -46,26 +47,38 @@ export default async function handler(
             },
           ],
         },
+        {
+          model: User,
+          order: [['createdAt', 'DESC']],
+        },
+        {
+          model: User,
+          as: 'WorkspaceAdministrators',
+          order: [['createdAt', 'DESC']],
+        },
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
-    const response: AddReferenceSuccessResponse = {
+
+    const response: AddAdministratorsSuccessResponse = {
       id: updatedWs.id,
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
       References: updatedWs.References,
+      WorkspaceUser: updatedWs.WorkspaceUser,
+      WorkspaceAdministrators: updatedWs.WorkspaceAdministrators,
     };
 
     res.json(response);
   } catch (err) {
+    console.log(err);
     const response: FailureResponse = {
       data: {
-        message: 'addReferenceFailure',
+        message: 'addAdministratorsFailure',
         error: err,
       },
     };
     res.status(401).send(response);
-    console.log(err);
   }
 }

@@ -7,30 +7,28 @@ const {
   SavedHashs,
 } = require('../../../models');
 
-interface AddReferenceSuccessResponse extends WorkspaceInfo {}
+interface AddReferenceTagSuccessResponse extends WorkspaceInfo {}
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AddReferenceSuccessResponse | FailureResponse>
+  res: NextApiResponse<AddReferenceTagSuccessResponse | FailureResponse>
 ) {
   if (req.method !== 'POST') {
     return;
   }
   try {
-    const workspaceId = parseInt(req.body.workspaceId);
-
-    const ws = await Workspace.findOne({
-      where: { id: workspaceId },
+    const reference = await Reference.findOne({
+      id: req.body.refernceId,
     });
 
-    const reference = await Reference.create({
-      name: req.body.name,
+    const newSavedHashs = await SavedHashs.create({
+      hashs: req.body.tags,
     });
 
-    await reference.setWorkspace(ws);
+    await reference.addSavedHashs(newSavedHashs);
 
     const updatedWs = await Workspace.findOne({
-      where: { id: workspaceId },
+      where: { id: req.body.workspaceId },
       include: [
         {
           model: Reference,
@@ -49,7 +47,8 @@ export default async function handler(
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
-    const response: AddReferenceSuccessResponse = {
+
+    const response: AddReferenceTagSuccessResponse = {
       id: updatedWs.id,
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
@@ -61,7 +60,7 @@ export default async function handler(
   } catch (err) {
     const response: FailureResponse = {
       data: {
-        message: 'addReferenceFailure',
+        message: 'addReferenceTagFailure',
         error: err,
       },
     };

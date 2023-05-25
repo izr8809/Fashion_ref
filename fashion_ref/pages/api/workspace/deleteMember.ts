@@ -5,29 +5,32 @@ const {
   Workspace,
   Reference,
   SavedHashs,
+  User,
 } = require('../../../models');
 
-interface AddReferenceSuccessResponse extends WorkspaceInfo {}
+interface DeleteMemeberSuccessResponse extends WorkspaceInfo {
+  WorkspaceUser: [];
+  WorkspaceAdministrators: [];
+}
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AddReferenceSuccessResponse | FailureResponse>
+  res: NextApiResponse<DeleteMemeberSuccessResponse | FailureResponse>
 ) {
   if (req.method !== 'POST') {
     return;
   }
-  try {
-    const workspaceId = parseInt(req.body.workspaceId);
 
+  try {
+    const { workspaceId } = req.body;
     const ws = await Workspace.findOne({
       where: { id: workspaceId },
     });
-
-    const reference = await Reference.create({
-      name: req.body.name,
+    const targetUser = await User.findOne({
+      where: { id: workspaceId },
     });
 
-    await reference.setWorkspace(ws);
+    await ws.removeUser(targetUser);
 
     const updatedWs = await Workspace.findOne({
       where: { id: workspaceId },
@@ -46,26 +49,38 @@ export default async function handler(
             },
           ],
         },
+        {
+          model: User,
+          order: [['createdAt', 'DESC']],
+        },
+        {
+          model: User,
+          as: 'WorkspaceAdministrators',
+          order: [['createdAt', 'DESC']],
+        },
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
-    const response: AddReferenceSuccessResponse = {
+
+    const response: DeleteMemeberSuccessResponse = {
       id: updatedWs.id,
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
       References: updatedWs.References,
+      WorkspaceUser: updatedWs.WorkspaceUser,
+      WorkspaceAdministrators: updatedWs.WorkspaceAdministrators,
     };
 
     res.json(response);
   } catch (err) {
+    console.log(err);
     const response: FailureResponse = {
       data: {
-        message: 'addReferenceFailure',
+        message: 'deleteMemberFailure',
         error: err,
       },
     };
     res.status(401).send(response);
-    console.log(err);
   }
 }

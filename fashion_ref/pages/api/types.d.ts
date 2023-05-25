@@ -35,6 +35,7 @@ interface PostInfo {
   category: string;
   season: string;
   userId: number;
+  link: string;
   ReferenceId: number;
   Images: { id: number; postId: number; src: string; name: string }[];
   Hashtags: { id: number; name: string }[];
