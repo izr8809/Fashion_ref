@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const { Post } = require('../../../models');
+const { Post } = require('../../../../models');
 
 interface UnlikePostSuccessResponse {
   PostId: number;
