@@ -17,7 +17,7 @@ export default async function handler(
 
   const { userId } = getSession(req);
 
-  if (userId) {
+  if (!userId) {
     const response: FailureResponse = {
       data: {
         message: 'logoutFailure',

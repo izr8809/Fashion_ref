@@ -7,9 +7,13 @@ import { useState, useEffect, useCallback } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch } from "react-redux";
 import Input from "@mui/material/Input";
-import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
+import BrightnessLowIcon from "@mui/icons-material/BrightnessLow";
 import useInput from "@/hooks/useInput";
-import { ADD_ADMIN_USER_REQUEST, DELETE_ADMIN_USER_REQUEST, DELETE_MEMBER_REQUEST } from "@/reducers/workspace";
+import {
+  ADD_ADMIN_USER_REQUEST,
+  DELETE_ADMIN_USER_REQUEST,
+  DELETE_MEMBER_REQUEST,
+} from "@/reducers/workspace";
 
 type SettingsMenuProps = {
   isHomeState: any;
@@ -31,35 +35,44 @@ export default function SettingsMenu(props: SettingsMenuProps) {
     setAnchorEl(null);
   };
 
-  const addAdminUser = useCallback((id : number)=>{
-    dispatch({
-      type: ADD_ADMIN_USER_REQUEST,
-      data:{
-        targetUserId : id,
-        workspaceId : userCurrentWorkspaceId,
-      }
-    })
-  },[userCurrentWorkspaceId])
+  const addAdminUser = useCallback(
+    (id: number) => {
+      dispatch({
+        type: ADD_ADMIN_USER_REQUEST,
+        data: {
+          targetUserId: id,
+          workspaceId: userCurrentWorkspaceId,
+        },
+      });
+    },
+    [userCurrentWorkspaceId]
+  );
 
-  const deleteAdminUser = useCallback((id : number)=> {
-    dispatch({
-      type: DELETE_ADMIN_USER_REQUEST,
-      data:{
-        targetUserId : id,
-        workspaceId : userCurrentWorkspaceId,
-      }
-    })
-  },[userCurrentWorkspaceId])
+  const deleteAdminUser = useCallback(
+    (id: number) => {
+      dispatch({
+        type: DELETE_ADMIN_USER_REQUEST,
+        data: {
+          targetUserId: id,
+          workspaceId: userCurrentWorkspaceId,
+        },
+      });
+    },
+    [userCurrentWorkspaceId]
+  );
 
-  const deleteMember = useCallback((id : number)=> {
-    dispatch({
-      type: DELETE_MEMBER_REQUEST,
-      data:{
-        targetUserId : id,
-        workspaceId : userCurrentWorkspaceId,
-      }
-    })
-  },[userCurrentWorkspaceId])
+  const deleteMember = useCallback(
+    (id: number) => {
+      dispatch({
+        type: DELETE_MEMBER_REQUEST,
+        data: {
+          targetUserId: id,
+          workspaceId: userCurrentWorkspaceId,
+        },
+      });
+    },
+    [userCurrentWorkspaceId]
+  );
 
   return (
     <>
@@ -110,22 +123,36 @@ export default function SettingsMenu(props: SettingsMenuProps) {
           top: "32px",
         }}
       >
-          <>
-            {workspaceInfo && workspaceInfo.Users.map((w: any, index: any) => (
+        [
+          {workspaceInfo &&
+            workspaceInfo.Users.map((w: any, index: any) => 
               <MenuItem
-                id="alarmMenu"
+                id="settingsMenu"
                 style={{ width: "400px", marginTop: "10px" }}
+                key = {w.id}
               >
-              {workspaceInfo.WorkspaceAdministrators && workspaceInfo.WorkspaceAdministrators.find((v:any)=> v.id === w.id) ? <div style={{
-                backgroundColor: "#EC5E5E",
-                borderRadius: "2px",
-                minHeight: "0px",
-                fontSize: "0.8rem",
-                height: "18px",
-                width: "70px",
-                color: "#FFF",
-                textAlign:"center",
-                opacity: 0.8,}}>관리자</div> : <></>}
+                {workspaceInfo.WorkspaceAdministrators &&
+                workspaceInfo.WorkspaceAdministrators.find(
+                  (v: any) => v.id === w.id
+                ) ? (
+                  <div
+                    style={{
+                      backgroundColor: "#EC5E5E",
+                      borderRadius: "2px",
+                      minHeight: "0px",
+                      fontSize: "0.8rem",
+                      height: "18px",
+                      width: "70px",
+                      color: "#FFF",
+                      textAlign: "center",
+                      opacity: 0.8,
+                    }}
+                  >
+                    관리자
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <div
                   style={{
                     marginLeft: "10px",
@@ -137,30 +164,38 @@ export default function SettingsMenu(props: SettingsMenuProps) {
                 >
                   {w.name}
                 </div>
-                {workspaceInfo.WorkspaceAdministrators && workspaceInfo.WorkspaceAdministrators.find((v:any)=> v.id === w.id) ? 
+                {workspaceInfo.WorkspaceAdministrators &&
+                workspaceInfo.WorkspaceAdministrators.find(
+                  (v: any) => v.id === w.id
+                ) ? (
+                  <Button
+                    // variant="contained"
+                    size="small"
+                    sx={{ width: "30%", marginRight: "5px" }}
+                    onClick={() => deleteAdminUser(w.id)}
+                  >
+                    관리자 해제
+                  </Button>
+                ) : (
+                  <Button
+                    // variant="contained"
+                    size="small"
+                    sx={{ width: "30%", marginRight: "5px" }}
+                    onClick={() => addAdminUser(w.id)}
+                  >
+                    관리자 등록
+                  </Button>
+                )}
                 <Button
-                      // variant="contained"
-                      size="small"
-                      sx={{width:"30%", marginRight:"5px"}}
-                      onClick={() => deleteAdminUser(w.id)}
-                    >
-                      관리자 해제
-                    </Button> : 
-                    <Button
-                      // variant="contained"
-                      size="small"
-                      sx={{width:"30%", marginRight:"5px"}}
-                      onClick={() => addAdminUser(w.id)}
-                    >
-                      관리자 등록
-                    </Button>}
-                    <Button 
-                      variant="contained" 
-                      size="small"
-                      onClick={() => deleteMember(w.id)}>내보내기</Button>
-              </MenuItem>
-            ))}
-          </>
+                  variant="contained"
+                  size="small"
+                  onClick={() => deleteMember(w.id)}
+                >
+                  내보내기
+                </Button>
+              </MenuItem>,
+            )}
+        ]
       </Menu>
     </>
   );

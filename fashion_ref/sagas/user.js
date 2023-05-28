@@ -10,7 +10,7 @@ import { ADD_POST_FAILURE } from "@/reducers/post";
 
 
 //load user
-function loadUserAPI(data) {
+function loadUserAPI() {
   return axios.get(`/user/user`);
 }
 

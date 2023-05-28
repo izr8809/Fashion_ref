@@ -154,12 +154,15 @@ export default function WorkspaceChangeMenu() {
       >
         {user &&
           user.Workspaces.map((w: any, index: any) => (
+            [
             <MenuItem
               onClick={()=>loadWorkspace(w.id)}
               style={{ width: "244px", marginTop: "10px" }}
+              key = {w.id}
             >
               {w.name.split("_")[0] == "private" ? user.name +"님의 작업실" : w.name}
             </MenuItem>
+            ]
           ))}
 
         <Button

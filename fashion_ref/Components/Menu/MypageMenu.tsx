@@ -97,6 +97,7 @@ export default function MypageMenu(props: MypageMenuProps) {
           top: "32px",
         }}
       >
+        [
             <MenuItem
               style={{ width: "140px", marginTop: "10px" }}
             >
@@ -116,7 +117,6 @@ export default function MypageMenu(props: MypageMenuProps) {
                 내 게시물
                 </Button>
             </MenuItem>
-
             <MenuItem
               style={{ width: "140px", marginTop: "10px" }}
             >
@@ -137,7 +137,7 @@ export default function MypageMenu(props: MypageMenuProps) {
                 좋아요 누른 게시물
                 </Button>
             </MenuItem>
-
+          ]
       </Menu>
     </>
   );

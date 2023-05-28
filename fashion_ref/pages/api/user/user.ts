@@ -19,6 +19,7 @@ export default async function handler(
     return;
   }
 
+  console.log("e");
   const { userId } = getSession(req);
 
   try {
