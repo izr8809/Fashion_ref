@@ -77,7 +77,7 @@ export default function MainView({}: MainViewProps) {
             id : lastWorkspaceId
           }
         });
-        if(lastReferenceId || lastBoardId){
+        if(lastReferenceId || lastBoardId){ 
           dispatch({
             type: CHANGE_CURRENTSPACE_ID,
             data: {
