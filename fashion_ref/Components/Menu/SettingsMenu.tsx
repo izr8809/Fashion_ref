@@ -123,7 +123,6 @@ export default function SettingsMenu(props: SettingsMenuProps) {
           top: "32px",
         }}
       >
-        [
           {workspaceInfo &&
             workspaceInfo.Users.map((w: any, index: any) => 
               <MenuItem
@@ -195,7 +194,6 @@ export default function SettingsMenu(props: SettingsMenuProps) {
                 </Button>
               </MenuItem>,
             )}
-        ]
       </Menu>
     </>
   );

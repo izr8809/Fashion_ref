@@ -5,6 +5,7 @@ const {
   Workspace,
   Reference,
   SavedHashs,
+  User
 } = require('../../../models');
 
 interface AddReferenceTagSuccessResponse extends WorkspaceInfo {}
@@ -17,6 +18,7 @@ export default async function handler(
     return;
   }
   try {
+    console.log(req.body.tags)
     const reference = await Reference.findOne({
       id: req.body.refernceId,
     });
@@ -44,6 +46,9 @@ export default async function handler(
             },
           ],
         },
+        {
+          model : User,
+        }
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
@@ -53,6 +58,7 @@ export default async function handler(
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
+      Users: updatedWs.Users,
       References: updatedWs.References,
     };
 

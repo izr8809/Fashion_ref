@@ -167,7 +167,6 @@ export default function AlarmMenu(props: AlarmMenuProps) {
           top: "32px",
         }}
       >
-      [
         {!props.isHomeState && filteredNoti.length != 0 ? (
           user.Notifications &&
           filteredNoti.map((w: any, index: any) => (
@@ -256,7 +255,6 @@ export default function AlarmMenu(props: AlarmMenuProps) {
             ))}
           </>
         )}
-      ]
       </Menu>
     </>
   );

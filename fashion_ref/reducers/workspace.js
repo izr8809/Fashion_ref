@@ -199,6 +199,7 @@ const reducer = (state = initialState, action) => {
 
       case ADD_ADMIN_USER_SUCCESS:
         draft.addAdminUserLoading = false;
+        console.log(action.data)
         draft.workspaceInfo = action.data;
         draft.addAdminUserDone = true;
         break;

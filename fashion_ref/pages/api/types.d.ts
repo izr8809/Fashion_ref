@@ -56,6 +56,7 @@ interface WorkspaceInfo {
   name: string;
   isPremium: number;
   code: string;
+  Users : {}[];
   References: {
     id: number;
     name: string;

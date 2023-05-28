@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const { Workspace, Reference, SavedHashs } = require('../../../models');
+const { Workspace, Reference, SavedHashs, User } = require('../../../models');
 
 interface AddReferenceSuccessResponse extends WorkspaceInfo {}
 
@@ -32,6 +32,9 @@ export default async function handler(
             },
           ],
         },
+        {
+          model : User,
+        }
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
@@ -41,6 +44,7 @@ export default async function handler(
       name: ws.name,
       isPremium: ws.isPremium,
       code: ws.code,
+      Users : ws.Users,
       References: ws.References,
     };
 

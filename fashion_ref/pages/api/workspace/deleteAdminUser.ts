@@ -9,7 +9,7 @@ const {
 } = require('../../../models');
 
 interface DeleteAdministratorsSuccessResponse extends WorkspaceInfo {
-  WorkspaceUser: [];
+  Users: [];
   WorkspaceAdministrators: [];
 }
 
@@ -57,13 +57,15 @@ export default async function handler(
       order: [[Reference, 'createdAt', 'DESC']],
     });
 
+    console.log(updatedWs)
+
     const response: DeleteAdministratorsSuccessResponse = {
       id: updatedWs.id,
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
       References: updatedWs.References,
-      WorkspaceUser: updatedWs.WorkspaceUser,
+      Users: updatedWs.Users,
       WorkspaceAdministrators: updatedWs.WorkspaceAdministrators,
     };
 

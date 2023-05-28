@@ -354,7 +354,7 @@ const reducer = (state = initialState, action) => {
 
       case DENY_REQUEST_SUCCESS:
         draft.denyRequestLoading = false;
-        draft.user.Notifications = action.data;
+        draft.user.Notifications = action.data.Notifications;
         draft.denyRequestDone = true;
         break;
 
@@ -371,7 +371,7 @@ const reducer = (state = initialState, action) => {
 
       case DELELTE_NOTI_SUCCESS:
         draft.deleteNotiLoading = false;
-        draft.user.Notifications = action.data;
+        draft.user.Notifications = action.data.Notifications;
         draft.deleteNotiDone = true;
         break;
 

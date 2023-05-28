@@ -5,6 +5,7 @@ const {
   Workspace,
   Reference,
   SavedHashs,
+  User,
 } = require('../../../models');
 
 interface AddReferenceSuccessResponse extends WorkspaceInfo {}
@@ -46,6 +47,9 @@ export default async function handler(
             },
           ],
         },
+        {
+          model : User,
+        }
       ],
       order: [[Reference, 'createdAt', 'DESC']],
     });
@@ -54,6 +58,7 @@ export default async function handler(
       name: updatedWs.name,
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
+      Users : updatedWs.Users,
       References: updatedWs.References,
     };
 

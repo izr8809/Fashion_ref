@@ -63,7 +63,7 @@ export default function MainView({}: MainViewProps) {
   },[])
 
   useEffect(()=>{
-      if(lastWorkspaceId){
+      if(lastWorkspaceId && user){
         const selectedWorkspaceInfo = user.Workspaces.find((v:any) => v.id == lastWorkspaceId);
         dispatch({
           type: UPDATE_WORKSPACE_INFO,
@@ -94,6 +94,7 @@ export default function MainView({}: MainViewProps) {
           setIsHomeState(false)
         }
       }else{
+        if(user){
           dispatch({
             type: SET_WORKSPACE_INFO_REQUEST,
             data: user,
@@ -104,6 +105,7 @@ export default function MainView({}: MainViewProps) {
               id : user.Workspaces[0].id
             }
           });
+        }
       }
   },[lastReferenceId,lastBoardId,lastWorkspaceId,user])
 
@@ -232,7 +234,7 @@ export default function MainView({}: MainViewProps) {
             >
               {workspaceInfo &&
                 (workspaceInfo.References as Array<any>).map((ref, index) => (
-                  <Grid item xs={6} sm={4} md={3} lg={4}> 
+                  <Grid item xs={6} sm={4} md={3} lg={4} key={ref.id}> 
                     <Item>
                       <li
                         style={{

@@ -19,7 +19,7 @@ export default async function handler(
     return;
   }
 
-  const { userId } = getSession(res);
+  const { userId } = getSession(req);
   const { id } = req.body;
 
   const noti = await Notification.findOne({

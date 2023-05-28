@@ -15,7 +15,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<RequestDenySuccessResponse | FailureResponse>
 ) {
-  if (req.method !== 'POSt') {
+  if (req.method !== 'POST') {
     return;
   }
 

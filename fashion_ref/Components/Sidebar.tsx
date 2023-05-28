@@ -102,6 +102,7 @@ export default function SideBar(props: SideBarProps) {
   },[userCurrentWorkspaceId])
 
   const refClickEvent = useCallback((id : number) => {
+    console.log(id);
     dispatch({
       type: REFERENCE_CLICK_REQUEST,
       data:{

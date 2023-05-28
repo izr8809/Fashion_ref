@@ -9,7 +9,7 @@ const {
 } = require('../../../models');
 
 interface AddAdministratorsSuccessResponse extends WorkspaceInfo {
-  WorkspaceUser: [];
+  Users: [];
   WorkspaceAdministrators: [];
 }
 
@@ -66,7 +66,7 @@ export default async function handler(
       isPremium: updatedWs.isPremium,
       code: updatedWs.code,
       References: updatedWs.References,
-      WorkspaceUser: updatedWs.WorkspaceUser,
+      Users: updatedWs.Users,
       WorkspaceAdministrators: updatedWs.WorkspaceAdministrators,
     };
 
