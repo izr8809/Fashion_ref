@@ -14,9 +14,9 @@ const path = require('path');
 var bodyParser = require('body-parser');
 
 //router
-// const postRouter = require('./routes/post');
-// const userRouter = require('./routes/user');
-// const workspaceRouter = require('./routes/workspace');
+const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
+const workspaceRouter = require('./routes/workspace');
 
 //seqeulize setting
 sequelize
@@ -76,9 +76,9 @@ app.prepare().then(() => {
   //   await ref.addHashtags(hashtags.map((v) => v[0]));
   // });
 
-  // server.use('/post', postRouter);
-  // server.use('/user', userRouter);
-  // server.use('/workspace', workspaceRouter);
+  server.use('/post', postRouter);
+  server.use('/user', userRouter);
+  server.use('/workspace', workspaceRouter);
 
   server.get('/*', function (req, res) {
     handle(req, res);
