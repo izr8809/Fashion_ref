@@ -37,9 +37,7 @@ const theme = createTheme();
 
 export default function LoginPage() {
   const dispatch = useDispatch();
-  const {logInDone} = useSelector((state : any) => state.user)
-  const {logInLoading} = useSelector((state : any) => state.user)
-  const {logInError} = useSelector((state : any) => state.user)
+  const {logInDone, logInLoading, logInError} = useSelector((state : any) => state.user)
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [isSignup, setIsSignup] = useState("false");

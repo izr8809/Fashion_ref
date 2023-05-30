@@ -19,14 +19,12 @@ type SettingsMenuProps = {
   isHomeState: any;
 };
 export default function SettingsMenu(props: SettingsMenuProps) {
-  const { userWorkspaces } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
+  const { user ,userWorkspaces, userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [filteredNoti, setFilteredNoti] = useState([]);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

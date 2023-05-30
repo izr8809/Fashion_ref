@@ -45,18 +45,13 @@ type MainViewProps = {};
 
 export default function MainView({}: MainViewProps) {
   const dispatch = useDispatch();
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);
-  const { userCurrentWorkspaceId} = useSelector((state: any) => state.user);
-  const { lastWorkspaceId } = useSelector((state: any) => state.user);
-  const { lastReferenceId } = useSelector((state: any) => state.user);
-  const { lastBoardId } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user); 
+  const { workspaceInfo, currentSpaceId } = useSelector((state: any) => state.workspace);
+  const { user, userCurrentWorkspaceId, lastWorkspaceId, lastReferenceId, lastBoardId} = useSelector((state: any) => state.user);
   const [isHomeState, setIsHomeState] = useState(true);
   const [isAddingReference, setIsAddingReference] = useState(false);
   const [referenceName, onChangeReferenceName] = useInput("");
   const [isUserpage, setIsUserpage] = useState(false);
   const [searchedHashtags, setSearchedHashtags] = useState<any>([]);
-  const { currentSpaceId } = useSelector((state: any) => state.workspace);
 
   const addReference = useCallback(()=>{
     setIsAddingReference(true);
@@ -215,7 +210,7 @@ export default function MainView({}: MainViewProps) {
         />
 
         <NoticeModal />
-        {isHomeState ? (
+        {isHomeState && !lastReferenceId ? (
           <Box sx={{ flexGrow: 1, marginTop: "10%", marginLeft:"10%" }}>
             <Typography sx={{marginBottom:"30px"}}>
               <span

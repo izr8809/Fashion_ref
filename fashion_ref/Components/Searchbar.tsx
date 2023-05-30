@@ -81,9 +81,8 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
   const searchBar = useRef<HTMLInputElement>(null);
   const [searchedTags, setSearchedTags] = useState<any>([]);
   const [savedTagsArray, setSavedTagsArray] = useState<any>([]);
-  const { currentSpaceId } = useSelector((state: any) => state.workspace);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);
+  const { currentSpaceId, workspaceInfo } = useSelector((state: any) => state.workspace);
+  const { userCurrentWorkspaceId, lastReferenceId } = useSelector((state: any) => state.user);
   const [emptySearchedTagsError, setEmptySearchedTagsError] = useState(false);
   const [referenceIndex, setReferenceIndex] = useState(0);
   const [inputValue, setInputValue] = useState("")
@@ -101,14 +100,17 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
       e.preventDefault();
       e.stopPropagation();
 
-      if (value == "") {
+      if (inputValue == "") {
         dispatch(loadPost());
-      } else if (value.split("#").length < 2) {
+      } else if (inputValue.split("#").length < 2) {
         alert("태그 앞에 #를 붙여주세요");
       } else {
-        let upperCaseValue = value.toUpperCase();
+        let upperCaseValue = inputValue.toUpperCase();
         let hashtags = upperCaseValue.match(/#[^\s#]+/g);
-        let hashArray = [...searchedTags, ...hashtags];
+        let hashArray = [...searchedTags]
+        if(hashtags){
+          hashArray = [...searchedTags, ...hashtags];
+        }
         setSearchedTags(hashArray);
 
         let hashTextize = "";
@@ -121,11 +123,11 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
             referenceId: currentSpaceId,
           },
         });
-        setValue("");
+        setInputValue("");
         setIsUserpage(false);
       }
     },
-    [dispatch, value,currentSpaceId]
+    [dispatch, inputValue,currentSpaceId]
   );
 
   const saveTag = useCallback(() => {
@@ -144,7 +146,7 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
         },
       });
     }
-  }, [value, userCurrentWorkspaceId, currentSpaceId, searchedTags]);
+  }, [inputValue, userCurrentWorkspaceId, currentSpaceId, searchedTags]);
 
   const savedTagsClick = useCallback(
     (e: any, hashs: string) => {
@@ -168,10 +170,13 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
 
   useEffect(() => {
     if(workspaceInfo){
+      const idForSearch = (currentSpaceId) ? currentSpaceId : lastReferenceId
       const refIndex = workspaceInfo.References?.findIndex(
-        (v: any) => v.id === currentSpaceId
+        (v: any) => v.id === idForSearch
       );
       if(workspaceInfo.References.length !=0){
+        console.log(workspaceInfo)
+        console.log(refIndex)
         setSavedTagsArray(workspaceInfo.References[refIndex].SavedHashs)
       }else{
         setSavedTagsArray([]);
@@ -278,6 +283,11 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
     }
   }
 
+  const handleKeyDown = (event : React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+    }
+  };
+
   useEffect(()=>{
     showDropDownList();
   }, [inputValue])
@@ -323,6 +333,7 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
                 value={inputValue}
                 onChange={changeInputValue}
                 onKeyUp={handleDropDownKey}
+                onKeyDown={(e)=> handleKeyDown(e)}
               />
               <DeleteButton onClick={() => setInputValue("")}>&times;</DeleteButton>
             </InputBox>

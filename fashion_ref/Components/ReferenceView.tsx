@@ -27,12 +27,8 @@ type ReferenceViewProps = {
 
 
 export default function ReferenceView({setIsHomeState}: ReferenceViewProps) {
-  const { loadPostLoading } = useSelector((state: any) => state.post);
-  const { postArray } = useSelector((state: any) => state.post);
-  const { onInfiniteScroll } = useSelector((state: any) => state.post);
-  const { hasMorePost } = useSelector((state: any) => state.post);
-  const { user } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const { loadPostLoading, postArray, onInfiniteScroll, hasMorePost } = useSelector((state: any) => state.post);
+  const { user, userCurrentWorkspaceId} = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const [isUserpage, setIsUserpage] = useState(false);
   const [searchedHashtags, setSearchedHashtags] = useState<any>([]);

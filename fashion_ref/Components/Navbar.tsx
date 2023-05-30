@@ -57,15 +57,13 @@ export default function Navbar({
 }: NavbarProps): ReactElement {
 
   //redux
-  const { user } = useSelector((state: any) => state.user);
-  const { hashtags } = useSelector((state: any) => state.post);
-  const { isEdit } = useSelector((state: any) => state.post);
+  const { user , userCurrentWorkspaceId} = useSelector((state: any) => state.user);
+  const { hashtags, isEdit } = useSelector((state: any) => state.post);
   const [clipboardFile, setClipboardFile] = useState(null);
   const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const [uploadModalOpen, setuploadModalOpen] = React.useState(false);
   const { currentSpaceId } = useSelector((state: any) => state.workspace);
   const [loginModalOpen, setloginModalOpen] = React.useState(false);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =

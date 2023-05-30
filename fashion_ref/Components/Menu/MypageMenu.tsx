@@ -16,15 +16,12 @@ type MypageMenuProps = {
   };
   
 export default function MypageMenu(props: MypageMenuProps) {
-  const { userWorkspaces } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user);
+  const { user, userWorkspaces,userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);
+  const { workspaceInfo, currentSpaceId } = useSelector((state: any) => state.workspace);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [value, onChangeValue, setValue] = useInput("");
-  const { currentSpaceId } = useSelector((state: any) => state.workspace);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

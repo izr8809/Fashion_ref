@@ -13,21 +13,18 @@ import { CHANGE_WORKSPACE_REQUEST, UPDATE_WORKSPACE_INFO } from "@/reducers/work
 import { RESET_POST_REQUEST } from "@/reducers/post";
 
 export default function WorkspaceChangeMenu() {
-  const { userWorkspaces } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
+  const { logOutLoading, user, userWorkspaces, userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [switcherName, setSwitcherName] = useState("");
-  const { logOutLoading } = useSelector((state: any) => state.user);
   const [isAddWorkspace, setIsAddWorkspace] = useState(false);
+  const [value, onChangeValue, setValue] = useInput("");
   const [isCode, setIsCode] = useState(false);
   const [placeholderName, SetPlaceholderName] = useState("");
   const [inputOpen, isInputOpen] = useState(false);
-  const open = Boolean(anchorEl);
   const [brandcode, setBrandcode] = useState("");
-  const [value, onChangeValue, setValue] = useInput("");
+  const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

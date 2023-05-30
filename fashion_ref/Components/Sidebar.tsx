@@ -45,9 +45,8 @@ const modalstyle = {
 
 export default function SideBar(props: SideBarProps) {
   const [onSidebar, setOnSidebar] = React.useState(true);
-  const { user } = useSelector((state: any) => state.user);
+  const { user, userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const [isRefOpen, setIsRefOpen] = useState(false);
   const [isAddingNewRef, setIsAddingNewRef] = useState(false);
   const [text, onChangeText] = useInput("")

@@ -74,21 +74,15 @@ const StyledCardAction = styled(CardActions)`
 `;
 
 export default function Cardpost(props: CardpostProps) {
-  const { logInDone } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user);
-  const { postArray } = useSelector((state: any) => state.post);
+  const { logInDone, user , userCurrentWorkspaceId} = useSelector((state: any) => state.user);
   const dispatch = useDispatch()
-  const { currentSpaceId } = useSelector((state: any) => state.workspace);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);
-  // const isLoggedIn = false;
+  const { currentSpaceId, workspaceInfo } = useSelector((state: any) => state.workspace);
   const [uploadModalClicked, setUploadModalClicked] = useState(false);
   const [like, setLike] = useState(false);
   const {isEdit} = useSelector((state: any) => state.post);
   const [likeClick, setLikeClick] = useState(props.likers?.length || 0);
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
-
   const [modalOpen, setModalOpen] = React.useState(false);
   const [ImagePath, setImagePath] = React.useState("");
 

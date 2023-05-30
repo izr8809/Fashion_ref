@@ -37,9 +37,7 @@ const theme = createTheme();
 
 export default function SignupPage() {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state: any) => state.user);
-  const { signUpDone } = useSelector((state: any) => state.user);
-  const { signUpError } = useSelector((state: any) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector((state: any) => state.user);
   const [emailError, setEmailError] = useState(false);
   const [email, onChangeEmail] = useInput("");
   const [name, onChangeName] = useInput("");

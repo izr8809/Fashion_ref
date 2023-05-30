@@ -14,8 +14,7 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
   const {postArray} = useSelector((state: any) => state.post);
-  const { user } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const { user,userCurrentWorkspaceId } = useSelector((state: any) => state.user);
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
 

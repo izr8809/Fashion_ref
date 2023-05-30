@@ -20,9 +20,7 @@ type AlarmMenuProps = {
   isHomeState: boolean;
 };
 export default function AlarmMenu(props: AlarmMenuProps) {
-  const { userWorkspaces } = useSelector((state: any) => state.user);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { user } = useSelector((state: any) => state.user);
+  const { userWorkspaces, userCurrentWorkspaceId, user} = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const { workspaceInfo } = useSelector((state: any) => state.workspace);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

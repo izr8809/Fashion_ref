@@ -15,7 +15,7 @@
   background: rgb(251, 251, 250);
   transition: box-shadow 300ms ease 0s;
   box-shadow: rgba(0, 0, 0, 0.024) -1px 0px 0px 0px inset;
-  width: 244px;
+  width: 220px;
   cursor: default;
 
   & div {
@@ -44,7 +44,7 @@
   height: 100%;
   position: relative;
   pointer-events: auto;
-  width: 244px;
+  width: 220px;
   opacity: 1;
 
   & div {
@@ -81,7 +81,7 @@
     width: 100%;
     font-size: 14px;
     min-height: 27px;
-    padding: 2px 14px;
+    padding: 2px 7px;
     margin-top: 1px;
     margin-bottom: 1px;
     overflow: hidden;

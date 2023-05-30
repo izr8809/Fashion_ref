@@ -76,17 +76,11 @@ interface IFileTypes {
 }
 export default function Upload(props: UploadProps) {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: any) => state.user);
-  const { postArray } = useSelector((state: any) => state.post);
-  const { hashtags } = useSelector((state: any) => state.post);
-  const { isEdit } = useSelector((state: any) => state.post);
-  const { editPostWithImagesDone } = useSelector((state: any) => state.post);
-  const { addPostError } = useSelector((state: any) => state.post);
-  const { editPostError } = useSelector((state: any) => state.post);
+  const { user, userCurrentWorkspaceId } = useSelector((state: any) => state.user);
+  const { currentSpaceId , workspaceInfo} = useSelector((state: any) => state.workspace);
+  const { postArray,hashtags,isEdit, editPostWithImagesDone, addPostError, editPostError, addPostLoading, addPostDone, editPostDone } = useSelector((state: any) => state.post);
   const fileInput = useRef<HTMLInputElement>(null);
-
   const [file, setFile] = useState({ name: "" });
-  const postInfoArray = [];
   const [isImage, setIsImage] = useState(false);
   const [highlight, setHighlight] = useState(false);
   const [userName, setUserName] = useState("");
@@ -94,12 +88,6 @@ export default function Upload(props: UploadProps) {
   const [brand, onChangeBrand, setBrand] = useInput("");
   const [link, onChangeLink, setLink] = useInput("");
   const [showHashModalOpen, setShowHashModalOpen] = React.useState(false);
-  const { addPostLoading } = useSelector((state: any) => state.post);
-  const { addPostDone } = useSelector((state: any) => state.post);
-  const { editPostDone } = useSelector((state: any) => state.post);
-  const { userCurrentWorkspaceId } = useSelector((state: any) => state.user);
-  const { currentSpaceId } = useSelector((state: any) => state.workspace);
-  const { workspaceInfo } = useSelector((state: any) => state.workspace);
   const [post, setPost] = useState({
     title: "",
     desc: "",
