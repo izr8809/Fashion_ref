@@ -171,9 +171,12 @@ export default function Searchbar({ setIsUserpage,setIsHomeState }: SearchbarPro
   useEffect(() => {
     if(workspaceInfo){
       const idForSearch = (currentSpaceId) ? currentSpaceId : lastReferenceId
-      const refIndex = workspaceInfo.References?.findIndex(
-        (v: any) => v.id === idForSearch
+      var refIndex = workspaceInfo.References?.findIndex(
+        (v: any) => v.id === currentSpaceId
       );
+      if(refIndex == -1){
+        refIndex = 0;
+      }
       if(workspaceInfo.References.length !=0){
         console.log(workspaceInfo)
         console.log(refIndex)

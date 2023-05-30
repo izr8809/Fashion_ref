@@ -33,8 +33,8 @@ export default function NoticeModal({}: NoticeModalProps) {
   useEffect(()=>{
     var now = new Date();
     var date = now.getDate();	// 일
-    if(date-31 ==0)
-      setIsModalOpen(true)
+    // if(date-31 ==0)
+    //   setIsModalOpen(true)
   },[])
   return (
     <>
